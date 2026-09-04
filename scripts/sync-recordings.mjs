@@ -31,26 +31,35 @@ export function loadRecordings(root = ROOT) {
       let verdict = "";
       for (const l of t.stdout || []) { const m = head.exec(l); if (m) verdict = m[1]; }
       const cost = (/\$(\d+\.\d+)/.exec(status) || [])[1];
+      const tok = /(\d+) in \/ (\d+) out tokens/.exec(status);
       const findings = (t.stdout || []).filter((l) => /^\d+\.\s/.test(l)).length;
-      return { agent: t.agent, label: LABELS[t.agent] || t.agent, seconds: Math.round((t.durationMs || 0) / 1000), cost: cost ? Number(cost) : null, verdict, findings, gif: existsSync(join(dir, `${t.agent}.gif`)), ...(existsSync(join(dir, `${t.agent}.gif`)) ? gifSize(join(dir, `${t.agent}.gif`)) : {}), recordedAt: (t.recordedAt || "").slice(0, 10), exitCode: t.exitCode };
+      return { agent: t.agent, label: LABELS[t.agent] || t.agent, seconds: Math.round((t.durationMs || 0) / 1000), cost: cost ? Number(cost) : null, tokensIn: tok ? Number(tok[1]) : null, tokensOut: tok ? Number(tok[2]) : null, verdict, findings, gif: existsSync(join(dir, `${t.agent}.gif`)), ...(existsSync(join(dir, `${t.agent}.gif`)) ? gifSize(join(dir, `${t.agent}.gif`)) : {}), recordedAt: (t.recordedAt || "").slice(0, 10), exitCode: t.exitCode };
     })
     .filter((r) => r.gif && r.verdict)
     .sort((a, b) => ORDER.indexOf(a.agent) - ORDER.indexOf(b.agent));
 }
 
-export function caption(r) {
-  const parts = [`${P.verdictPrefix}: ${r.verdict}`, `${r.findings} finding${r.findings === 1 ? "" : "s"}`, `${r.seconds} s`];
-  if (r.cost != null) parts.push(`$${r.cost.toFixed(2)}`);
-  return parts.join(" · ");
+// The same five fields for every host, in the same order; a host that does not report a number says so.
+export function fields(r) {
+  const n = (x) => x.toLocaleString("en-US");
+  return [
+    ["Verdict", `${P.verdictPrefix}: ${r.verdict}`],
+    ["Findings", String(r.findings)],
+    ["Time", `${r.seconds} s`],
+    ["Tokens", r.tokensIn != null ? `${n(r.tokensIn)} in / ${n(r.tokensOut)} out` : "not reported by the host"],
+    ["Cost", r.cost != null ? `$${r.cost.toFixed(4)}` : "not reported by the host"],
+  ];
 }
+export function caption(r) { return fields(r).map(([k, v]) => `<b>${k}</b> ${v}`).join("<br>"); }
 
 function readmeBlock(recs) {
   const obj = P.pronoun === "she" ? "her" : P.pronoun === "they" ? "them" : "him";
   const rows = [];
   for (let i = 0; i < recs.length; i += 2) {
     const pair = recs.slice(i, i + 2);
-    rows.push(`| ${pair.map((r) => `**${r.label}**`).join(" | ")} |`);
-    if (i === 0) rows.push(`|${pair.map(() => "---").join("|")}|`);
+    if (i > 0) rows.push("");
+    rows.push(`| ${pair.map((r) => r.label).join(" | ")} |`);
+    rows.push(`|${pair.map(() => "---").join("|")}|`);
     rows.push(`| ${pair.map((r) => `<img src="assets/recordings/${r.agent}.gif" alt="Terminal recording of ${P.asName || P.name} reviewing a staged diff with ${r.label}: ${P.verdictPrefix}: ${r.verdict} with ${r.findings} numbered findings" width="440">`).join(" | ")} |`);
     rows.push(`| ${pair.map((r) => caption(r)).join(" | ")} |`);
   }
@@ -62,7 +71,7 @@ The same staged diff, one CLI, ${recs.length} agents. Each recording is a real r
 
 ${rows.join("\n")}
 
-Agents that narrate the whole checklist before the verdict (Bob does) are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with \`--agent claude|codex|agy|bob\`; Bob needs \`BOB_API_KEY\`.
+Every card lists the same five things; a host that does not report tokens or cost says so rather than leaving a blank. Agents that narrate the whole checklist before the verdict are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with \`--agent claude|codex|agy|bob\`; Bob needs \`BOB_API_KEY\`.
 <!-- recordings:end -->`;
 }
 
@@ -88,5 +97,5 @@ writeFileSync(readmePath, readme);
 const out = join(ROOT, "docs", "assets", "recordings");
 mkdirSync(out, { recursive: true });
 for (const r of recs) copyFileSync(join(ROOT, "assets", "recordings", `${r.agent}.gif`), join(out, `${r.agent}.gif`));
-writeFileSync(join(ROOT, "docs", "data", "recordings.json"), JSON.stringify(recs.map((r) => ({ agent: r.agent, label: r.label, verdict: r.verdict, findings: r.findings, seconds: r.seconds, cost: r.cost, recordedAt: r.recordedAt, width: r.width, height: r.height })), null, 2) + "\n");
+writeFileSync(join(ROOT, "docs", "data", "recordings.json"), JSON.stringify(recs.map((r) => ({ agent: r.agent, label: r.label, verdict: r.verdict, findings: r.findings, seconds: r.seconds, cost: r.cost, recordedAt: r.recordedAt, width: r.width, height: r.height, tokensIn: r.tokensIn, tokensOut: r.tokensOut })), null, 2) + "\n");
 console.log(`README gallery: ${recs.map((r) => `${r.agent} ${r.verdict} ${r.seconds}s`).join(", ")}; ${recs.length} GIFs copied to docs/assets/recordings`);

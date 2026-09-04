@@ -1,0 +1,301 @@
+{
+  "date": "2026-09-04",
+  "seeded": 12,
+  "clean": 4,
+  "needle": 4,
+  "agents": {
+    "claude": {
+      "label": "Claude Code",
+      "calls": 120,
+      "errors": 0,
+      "arms": {
+        "grump": {
+          "label": "tenured",
+          "model": "claude-sonnet-5",
+          "runs": 2,
+          "caughtMedian": 12,
+          "caughtMean": 12,
+          "falsePositivesMedian": 0,
+          "blockPrecision": 0.5,
+          "blocks": 20,
+          "unparseable": 0,
+          "inputTokensMedian": 7618,
+          "outputTokensMedian": 699.5,
+          "latencyMedianMs": 9656
+        },
+        "bare": {
+          "label": "no skill",
+          "model": "claude-sonnet-5",
+          "runs": 2,
+          "caughtMedian": 11.5,
+          "caughtMean": 11.5,
+          "falsePositivesMedian": 4,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 0,
+          "inputTokensMedian": 5713.5,
+          "outputTokensMedian": 370,
+          "latencyMedianMs": 6552
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "claude-sonnet-5",
+          "runs": 2,
+          "caughtMedian": 12,
+          "caughtMean": 12,
+          "falsePositivesMedian": 3.5,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 1,
+          "inputTokensMedian": 5820,
+          "outputTokensMedian": 793.5,
+          "latencyMedianMs": 11402.5
+        }
+      },
+      "needle": {
+        "bare": {
+          "label": "no skill",
+          "model": "claude-sonnet-5",
+          "runs": 2,
+          "caughtMedian": 3,
+          "caughtMean": 3,
+          "unparseable": 0,
+          "inputTokensMedian": 6850,
+          "latencyMedianMs": 12016.5
+        },
+        "grump": {
+          "label": "tenured",
+          "model": "claude-sonnet-5",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 8754.5,
+          "latencyMedianMs": 24999.5
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "claude-sonnet-5",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 6959,
+          "latencyMedianMs": 54783.5
+        }
+      }
+    },
+    "codex": {
+      "label": "Codex CLI",
+      "calls": 120,
+      "errors": 0,
+      "arms": {
+        "bare": {
+          "label": "no skill",
+          "model": "codex-default",
+          "runs": 2,
+          "caughtMedian": 11.5,
+          "caughtMean": 11.5,
+          "falsePositivesMedian": 3.5,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 0,
+          "inputTokensMedian": 14116.5,
+          "outputTokensMedian": 168,
+          "latencyMedianMs": 7050
+        },
+        "grump": {
+          "label": "tenured",
+          "model": "codex-default",
+          "runs": 2,
+          "caughtMedian": 12,
+          "caughtMean": 12,
+          "falsePositivesMedian": 0,
+          "blockPrecision": 0.5294117647058824,
+          "blocks": 17,
+          "unparseable": 0,
+          "inputTokensMedian": 15384,
+          "outputTokensMedian": 125.5,
+          "latencyMedianMs": 6363.5
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "codex-default",
+          "runs": 2,
+          "caughtMedian": 12,
+          "caughtMean": 12,
+          "falsePositivesMedian": 4,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 0,
+          "inputTokensMedian": 43238.5,
+          "outputTokensMedian": 869.5,
+          "latencyMedianMs": 21655
+        }
+      },
+      "needle": {
+        "bare": {
+          "label": "no skill",
+          "model": "codex-default",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 14765.5,
+          "latencyMedianMs": 14094.5
+        },
+        "grump": {
+          "label": "tenured",
+          "model": "codex-default",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 16040.5,
+          "latencyMedianMs": 10016.5
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "codex-default",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 14806.5,
+          "latencyMedianMs": 21212.5
+        }
+      }
+    },
+    "bob": {
+      "label": "IBM Bob Shell",
+      "calls": 120,
+      "errors": 4,
+      "arms": {
+        "grump": {
+          "label": "tenured",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 11.5,
+          "caughtMean": 11.5,
+          "falsePositivesMedian": 1,
+          "blockPrecision": 0.5263157894736842,
+          "blocks": 19,
+          "unparseable": 3,
+          "inputTokensMedian": 0,
+          "outputTokensMedian": 0,
+          "latencyMedianMs": 6322.5
+        },
+        "bare": {
+          "label": "no skill",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 11.5,
+          "caughtMean": 11.5,
+          "falsePositivesMedian": 3.5,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 0,
+          "inputTokensMedian": 0,
+          "outputTokensMedian": 0,
+          "latencyMedianMs": 13439
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 11.5,
+          "caughtMean": 11.5,
+          "falsePositivesMedian": 2,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 4,
+          "inputTokensMedian": 0,
+          "outputTokensMedian": 0,
+          "latencyMedianMs": 14108
+        }
+      },
+      "needle": {
+        "bare": {
+          "label": "no skill",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 0,
+          "latencyMedianMs": 19742
+        },
+        "grump": {
+          "label": "tenured",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 0,
+          "latencyMedianMs": 17762
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 3.5,
+          "caughtMean": 3.5,
+          "unparseable": 0,
+          "inputTokensMedian": 0,
+          "latencyMedianMs": 22491
+        }
+      }
+    },
+    "agy": {
+      "label": "Antigravity CLI",
+      "calls": 12,
+      "errors": 0,
+      "arms": {
+        "bare": {
+          "label": "no skill",
+          "model": "agy-default",
+          "runs": 1,
+          "caughtMedian": 5,
+          "caughtMean": 5,
+          "falsePositivesMedian": 0,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 0,
+          "inputTokensMedian": 19509,
+          "outputTokensMedian": 1848,
+          "latencyMedianMs": 40773
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "agy-default",
+          "runs": 1,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "falsePositivesMedian": 0,
+          "blockPrecision": null,
+          "blocks": 0,
+          "unparseable": 0,
+          "inputTokensMedian": 19572,
+          "outputTokensMedian": 5239,
+          "latencyMedianMs": 46848
+        },
+        "grump": {
+          "label": "tenured",
+          "model": "agy-default",
+          "runs": 1,
+          "caughtMedian": 3,
+          "caughtMean": 3,
+          "falsePositivesMedian": 0,
+          "blockPrecision": 1,
+          "blocks": 2,
+          "unparseable": 0,
+          "inputTokensMedian": 20932,
+          "outputTokensMedian": 30977,
+          "latencyMedianMs": 80706
+        }
+      },
+      "needle": {}
+    }
+  }
+}

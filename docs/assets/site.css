@@ -174,5 +174,10 @@ footer .by strong { color: var(--text); }
 .rec { margin: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); box-shadow: 0 10px 30px rgba(0,0,0,.08); transition: transform .25s ease, box-shadow .25s ease; }
 .rec:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,.14); }
 .rec img { display: block; width: 100%; height: auto; }
-.rec figcaption { display: flex; justify-content: space-between; gap: .6rem; flex-wrap: wrap; padding: .7rem .9rem; font-size: .9rem; border-top: 1px solid var(--line); }
-.rec figcaption span { color: var(--muted, inherit); font-variant-numeric: tabular-nums; }
+.rec figcaption { padding: .8rem .9rem; font-size: .9rem; border-top: 1px solid var(--line); }
+.rec figcaption strong { display: block; margin-bottom: .45rem; }
+.rec dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .35rem .8rem; }
+.rec dl div { display: flex; flex-direction: column; }
+.rec dt { color: var(--faint); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
+.rec dd { margin: 0; color: var(--text); font-variant-numeric: tabular-nums; }
+.rec dd:first-line { font-weight: 600; }

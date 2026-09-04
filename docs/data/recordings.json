@@ -8,7 +8,9 @@
     "cost": 0.0259,
     "recordedAt": "2026-09-04",
     "width": 1000,
-    "height": 346
+    "height": 346,
+    "tokensIn": 7737,
+    "tokensOut": 609
   },
   {
     "agent": "codex",
@@ -19,7 +21,9 @@
     "cost": null,
     "recordedAt": "2026-09-04",
     "width": 1000,
-    "height": 258
+    "height": 258,
+    "tokensIn": 15488,
+    "tokensOut": 77
   },
   {
     "agent": "agy",
@@ -30,7 +34,9 @@
     "cost": null,
     "recordedAt": "2026-09-04",
     "width": 1000,
-    "height": 236
+    "height": 236,
+    "tokensIn": 20981,
+    "tokensOut": 56452
   },
   {
     "agent": "bob",
@@ -41,6 +47,8 @@
     "cost": 0.0098,
     "recordedAt": "2026-09-04",
     "width": 1000,
-    "height": 390
+    "height": 390,
+    "tokensIn": null,
+    "tokensOut": null
   }
 ]
