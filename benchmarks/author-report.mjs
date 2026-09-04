@@ -4,6 +4,7 @@
 // benchmarks/results/author/<date>.md and results/author/latest.json.
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { BENCH_ROOT } from "./lib/cases.mjs";
 import { ARMS, AUTHORS, loadTasks } from "./lib/authors.mjs";
 
@@ -44,10 +45,23 @@ export function summarise(rows) {
   return out;
 }
 
+// Every record is rescored from its stored diff with the checks as they are now, so a check that
+// is tightened or loosened after a run applies to the whole set without rerunning any agent.
+const checks = {};
+for (const t of tasks) checks[t.id] = await import(pathToFileURL(join(t.dir, "check.mjs")).href);
+function rescore(rec) {
+  const c = checks[rec.task];
+  if (!c || rec.error || typeof rec.diff !== "string") return rec;
+  const added = rec.diff.split("\n").filter((l) => l.startsWith("+") && !l.startsWith("+++")).map((l) => l.slice(1)).join("\n");
+  const removed = rec.diff.split("\n").filter((l) => l.startsWith("-") && !l.startsWith("---")).map((l) => l.slice(1)).join("\n");
+  const implemented = added.trim().length > 0 && c.implemented(added, removed);
+  return { ...rec, implemented, shipped: implemented ? c.shipped(added, removed) : null };
+}
+
 const agents = {};
 for (const f of existsSync(RAW) ? readdirSync(RAW).filter((f) => f.endsWith(".jsonl")) : []) {
   const agent = f.replace(".jsonl", "");
-  const rows = readFileSync(join(RAW, f), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const rows = readFileSync(join(RAW, f), "utf8").trim().split("\n").filter(Boolean).map((l) => rescore(JSON.parse(l)));
   agents[agent] = { label: AUTHORS[agent]?.label || agent, calls: rows.length, errors: rows.filter((r) => r.error).length, arms: summarise(rows) };
 }
 if (!Object.keys(agents).length) { console.log("no author-tier records yet"); process.exit(0); }
@@ -67,7 +81,7 @@ for (const [agent, a] of Object.entries(agents)) {
   }
   md += "\n";
 }
-md += `## Method\n\nEach run starts from a fresh copy of the task's scaffold, committed once. The agent runs in its headless write mode (Claude Code with edits auto-accepted and shell tools off; Codex with a workspace-write sandbox; Bob in code mode) with the same footer telling it to edit files directly and not to run or install anything. The diff is taken with \`git diff --cached\` after \`git add -A\`. Checks look only at added lines. A task counts as implemented when the added lines contain the feature's route or function; the defect check runs only on implemented tasks. Raw transcripts and diffs are in \`raw/\`.\n\n## Limitations\n\n${tasks.length} tasks, each with one seeded class of defect; the checks are pattern-based and can miss an unusual defensive construction or an unusual way of introducing the defect (both directions are visible in \`raw/\`). Tasks are small enough to finish in one turn, which favours every arm. The persona arm loads the card through the prompt, the way every host adapter does, not through a hook that denies the write. Antigravity is not in this tier: its headless mode aborts the run when a tool needs a permission it cannot ask for, which happens on most tasks.\n`;
+md += `## Method\n\nEach run starts from a fresh copy of the task's scaffold, committed once. The agent runs in its headless write mode (Claude Code with edits auto-accepted and shell tools off; Codex with a workspace-write sandbox; Bob in code mode) with the same footer telling it to edit files directly and not to run or install anything. The diff is taken with \`git diff --cached\` after \`git add -A\`. Checks look at the added and removed lines of the diff and are applied at report time to every stored diff, so a corrected check rescores the whole set. A task counts as implemented when the added lines contain the feature's route or function; the defect check runs only on implemented tasks. Raw transcripts and diffs are in \`raw/\`.\n\n## Limitations\n\n${tasks.length} tasks, each with one seeded class of defect; the checks are pattern-based and can miss an unusual defensive construction or an unusual way of introducing the defect (both directions are visible in \`raw/\`). Tasks are small enough to finish in one turn, which favours every arm. The persona arm loads the card through the prompt, the way every host adapter does, not through a hook that denies the write. Antigravity is not in this tier: its headless mode aborts the run when a tool needs a permission it cannot ask for, which happens on most tasks.\n`;
 writeFileSync(join(BENCH_ROOT, "results", "author", `${date}.md`), md);
 writeFileSync(join(BENCH_ROOT, "results", "author", "latest.json"), JSON.stringify({ date, tasks: tasks.length, agents }, null, 2) + "\n");
 console.log(`wrote benchmarks/results/author/${date}.md and results/author/latest.json`);
