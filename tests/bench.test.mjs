@@ -112,3 +112,20 @@ test("aggregate produces medians per arm and per-case hit counts", { skip: !case
   assert.equal(agg.grump.perCase[c02.id].hits, 1);
   assert.equal(agg.grump.tokens.inputMedian, 102);
 });
+
+test("every author-tier task has a scaffold, a ticket, and fixed checks that are functions", async () => {
+  const { loadTasks } = await import("../benchmarks/lib/authors.mjs");
+  const { existsSync } = await import("node:fs");
+  const { pathToFileURL } = await import("node:url");
+  const tasks = loadTasks();
+  assert.ok(tasks.length >= 8, `expected at least 8 tasks, found ${tasks.length}`);
+  for (const t of tasks) {
+    assert.ok(existsSync(`${t.dir}/scaffold`), `${t.id} has no scaffold`);
+    assert.match(t.task, /^Ticket: /, `${t.id} ticket line`);
+    const c = await import(pathToFileURL(`${t.dir}/check.mjs`).href);
+    assert.equal(typeof c.implemented, "function", `${t.id} implemented`);
+    assert.equal(typeof c.shipped, "function", `${t.id} shipped`);
+    assert.ok(typeof c.defect === "string" && c.defect.length > 10, `${t.id} defect description`);
+    assert.equal(c.implemented("", ""), false, `${t.id}: an empty diff is not an implementation`);
+  }
+});

@@ -1,0 +1,14 @@
+[
+  {
+    "message": "queue: initial consumer",
+    "files": {
+      "src/queue/consumer.ts": "export const VISIBILITY_TIMEOUT_S = 30;\n\nexport async function consume(handler: (m: unknown) => Promise<void>) {\n  // processing takes up to 240 s for large batches\n}\n"
+    }
+  },
+  {
+    "message": "queue: raise visibility timeout to 300s; document why (duplicate deliveries at 30s)",
+    "files": {
+      "src/queue/consumer.ts": "// Do not lower this below the maximum processing time (240 s for large batches). At 30 s the\n// queue redelivered messages that were still being processed and customers got duplicate\n// notifications (see #418). If crash recovery is the problem, add a heartbeat that extends\n// the timeout while processing, do not lower the number.\nexport const VISIBILITY_TIMEOUT_S = 300;\n\nexport async function consume(handler: (m: unknown) => Promise<void>) {\n  // processing takes up to 240 s for large batches\n}\n"
+    }
+  }
+]

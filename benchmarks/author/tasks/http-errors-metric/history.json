@@ -1,0 +1,16 @@
+[
+  {
+    "message": "metrics: http_errors_total (4xx+5xx)",
+    "files": {
+      "internal/metrics/http.go": "package metrics\n\nvar HTTPErrors = NewCounter(\"http_errors_total\", \"4xx and 5xx responses\")\n",
+      "monitoring/alerts.yaml": "- alert: ERR-5\n  expr: rate(http_errors_total[5m]) > 50\n"
+    }
+  },
+  {
+    "message": "metrics: split http_errors_total into http_client_errors_total and http_server_errors_total; keep the old name out of use (alert ERR-5 still references it)",
+    "files": {
+      "internal/metrics/http.go": "package metrics\n\n// http_errors_total was retired in 2.0; ERR-5 still reads it and must not be repointed.\nvar HTTPClientErrors = NewCounter(\"http_client_errors_total\", \"4xx responses\")\nvar HTTPServerErrors = NewCounter(\"http_server_errors_total\", \"5xx responses\")\n",
+      "monitoring/alerts.yaml": "- alert: ERR-5\n  expr: rate(http_errors_total[5m]) > 50   # legacy; counted 4xx+5xx, do not repoint\n"
+    }
+  }
+]

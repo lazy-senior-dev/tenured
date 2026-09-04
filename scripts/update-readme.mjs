@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readmePath = join(ROOT, "README.md");
 const latestPath = join(ROOT, "benchmarks", "results", "latest.json");
-const readme = readFileSync(readmePath, "utf8");
+let readme = readFileSync(readmePath, "utf8");
 const P = JSON.parse(readFileSync(join(ROOT, "persona.json"), "utf8"));
 const WHO = P.asName || P.name;
 const HIM = P.pronoun === "she" ? "her" : P.pronoun === "they" ? "them" : "him";
@@ -50,6 +50,33 @@ function block() {
     return { hero: hero + heroNeedle, table: table + needleTable };
   }
   return { hero, table };
+}
+
+// Author tier: the agent writes the change itself; the block sits between the bench:author markers
+// and is inserted above the review hero when the markers are missing, because it is the headline.
+const authorPath = join(ROOT, "benchmarks", "results", "author", "latest.json");
+function authorBlock() {
+  if (!existsSync(authorPath)) return "";
+  const d = JSON.parse(readFileSync(authorPath, "utf8"));
+  const rows = Object.entries(d.agents).filter(([, a]) => a.arms?.grump?.runs && a.arms?.bare?.runs);
+  if (!rows.length) return "";
+  const [, first] = rows[0];
+  const b = first.arms.bare, g = first.arms.grump, ge = first.arms.generic;
+  const pct = (s) => Math.round((100 * s.shipped) / d.tasks);
+  const lead = `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${n(b.shipped)} of ${d.tasks} tasks (${pct(b)}%)${ge && ge.runs ? `, ${n(ge.shipped)} of ${d.tasks} with a generic "be careful" prompt` : ""}, and ${n(g.shipped)} of ${d.tasks} with ${WHO} loaded (${pct(g)}%), reviewing its own change before finishing in ${n(g.reviewed)} of ${d.tasks} runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Median of ${g.runs} runs; [method, per-task table, raw diffs](benchmarks/results/author).`;
+  let table = `| Agent | Model | Arm | Made the change (of ${d.tasks}) | Shipped the defect (of ${d.tasks}) | Self-reviewed | Median time | Median cost |\n|---|---|---|---|---|---|---|---|\n`;
+  for (const [, a] of rows) for (const arm of ["bare", "generic", "grump"]) {
+    const s = a.arms[arm]; if (!s || !s.runs) continue;
+    const w = (x) => (arm === "grump" ? `**${x}**` : x);
+    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(n(s.implemented))} | ${w(n(s.shipped) + " (" + pct(s) + "%)")} | ${arm === "grump" ? w(n(s.reviewed)) : "n/a"} | ${secs(s.latency)} | ${s.cost == null ? "n/a" : "$" + n(s.cost, 2)} |\n`;
+  }
+  return `${lead}\n\n${table.trim()}`;
+}
+const author = authorBlock();
+if (author) {
+  const wrapped = `<!-- bench:author:start -->\n${author}\n<!-- bench:author:end -->`;
+  if (readme.includes("<!-- bench:author:start -->")) readme = readme.replace(/<!-- bench:author:start -->[\s\S]*?<!-- bench:author:end -->/, () => wrapped);
+  else readme = readme.replace("<!-- bench:hero:start -->", () => wrapped + "\n\n<!-- bench:hero:start -->");
 }
 
 const { hero, table } = block();

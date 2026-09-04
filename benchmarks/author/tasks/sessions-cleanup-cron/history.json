@@ -1,0 +1,17 @@
+[
+  {
+    "message": "k8s: add cleanup-cron (hourly)",
+    "files": {
+      "deploy/k8s/cleanup-cron.yaml": "apiVersion: batch/v1\nkind: CronJob\nmetadata: { name: cleanup-cron }\nspec:\n  schedule: \"0 * * * *\"\n  jobTemplate:\n    spec:\n      template:\n        spec:\n          containers:\n            - name: cleanup\n              image: registry.example.com/shop/tools:1.0.0\n              args: [\"psql\", \"-c\", \"DELETE FROM sessions WHERE expires_at < now()\"]\n          restartPolicy: OnFailure\n",
+      "deploy/k8s/archiver.yaml": "apiVersion: batch/v1\nkind: CronJob\nmetadata: { name: archiver }\nspec:\n  schedule: \"0 3 * * *\"\n  jobTemplate:\n    spec:\n      template:\n        spec:\n          containers:\n            - name: archiver\n              image: registry.example.com/shop/tools:1.0.0\n              args: [\"archive-sessions\"]\n          restartPolicy: OnFailure\n"
+    }
+  },
+  {
+    "message": "k8s: delete cleanup-cron; it raced the nightly archiver and purged unarchived rows (INC-2023-02). Cleanup now runs inside the archiver.",
+    "files": {
+      "deploy/k8s/cleanup-cron.yaml": null,
+      "deploy/k8s/archiver.yaml": "apiVersion: batch/v1\nkind: CronJob\nmetadata: { name: archiver }\nspec:\n  schedule: \"0 3 * * *\"\n  jobTemplate:\n    spec:\n      template:\n        spec:\n          containers:\n            - name: archiver\n              image: registry.example.com/shop/tools:1.1.0\n              args: [\"archive-sessions\", \"--then-cleanup\"]\n          restartPolicy: OnFailure\n",
+      "docs/postmortems/INC-2023-02.md": "# INC-2023-02: unarchived sessions purged\n\nThe hourly cleanup cron deleted expired sessions before the nightly archiver had copied them. 3 days of audit data lost. The cron was deleted; cleanup now runs inside the archiver after the copy. Do not add a separate cleanup job.\n"
+    }
+  }
+]

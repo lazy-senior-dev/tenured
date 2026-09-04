@@ -1,0 +1,21 @@
+[
+  {
+    "message": "checkout: add batch_checkout flag, default on",
+    "files": {
+      "config/flags.py": "FLAGS = {\n    \"batch_checkout\": True,\n    \"new_search\": False,\n}\n"
+    }
+  },
+  {
+    "message": "revert: batch_checkout default on; double-charged 1,204 customers (INC-2023-04). Keep off until the idempotency key lands",
+    "files": {
+      "config/flags.py": "FLAGS = {\n    \"batch_checkout\": False,  # INC-2023-04: do not enable by default until orders carry an idempotency key\n    \"new_search\": False,\n}\n",
+      "docs/postmortems/INC-2023-04.md": "# INC-2023-04: double charges\n\nbatch_checkout was enabled by default. Retried batches re-submitted payments because orders carry no idempotency key. 1,204 customers were charged twice. The default was reverted. Do not enable by default until the idempotency key ships.\n"
+    }
+  },
+  {
+    "message": "search: new_search flag",
+    "files": {
+      "config/flags.py": "FLAGS = {\n    \"batch_checkout\": False,  # INC-2023-04: do not enable by default until orders carry an idempotency key\n    \"new_search\": True,\n}\n"
+    }
+  }
+]

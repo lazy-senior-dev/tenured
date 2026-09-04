@@ -151,6 +151,20 @@
   <p class="sub" style="margin-top:1.4rem">Verdict block: <code>TENURED: NEW | SEEN_BEFORE | DO_NOT_REPEAT</code>. <code>DO_NOT_REPEAT</code> is reserved for changes that reproduce a recorded incident or resurrect a deliberate removal.</p>
 </section>
 
+<section class="wrap reveal" id="author" hidden>
+  <div class="eyebrow">The number that matters</div>
+  <h2>When the agent writes the code, what ships?</h2>
+  <p class="sub">Eight tickets that ask for the obvious change, in repositories whose git log, postmortem, ADR, or warning comment says why that change was undone before. The agent has to make the change, or decline, itself. Three ways: the ticket alone, the ticket with a generic "be careful" prompt, and the ticket with Tenured loaded. The shipped diff is scored by fixed checks written before any run, never by a model. Lower is better.</p>
+  <div class="grid c4" style="margin-bottom:1.2rem">
+    <div class="stat"><b id="a-without">TBD</b><span id="l-without">tasks that shipped the defect, agent alone</span></div>
+    <div class="stat"><b id="a-generic">TBD</b><span>with a generic "be careful" prompt</span></div>
+    <div class="stat"><b id="a-with">TBD</b><span id="l-with">with him loaded</span></div>
+    <div class="stat"><b id="a-reviewed">TBD</b><span>runs where him reviewed the change before it shipped</span></div>
+  </div>
+  <div class="table-wrap"><table id="author-table"><thead><tr><th>Agent</th><th>Model</th><th>Arm</th><th>Made the change</th><th>Shipped the defect</th><th>Self-reviewed</th><th>Median time</th><th>Median cost</th></tr></thead><tbody></tbody></table></div>
+  <p class="sub" id="author-note" style="margin-top:.8rem">Method, per-task table, raw diffs and limitations: <a href="https://github.com/lazy-senior-dev/tenured/tree/main/benchmarks/results/author">benchmarks/results/author</a>. Reproduce with <code>npm run bench:author</code>.</p>
+</section>
+
 <section class="wrap reveal" id="ships">
   <div class="eyebrow">What ships</div>
   <h2>Everything the Grump has, pointed at the repository's memory</h2>
@@ -499,6 +513,39 @@
   </div>
 </section>
 </main>
+<script>
+(function () {
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  fetch("data/author.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+    if (!data || !data.agents) return;
+    var sec = document.getElementById("author"); if (!sec) return;
+    var tbody = document.querySelector("#author-table tbody"); tbody.innerHTML = "";
+    var first = null;
+    var secs = function (ms) { return ms == null ? "n/a" : (ms / 1000).toFixed(0) + " s"; };
+    var money = function (c) { return c == null ? "n/a" : "$" + Number(c).toFixed(2); };
+    Object.keys(data.agents).forEach(function (key) {
+      var a = data.agents[key], arms = a.arms || {};
+      if (!arms.grump || !arms.grump.runs || !arms.bare || !arms.bare.runs) return;
+      if (!first) first = { a: a, b: arms.bare, g: arms.grump, ge: arms.generic };
+      ["bare", "generic", "grump"].forEach(function (k) {
+        var s = arms[k]; if (!s || !s.runs) return;
+        var strong = k === "grump", w = function (x) { return strong ? "<strong>" + x + "</strong>" : x; };
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + esc(a.label) + "</td><td><code>" + esc(s.model || "") + "</code> (n=" + s.runs + ")</td><td>" + w(esc(s.label)) + "</td><td>" + w(s.implemented + " / " + data.tasks) + "</td><td>" + w(s.shipped + " / " + data.tasks) + "</td><td>" + (strong ? w(s.reviewed + " / " + data.tasks) : "n/a") + "</td><td>" + secs(s.latency) + "</td><td>" + money(s.cost) + "</td>";
+        tbody.appendChild(tr);
+      });
+    });
+    if (first) {
+      sec.hidden = false;
+      document.getElementById("a-without").textContent = first.b.shipped + " / " + data.tasks;
+      document.getElementById("a-generic").textContent = first.ge && first.ge.runs ? first.ge.shipped + " / " + data.tasks : "n/a";
+      document.getElementById("a-with").textContent = first.g.shipped + " / " + data.tasks;
+      document.getElementById("a-reviewed").textContent = first.g.reviewed + " / " + data.tasks;
+      document.getElementById("author-note").insertAdjacentHTML("afterbegin", "Measured " + esc(data.date) + " on " + esc(first.a.label) + " (" + esc(first.g.model) + "); medians over runs. ");
+    }
+  }).catch(function () {});
+})();
+</script>
 
 <footer>
   <div class="wrap">

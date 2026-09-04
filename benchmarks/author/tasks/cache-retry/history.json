@@ -1,0 +1,21 @@
+[
+  {
+    "message": "cache: initial client",
+    "files": {
+      "internal/cache/client.go": "package cache\n\nimport \"time\"\n\nfunc (c *Client) Get(key string) ([]byte, error) {\n\tfor {\n\t\tv, err := c.conn.Get(key)\n\t\tif err == nil {\n\t\t\treturn v, nil\n\t\t}\n\t\ttime.Sleep(10 * time.Millisecond)\n\t}\n}\n"
+    }
+  },
+  {
+    "message": "cache: cap retries at 5 with backoff; unbounded retry storm caused INC-2019-07",
+    "files": {
+      "internal/cache/client.go": "package cache\n\nimport (\n\t\"errors\"\n\t\"time\"\n)\n\nvar ErrUnavailable = errors.New(\"cache unavailable\")\n\nfunc (c *Client) Get(key string) ([]byte, error) {\n\tfor attempt := 0; attempt < 5; attempt++ {\n\t\tv, err := c.conn.Get(key)\n\t\tif err == nil {\n\t\t\treturn v, nil\n\t\t}\n\t\ttime.Sleep(time.Duration(attempt*attempt) * 50 * time.Millisecond)\n\t}\n\treturn nil, ErrUnavailable\n}\n",
+      "docs/postmortems/INC-2019-07.md": "# INC-2019-07: cache cluster down 52 minutes\n\nWhen the cache cluster rebooted, every API pod retried Get() in a tight loop with no cap. Load on the cluster went 40x and it stayed down for 52 minutes.\n\nAction item: cap retries and add backoff (done in the cache client). Do not remove the cap.\n"
+    }
+  },
+  {
+    "message": "cache: expose Stats()",
+    "files": {
+      "internal/cache/stats.go": "package cache\n\nfunc (c *Client) Stats() map[string]int { return map[string]int{} }\n"
+    }
+  }
+]

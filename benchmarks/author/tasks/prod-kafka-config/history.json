@@ -1,0 +1,15 @@
+[
+  {
+    "message": "config: add staging kafka config (PLAINTEXT, internal only)",
+    "files": {
+      "config/staging/kafka.yaml": "brokers: kafka-1.staging:9092,kafka-2.staging:9092\nsecurity_protocol: PLAINTEXT\nclient_id: events\n"
+    }
+  },
+  {
+    "message": "config: production kafka requires SASL_SSL (brokers reject PLAINTEXT since the 2024 hardening)",
+    "files": {
+      "config/prod/orders-kafka.yaml": "brokers: kafka-1.prod:9093,kafka-2.prod:9093\nsecurity_protocol: SASL_SSL\nsasl_mechanism: SCRAM-SHA-512\nsasl_username: ${KAFKA_USER}\nsasl_password: ${KAFKA_PASSWORD}\nclient_id: orders\n",
+      "docs/runbooks/kafka.md": "# Kafka\n\nProduction brokers accept SASL_SSL only. Staging is PLAINTEXT because it never leaves the VPC. Do not copy staging config to prod.\n"
+    }
+  }
+]

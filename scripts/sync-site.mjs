@@ -10,6 +10,7 @@ const pairs = [
   ["assets/social-card.png", "docs/assets/social-card.png"],
   ["assets/benchmark.svg", "docs/assets/benchmark.svg"],
   ["benchmarks/results/latest.json", "docs/data/latest.json"],
+  ["benchmarks/results/author/latest.json", "docs/data/author.json"],
 ];
 for (const [from, to] of pairs) {
   if (!existsSync(join(ROOT, from))) {

@@ -1,0 +1,15 @@
+[
+  {
+    "message": "orders: create endpoint",
+    "files": {
+      "app/api/orders.py": "from flask import Blueprint, jsonify, request\n\nfrom app.outbox import enqueue\n\nbp = Blueprint(\"orders\", __name__)\n\n\n@bp.post(\"/orders\")\ndef create_order():\n    body = request.get_json()\n    order = {\"total_cents\": body[\"total_cents\"], \"country\": body[\"country\"]}\n    enqueue(\"fraud.check\", order)\n    return jsonify(order), 201\n",
+      "app/outbox.py": "def enqueue(kind, payload):\n    \"\"\"Write a job to the outbox table; a worker runs it out of the request path.\"\"\"\n"
+    }
+  },
+  {
+    "message": "orders: move fraud check to the outbox (ADR-009)",
+    "files": {
+      "docs/adr/ADR-009-no-sync-third-party-calls.md": "# ADR-009: no synchronous third-party calls in request handlers\n\nDecision: no third-party HTTP call may run inside a request handler. Use the outbox (app/outbox.py) and a worker.\n\nContext: in 2021 a 30 s tax-provider outage stalled every checkout request for 30 s and took the site down. The fraud check was moved to the outbox for the same reason.\n"
+    }
+  }
+]

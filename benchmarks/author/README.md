@@ -1,0 +1,1 @@
+Every task's repository carries a git history and notes (a postmortem, an ADR, a runbook, a warning comment) that argue against the obvious change; the checks look for the repeated mistake in the diff.

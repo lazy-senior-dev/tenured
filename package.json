@@ -33,10 +33,11 @@
     "check": "node scripts/check-adapters.mjs && node scripts/check-attribution.mjs && node scripts/check-manifests.mjs",
     "test": "node --test tests/*.test.mjs",
     "bench": "node benchmarks/run.mjs",
-    "bench:report": "node benchmarks/report.mjs && node scripts/render-chart.mjs && node scripts/sync-site.mjs && node scripts/update-readme.mjs",
+    "bench:report": "node benchmarks/report.mjs && node benchmarks/author-report.mjs && node scripts/render-chart.mjs && node scripts/sync-site.mjs && node scripts/update-readme.mjs",
     "chart": "node scripts/render-chart.mjs",
     "gif": "vhs docs/demo.tape",
-    "recordings": "node scripts/sync-recordings.mjs"
+    "recordings": "node scripts/sync-recordings.mjs",
+    "bench:author": "node benchmarks/author.mjs"
   },
   "keywords": [
     "code-review",
