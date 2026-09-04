@@ -93,9 +93,9 @@ New to me.
 | Codex CLI | `codex-default` (n=2) | no skill | 12 | 4 | 0 | n/a | 14117 | 168 | 7 s |
 | Codex CLI | `codex-default` (n=2) | generic review prompt | 12 | 4 | 0 | n/a | 43239 | 870 | 22 s |
 | Codex CLI | `codex-default` (n=2) | **tenured** | **12** | **0** | **0** | **77%** | 15533 | 188 | 7 s |
-| IBM Bob Shell | `bob-default` (n=2) | no skill | 12 | 4 | 0 | n/a | 0 | 0 | 13 s |
-| IBM Bob Shell | `bob-default` (n=2) | generic review prompt | 12 | 2 | 2 | n/a | 0 | 0 | 14 s |
-| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **12** | **1** | **2** | **53%** | 0 | 0 | 6 s |
+| IBM Bob Shell | `bob-default` (n=2) | no skill | 12 | 3 | 0 | n/a | 0 | 0 | 14 s |
+| IBM Bob Shell | `bob-default` (n=2) | generic review prompt | 12 | 4 | 1 | n/a | 0 | 0 | 14 s |
+| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **12** | **0** | **0** | **71%** | 0 | 0 | 11 s |
 | Antigravity CLI | `agy-default` (n=1) | no skill | 11 | 3 | 0 | n/a | 19509 | 2058 | 42 s |
 | Antigravity CLI | `agy-default` (n=1) | generic review prompt | 12 | 4 | 0 | n/a | 19593 | 5469 | 48 s |
 | Antigravity CLI | `agy-default` (n=1) | **tenured** | **12** | **0** | **0** | **100%** | 20997 | 25644 | 74 s |

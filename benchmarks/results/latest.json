@@ -169,35 +169,21 @@
     "bob": {
       "label": "IBM Bob Shell",
       "calls": 120,
-      "errors": 4,
+      "errors": 0,
       "arms": {
-        "grump": {
-          "label": "tenured",
-          "model": "bob-default",
-          "runs": 2,
-          "caughtMedian": 11.5,
-          "caughtMean": 11.5,
-          "falsePositivesMedian": 1,
-          "blockPrecision": 0.5263157894736842,
-          "blocks": 19,
-          "unparseable": 3,
-          "inputTokensMedian": 0,
-          "outputTokensMedian": 0,
-          "latencyMedianMs": 6322.5
-        },
         "bare": {
           "label": "no skill",
           "model": "bob-default",
           "runs": 2,
-          "caughtMedian": 11.5,
-          "caughtMean": 11.5,
-          "falsePositivesMedian": 3.5,
+          "caughtMedian": 12,
+          "caughtMean": 12,
+          "falsePositivesMedian": 3,
           "blockPrecision": null,
           "blocks": 0,
           "unparseable": 0,
           "inputTokensMedian": 0,
           "outputTokensMedian": 0,
-          "latencyMedianMs": 13439
+          "latencyMedianMs": 13997
         },
         "generic": {
           "label": "generic review prompt",
@@ -205,13 +191,27 @@
           "runs": 2,
           "caughtMedian": 11.5,
           "caughtMean": 11.5,
-          "falsePositivesMedian": 2,
+          "falsePositivesMedian": 4,
           "blockPrecision": null,
           "blocks": 0,
-          "unparseable": 4,
+          "unparseable": 1,
           "inputTokensMedian": 0,
           "outputTokensMedian": 0,
-          "latencyMedianMs": 14108
+          "latencyMedianMs": 13915.5
+        },
+        "grump": {
+          "label": "tenured",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 12,
+          "caughtMean": 12,
+          "falsePositivesMedian": 0,
+          "blockPrecision": 0.7058823529411765,
+          "blocks": 17,
+          "unparseable": 0,
+          "inputTokensMedian": 0,
+          "outputTokensMedian": 0,
+          "latencyMedianMs": 10521.5
         }
       },
       "needle": {
@@ -223,7 +223,17 @@
           "caughtMean": 4,
           "unparseable": 0,
           "inputTokensMedian": 0,
-          "latencyMedianMs": 19742
+          "latencyMedianMs": 16634.5
+        },
+        "generic": {
+          "label": "generic review prompt",
+          "model": "bob-default",
+          "runs": 2,
+          "caughtMedian": 4,
+          "caughtMean": 4,
+          "unparseable": 0,
+          "inputTokensMedian": 0,
+          "latencyMedianMs": 19998
         },
         "grump": {
           "label": "tenured",
@@ -233,17 +243,7 @@
           "caughtMean": 4,
           "unparseable": 0,
           "inputTokensMedian": 0,
-          "latencyMedianMs": 17762
-        },
-        "generic": {
-          "label": "generic review prompt",
-          "model": "bob-default",
-          "runs": 2,
-          "caughtMedian": 3.5,
-          "caughtMean": 3.5,
-          "unparseable": 0,
-          "inputTokensMedian": 0,
-          "latencyMedianMs": 22491
+          "latencyMedianMs": 17368
         }
       }
     },
