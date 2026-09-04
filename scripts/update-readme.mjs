@@ -10,6 +10,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readmePath = join(ROOT, "README.md");
 const latestPath = join(ROOT, "benchmarks", "results", "latest.json");
 let readme = readFileSync(readmePath, "utf8");
+const original = readme;
 const P = JSON.parse(readFileSync(join(ROOT, "persona.json"), "utf8"));
 const WHO = P.asName || P.name;
 const HIM = P.pronoun === "she" ? "her" : P.pronoun === "they" ? "them" : "him";
@@ -58,7 +59,8 @@ const authorPath = join(ROOT, "benchmarks", "results", "author", "latest.json");
 function authorBlock() {
   if (!existsSync(authorPath)) return "";
   const d = JSON.parse(readFileSync(authorPath, "utf8"));
-  const rows = Object.entries(d.agents).filter(([, a]) => a.arms?.grump?.runs && a.arms?.bare?.runs);
+  const complete = (a) => ["bare", "grump"].every((k) => a.arms?.[k]?.runs && a.arms[k].records === a.arms[k].runs * d.tasks);
+  const rows = Object.entries(d.agents).filter(([, a]) => complete(a));
   if (!rows.length) return "";
   const [, first] = rows[0];
   const b = first.arms.bare, g = first.arms.grump, ge = first.arms.generic;
@@ -77,12 +79,15 @@ if (author) {
   const wrapped = `<!-- bench:author:start -->\n${author}\n<!-- bench:author:end -->`;
   if (readme.includes("<!-- bench:author:start -->")) readme = readme.replace(/<!-- bench:author:start -->[\s\S]*?<!-- bench:author:end -->/, () => wrapped);
   else readme = readme.replace("<!-- bench:hero:start -->", () => wrapped + "\n\n<!-- bench:hero:start -->");
+} else {
+  // no complete author run yet: the block is removed rather than shown half-filled
+  readme = readme.replace(/<!-- bench:author:start -->[\s\S]*?<!-- bench:author:end -->\n\n?/, () => "");
 }
 
 const { hero, table } = block();
 const heroOut = readme.replace(/<!-- bench:hero:start -->[\s\S]*?<!-- bench:hero:end -->/, `<!-- bench:hero:start -->\n${hero}\n<!-- bench:hero:end -->`);
 const out = heroOut.replace(/<!-- bench:table:start -->[\s\S]*?<!-- bench:table:end -->/, `<!-- bench:table:start -->\n${table || "_No results yet._"}\n<!-- bench:table:end -->`);
-if (out !== readme) {
+if (out !== original) {
   writeFileSync(readmePath, out);
   console.log("README benchmark block updated");
 } else console.log("README benchmark block unchanged");

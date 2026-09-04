@@ -29,6 +29,7 @@ export function summarise(rows) {
     out[arm] = {
       label: ARMS[arm].label,
       runs: runs.length,
+      records: rs.length,
       errors: rows.filter((r) => r.arm === arm && r.error).length,
       implemented: median(perRun.map((p) => p.implemented)),
       shipped: median(perRun.map((p) => p.shipped)),

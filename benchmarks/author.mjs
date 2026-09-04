@@ -45,6 +45,8 @@ async function job(agentName, t, arm, runIdx) {
   commit("current state");
   const prompt = ARMS[arm].prompt(t.task);
   const res = await agent.write({ prompt, cwd: repo, model: agent.defaultModel || "" });
+  const USAGE_LIMIT = /hit your (session|usage) limit|usage limit|rate limit|turn\.failed/i;
+  if (USAGE_LIMIT.test(res.text || "") || USAGE_LIMIT.test(res.stderr || "")) { rmSync(repo, { recursive: true, force: true }); throw new Error(`usage limit: ${(res.text || res.stderr).replace(/\s+/g, " ").slice(0, 160)}`); }
   git(repo, ["add", "-A"]);
   const diff = git(repo, ["diff", "--cached"]);
   const added = diff.split("\n").filter((l) => l.startsWith("+") && !l.startsWith("+++")).map((l) => l.slice(1)).join("\n");
@@ -61,7 +63,7 @@ async function job(agentName, t, arm, runIdx) {
 for (const agentName of agents) {
   if (!AUTHORS[agentName]) { console.error(`unknown agent ${agentName}`); process.exit(2); }
   const file = join(RAW, `${agentName}.jsonl`);
-  const done = new Set(existsSync(file) ? readFileSync(file, "utf8").trim().split("\n").filter(Boolean).map((l) => { const r = JSON.parse(l); return `${r.task}|${r.arm}|${r.run}`; }) : []);
+  const done = new Set(existsSync(file) ? readFileSync(file, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((r) => !r.error).map((r) => `${r.task}|${r.arm}|${r.run}`) : []);
   const jobs = [];
   for (const t of tasks) for (const arm of arms) for (let r = 1; r <= n; r++) if (!done.has(`${t.id}|${arm}|${r}`)) jobs.push({ t, arm, r });
   console.log(`[${agentName}] ${jobs.length} runs to make (${done.size} already done), concurrency=${concurrency}`);
