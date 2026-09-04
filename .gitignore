@@ -12,6 +12,11 @@ node_modules/
 !.cursor/rules/
 CLAUDE.md
 AGENTS.local.md
+.bob/*
+!.bob/rules/
+!.bob/skills/
+!.bob/commands/
+!.bob/settings.json
 
 # benchmark and build output
 benchmarks/results/raw/

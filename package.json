@@ -1,0 +1,53 @@
+{
+  "name": "tenured",
+  "version": "0.1.0",
+  "description": "Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.",
+  "license": "Apache-2.0",
+  "author": "Sandeep Bazar (https://github.com/sandeepbazar)",
+  "homepage": "https://lazy-senior-dev.github.io/tenured",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lazy-senior-dev/tenured.git"
+  },
+  "bugs": "https://github.com/lazy-senior-dev/tenured/issues",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "rules/",
+    "hooks/",
+    "skills/",
+    "action/",
+    "action.yml",
+    ".claude-plugin/",
+    "AGENTS.md",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "bin/",
+    "benchmarks/lib/"
+  ],
+  "scripts": {
+    "build": "node scripts/build-adapters.mjs",
+    "check": "node scripts/check-adapters.mjs && node scripts/check-attribution.mjs && node scripts/check-manifests.mjs",
+    "test": "node --test \"tests/**/*.test.mjs\"",
+    "bench": "node benchmarks/run.mjs",
+    "bench:report": "node benchmarks/report.mjs && node scripts/render-chart.mjs && node scripts/sync-site.mjs && node scripts/update-readme.mjs",
+    "chart": "node scripts/render-chart.mjs",
+    "gif": "vhs docs/demo.tape"
+  },
+  "keywords": [
+    "code-review",
+    "history",
+    "postmortem",
+    "incidents",
+    "ai-agents",
+    "claude-code",
+    "github-action",
+    "persona"
+  ],
+  "bin": {
+    "tenured": "bin/tenured.mjs"
+  }
+}
