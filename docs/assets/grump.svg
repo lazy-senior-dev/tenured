@@ -1,0 +1,273 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-labelledby="t d">
+  <title id="t">The Grump</title>
+  <desc id="d">Line sketch of a grey-stubbled reviewer with reading glasses pushed up into his hair, frowning over a mug that says NOT LGTM.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shoulders and collar -->
+    <path d="M 22 318 C 40 262, 92 250, 118 226"/>
+    <path d="M 202 226 C 212 234, 220 240, 226 246"/>
+    <path d="M 293 302 C 296 308, 297 313, 298 318"/>
+    <path d="M 118 226 L 138 262 L 160 236 L 182 262 L 202 226"/>
+    <!-- head -->
+    <path d="M 104 96 C 106 46, 214 46, 216 96 L 218 168 C 220 214, 100 214, 102 168 Z"/>
+    <!-- ears -->
+    <path d="M 103 128 C 88 124, 86 152, 102 158"/>
+    <path d="M 217 128 C 232 124, 234 152, 218 158"/>
+    <!-- thinning hair -->
+    <path d="M 118 72 C 124 60, 132 56, 140 58" stroke-width="2.5"/>
+    <path d="M 128 62 C 134 52, 142 50, 150 52" stroke-width="2.5"/>
+    <path d="M 196 68 C 192 56, 186 54, 178 56" stroke-width="2.5"/>
+    <path d="M 206 84 C 212 76, 214 70, 212 64" stroke-width="2.5"/>
+    <!-- reading glasses pushed up on the forehead -->
+    <circle cx="137" cy="78" r="17" stroke-width="2.5"/>
+    <circle cx="183" cy="78" r="17" stroke-width="2.5"/>
+    <path d="M 154 78 C 158 73, 162 73, 166 78" stroke-width="2.5"/>
+    <path d="M 120 78 C 112 80, 106 88, 104 100" stroke-width="2.5"/>
+    <path d="M 200 78 C 208 80, 214 88, 216 100" stroke-width="2.5"/>
+    <!-- brows: heavy, pinched inward -->
+    <path d="M 116 110 L 150 121" stroke-width="5.5"/>
+    <path d="M 204 110 L 170 121" stroke-width="5.5"/>
+    <path d="M 156 112 L 158 120 M 164 112 L 162 120" stroke-width="2"/>
+    <!-- half-lidded eyes (open / closed for the blink) -->
+    <g class="eye-open">
+      <path d="M 124 134 C 130 126, 144 126, 150 134"/>
+      <path d="M 126 135 C 132 140, 142 140, 148 135" stroke-width="2"/>
+      <circle cx="137" cy="134" r="2.5" fill="currentColor" stroke="none"/>
+      <path d="M 170 134 C 176 126, 190 126, 196 134"/>
+      <path d="M 172 135 C 178 140, 188 140, 194 135" stroke-width="2"/>
+      <circle cx="183" cy="134" r="2.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g class="eye-closed">
+      <path d="M 125 135 L 149 135"/>
+      <path d="M 171 135 L 195 135"/>
+    </g>
+    <!-- nose -->
+    <path d="M 161 132 L 153 163 C 156 168, 166 168, 169 163"/>
+    <!-- mouth: down at both corners -->
+    <path d="M 136 188 C 148 178, 172 178, 184 188" stroke-width="3.5"/>
+    <path d="M 136 188 L 133 193 M 184 188 L 187 193" stroke-width="2.5"/>
+    <!-- frown lines -->
+    <path d="M 128 172 C 126 178, 128 184, 132 190" stroke-width="2"/>
+    <path d="M 192 172 C 194 178, 192 184, 188 190" stroke-width="2"/>
+  </g>
+  <!-- stubble -->
+  <g fill="currentColor" stroke="none">
+    <circle cx="138.9" cy="201.8" r="1.2"/>
+    <circle cx="200.4" cy="181.5" r="1.2"/>
+    <circle cx="162.0" cy="200.9" r="1.2"/>
+    <circle cx="156.9" cy="203.7" r="1.2"/>
+    <circle cx="128.5" cy="184.9" r="1.2"/>
+    <circle cx="119.7" cy="182.1" r="1.2"/>
+    <circle cx="169.9" cy="194.4" r="1.2"/>
+    <circle cx="146.9" cy="204.6" r="1.2"/>
+    <circle cx="128.4" cy="184.5" r="1.2"/>
+    <circle cx="170.3" cy="198.3" r="1.2"/>
+    <circle cx="157.6" cy="204.4" r="1.2"/>
+    <circle cx="168.5" cy="196.4" r="1.2"/>
+    <circle cx="203.3" cy="176.7" r="1.2"/>
+    <circle cx="114.9" cy="173.4" r="1.2"/>
+    <circle cx="211.4" cy="170.2" r="1.2"/>
+    <circle cx="205.0" cy="182.5" r="1.2"/>
+    <circle cx="184.4" cy="188.5" r="1.2"/>
+    <circle cx="210.3" cy="172.1" r="1.2"/>
+    <circle cx="122.7" cy="178.6" r="1.2"/>
+    <circle cx="152.3" cy="203.4" r="1.2"/>
+    <circle cx="172.9" cy="205.6" r="1.2"/>
+    <circle cx="180.1" cy="195.3" r="1.2"/>
+    <circle cx="199.5" cy="182.0" r="1.2"/>
+    <circle cx="151.6" cy="195.0" r="1.2"/>
+    <circle cx="160.9" cy="204.6" r="1.2"/>
+    <circle cx="109.4" cy="175.2" r="1.2"/>
+    <circle cx="196.6" cy="189.6" r="1.2"/>
+    <circle cx="143.3" cy="196.2" r="1.2"/>
+    <circle cx="146.2" cy="198.5" r="1.2"/>
+    <circle cx="115.9" cy="178.0" r="1.2"/>
+    <circle cx="123.5" cy="182.8" r="1.2"/>
+    <circle cx="167.3" cy="201.8" r="1.2"/>
+    <circle cx="200.5" cy="177.9" r="1.2"/>
+    <circle cx="160.3" cy="203.4" r="1.2"/>
+    <circle cx="163.7" cy="204.0" r="1.2"/>
+    <circle cx="206.0" cy="179.4" r="1.2"/>
+    <circle cx="121.8" cy="175.4" r="1.2"/>
+    <circle cx="181.4" cy="198.0" r="1.2"/>
+    <circle cx="196.6" cy="185.9" r="1.2"/>
+    <circle cx="202.4" cy="178.3" r="1.2"/>
+    <circle cx="161.0" cy="204.5" r="1.2"/>
+    <circle cx="115.2" cy="171.0" r="1.2"/>
+    <circle cx="201.8" cy="182.2" r="1.2"/>
+    <circle cx="188.8" cy="192.5" r="1.2"/>
+    <circle cx="200.5" cy="181.0" r="1.2"/>
+    <circle cx="137.1" cy="189.3" r="1.2"/>
+    <circle cx="188.8" cy="195.1" r="1.2"/>
+    <circle cx="177.2" cy="196.9" r="1.2"/>
+    <circle cx="131.3" cy="193.8" r="1.2"/>
+    <circle cx="159.7" cy="198.7" r="1.2"/>
+    <circle cx="155.4" cy="203.2" r="1.2"/>
+    <circle cx="159.0" cy="200.3" r="1.2"/>
+    <circle cx="117.2" cy="175.7" r="1.2"/>
+    <circle cx="195.4" cy="184.9" r="1.2"/>
+    <circle cx="166.7" cy="204.2" r="1.2"/>
+    <circle cx="190.6" cy="190.7" r="1.2"/>
+    <circle cx="115.7" cy="174.9" r="1.2"/>
+    <circle cx="147.3" cy="203.0" r="1.2"/>
+    <circle cx="161.3" cy="194.1" r="1.2"/>
+    <circle cx="148.1" cy="203.8" r="1.2"/>
+    <circle cx="197.9" cy="177.6" r="1.2"/>
+    <circle cx="185.3" cy="196.4" r="1.2"/>
+    <circle cx="135.6" cy="197.1" r="1.2"/>
+    <circle cx="151.3" cy="199.4" r="1.2"/>
+    <circle cx="153.6" cy="196.4" r="1.2"/>
+    <circle cx="191.6" cy="195.3" r="1.2"/>
+    <circle cx="191.8" cy="188.1" r="1.2"/>
+    <circle cx="172.8" cy="205.8" r="1.2"/>
+    <circle cx="198.6" cy="174.8" r="1.2"/>
+    <circle cx="204.6" cy="179.4" r="1.2"/>
+    <circle cx="122.8" cy="185.2" r="1.2"/>
+    <circle cx="188.2" cy="191.1" r="1.2"/>
+    <circle cx="124.6" cy="183.9" r="1.2"/>
+    <circle cx="139.2" cy="201.3" r="1.2"/>
+    <circle cx="197.3" cy="189.6" r="1.2"/>
+    <circle cx="168.8" cy="196.2" r="1.2"/>
+    <circle cx="200.2" cy="180.4" r="1.2"/>
+    <circle cx="144.8" cy="202.4" r="1.2"/>
+    <circle cx="206.1" cy="171.6" r="1.2"/>
+    <circle cx="119.4" cy="179.1" r="1.2"/>
+    <circle cx="142.5" cy="194.5" r="1.2"/>
+    <circle cx="198.1" cy="189.4" r="1.2"/>
+    <circle cx="166.9" cy="194.3" r="1.2"/>
+    <circle cx="194.5" cy="181.6" r="1.2"/>
+    <circle cx="121.8" cy="186.6" r="1.2"/>
+    <circle cx="187.6" cy="186.9" r="1.2"/>
+    <circle cx="114.8" cy="171.8" r="1.2"/>
+    <circle cx="198.9" cy="183.4" r="1.2"/>
+    <circle cx="142.6" cy="196.7" r="1.2"/>
+    <circle cx="125.9" cy="192.2" r="1.2"/>
+    <circle cx="162.8" cy="196.1" r="1.2"/>
+    <circle cx="157.0" cy="198.0" r="1.2"/>
+    <circle cx="182.0" cy="189.4" r="1.2"/>
+    <circle cx="120.0" cy="174.9" r="1.2"/>
+    <circle cx="160.8" cy="208.0" r="1.2"/>
+    <circle cx="161.2" cy="199.1" r="1.2"/>
+    <circle cx="160.8" cy="200.7" r="1.2"/>
+    <circle cx="132.9" cy="195.8" r="1.2"/>
+    <circle cx="193.4" cy="192.3" r="1.2"/>
+    <circle cx="143.5" cy="199.4" r="1.2"/>
+    <circle cx="203.9" cy="179.8" r="1.2"/>
+    <circle cx="157.1" cy="201.5" r="1.2"/>
+    <circle cx="136.3" cy="186.6" r="1.2"/>
+    <circle cx="172.8" cy="204.1" r="1.2"/>
+    <circle cx="165.1" cy="198.3" r="1.2"/>
+    <circle cx="176.5" cy="203.1" r="1.2"/>
+    <circle cx="119.0" cy="185.1" r="1.2"/>
+    <circle cx="116.3" cy="172.0" r="1.2"/>
+    <circle cx="180.7" cy="202.4" r="1.2"/>
+    <circle cx="160.1" cy="202.3" r="1.2"/>
+    <circle cx="116.5" cy="173.4" r="1.2"/>
+    <circle cx="201.1" cy="174.4" r="1.2"/>
+    <circle cx="167.8" cy="205.5" r="1.2"/>
+    <circle cx="177.8" cy="199.8" r="1.2"/>
+    <circle cx="173.5" cy="197.0" r="1.2"/>
+    <circle cx="159.7" cy="200.4" r="1.2"/>
+    <circle cx="182.2" cy="197.5" r="1.2"/>
+    <circle cx="147.5" cy="194.2" r="1.2"/>
+    <circle cx="114.4" cy="175.0" r="1.2"/>
+    <circle cx="174.1" cy="194.5" r="1.2"/>
+    <circle cx="168.2" cy="195.5" r="1.2"/>
+    <circle cx="141.9" cy="197.0" r="1.2"/>
+    <circle cx="209.9" cy="175.0" r="1.2"/>
+    <circle cx="118.4" cy="179.3" r="1.2"/>
+    <circle cx="158.7" cy="195.8" r="1.2"/>
+    <circle cx="150.8" cy="199.9" r="1.2"/>
+    <circle cx="182.3" cy="190.7" r="1.2"/>
+    <circle cx="198.9" cy="188.0" r="1.2"/>
+    <circle cx="130.3" cy="193.0" r="1.2"/>
+    <circle cx="147.6" cy="199.5" r="1.2"/>
+    <circle cx="177.2" cy="204.1" r="1.2"/>
+    <circle cx="208.0" cy="173.4" r="1.2"/>
+    <circle cx="111.6" cy="173.6" r="1.2"/>
+    <circle cx="164.2" cy="206.8" r="1.2"/>
+    <circle cx="181.1" cy="198.3" r="1.2"/>
+    <circle cx="151.1" cy="197.1" r="1.2"/>
+    <circle cx="199.4" cy="178.8" r="1.2"/>
+    <circle cx="117.6" cy="183.1" r="1.2"/>
+    <circle cx="105.8" cy="170.3" r="1.2"/>
+    <circle cx="184.0" cy="196.6" r="1.2"/>
+    <circle cx="175.0" cy="205.0" r="1.2"/>
+    <circle cx="190.0" cy="185.1" r="1.2"/>
+    <circle cx="192.0" cy="183.1" r="1.2"/>
+    <circle cx="149.5" cy="202.6" r="1.2"/>
+    <circle cx="205.6" cy="172.3" r="1.2"/>
+    <circle cx="112.4" cy="175.3" r="1.2"/>
+    <circle cx="202.9" cy="184.3" r="1.2"/>
+    <circle cx="154.7" cy="194.5" r="1.2"/>
+    <circle cx="192.9" cy="180.4" r="1.2"/>
+    <circle cx="172.6" cy="202.8" r="1.2"/>
+    <circle cx="193.7" cy="192.8" r="1.2"/>
+    <circle cx="152.5" cy="196.7" r="1.2"/>
+    <circle cx="186.4" cy="184.6" r="1.2"/>
+    <circle cx="136.1" cy="195.3" r="1.2"/>
+    <circle cx="131.3" cy="184.3" r="1.2"/>
+    <circle cx="132.0" cy="186.1" r="1.2"/>
+    <circle cx="207.6" cy="178.4" r="1.2"/>
+    <circle cx="213.2" cy="171.3" r="1.2"/>
+    <circle cx="165.3" cy="201.5" r="1.2"/>
+    <circle cx="115.5" cy="181.2" r="1.2"/>
+    <circle cx="185.8" cy="191.7" r="1.2"/>
+    <circle cx="151.9" cy="198.1" r="1.2"/>
+    <circle cx="191.0" cy="184.5" r="1.2"/>
+    <circle cx="211.7" cy="170.6" r="1.2"/>
+    <circle cx="166.3" cy="203.7" r="1.2"/>
+    <circle cx="206.1" cy="171.7" r="1.2"/>
+    <circle cx="120.3" cy="185.7" r="1.2"/>
+    <circle cx="177.0" cy="199.0" r="1.2"/>
+    <circle cx="159.2" cy="198.3" r="1.2"/>
+    <circle cx="212.2" cy="173.7" r="1.2"/>
+    <circle cx="150.8" cy="202.1" r="1.2"/>
+    <circle cx="121.1" cy="183.4" r="1.2"/>
+    <circle cx="141.8" cy="202.0" r="1.2"/>
+    <circle cx="156.9" cy="194.4" r="1.2"/>
+    <circle cx="147.8" cy="200.9" r="1.2"/>
+    <circle cx="183.2" cy="200.2" r="1.2"/>
+    <circle cx="200.8" cy="175.9" r="1.2"/>
+    <circle cx="180.6" cy="196.9" r="1.2"/>
+    <circle cx="113.1" cy="173.2" r="1.2"/>
+    <circle cx="207.7" cy="176.3" r="1.2"/>
+    <circle cx="184.3" cy="187.9" r="1.2"/>
+    <circle cx="189.9" cy="186.8" r="1.2"/>
+    <circle cx="181.3" cy="196.8" r="1.2"/>
+    <circle cx="204.8" cy="178.2" r="1.2"/>
+    <circle cx="135.6" cy="196.0" r="1.2"/>
+    <circle cx="132.0" cy="198.0" r="1.2"/>
+    <circle cx="170.4" cy="195.4" r="1.2"/>
+    <circle cx="205.6" cy="173.6" r="1.2"/>
+    <circle cx="118.4" cy="183.4" r="1.2"/>
+    <circle cx="144.3" cy="194.3" r="1.2"/>
+    <circle cx="152.9" cy="200.4" r="1.2"/>
+    <circle cx="134.7" cy="188.7" r="1.2"/>
+    <circle cx="159.9" cy="204.4" r="1.2"/>
+    <circle cx="147.8" cy="198.7" r="1.2"/>
+    <circle cx="140.3" cy="197.2" r="1.2"/>
+    <circle cx="164.1" cy="201.2" r="1.2"/>
+    <circle cx="125.1" cy="190.1" r="1.2"/>
+    <circle cx="191.7" cy="194.2" r="1.2"/>
+    <circle cx="157.0" cy="199.3" r="1.2"/>
+    <circle cx="124.5" cy="179.9" r="1.2"/>
+    <circle cx="124.7" cy="181.1" r="1.2"/>
+    <circle cx="162.7" cy="203.7" r="1.2"/>
+    <circle cx="145.9" cy="198.9" r="1.2"/>
+    <circle cx="110.1" cy="173.9" r="1.2"/>
+    <circle cx="155.8" cy="198.9" r="1.2"/>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- the mug -->
+    <path d="M 226 246 L 226 296 C 226 304, 234 306, 242 306 L 274 306 C 282 306, 290 304, 290 296 L 290 246 Z"/>
+    <path d="M 290 258 C 308 256, 308 288, 290 288" stroke-width="3"/>
+    <path d="M 226 246 C 240 252, 276 252, 290 246" stroke-width="2"/>
+    <!-- steam -->
+    <g class="steam">
+      <path d="M 246 236 C 240 228, 252 222, 246 212" stroke-width="2"/>
+      <path d="M 262 236 C 256 228, 268 222, 262 212" stroke-width="2"/>
+      <path d="M 278 236 C 272 228, 284 222, 278 212" stroke-width="2"/>
+    </g>
+  </g>
+  <text x="258" y="286" font-family="Menlo, Consolas, monospace" font-size="8.5" font-weight="700" text-anchor="middle" fill="currentColor">NOT LGTM</text>
+</svg>

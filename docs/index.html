@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tenured: the engineer who remembers the postmortem</title>
+<meta name="description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Ruleset draft published.">
+<meta name="author" content="Sandeep Bazar">
+<link rel="icon" href="assets/tenured.svg" type="image/svg+xml">
+<link rel="canonical" href="https://lazy-senior-dev.github.io/tenured/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="tenured: the engineer who remembers the postmortem">
+<meta property="og:description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Ruleset draft published.">
+<meta property="og:url" content="https://lazy-senior-dev.github.io/tenured/">
+<meta property="og:image" content="https://lazy-senior-dev.github.io/assets/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="tenured: the engineer who remembers the postmortem">
+<meta name="twitter:description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Ruleset draft published.">
+<meta name="twitter:image" content="https://lazy-senior-dev.github.io/assets/social-card.png">
+<meta name="theme-color" content="#0a0f1e">
+<!-- Custom domain: create a CNAME file containing only the bare domain in this Pages folder, then set it under Settings > Pages. -->
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="https://github.com/sandeepbazar" title="Sandeep Bazar on GitHub">‹ <span>Sandeep Bazar</span></a>
+    <a class="brand" href="https://lazy-senior-dev.github.io/"><span class="mark">lsd</span> lazy-senior-dev</a>
+    <nav class="nav">
+      <a href="https://lazy-senior-dev.github.io/" data-nav="home">Home</a>
+      <a href="https://lazy-senior-dev.github.io/grumpy-reviewer/" data-nav="grump">The Grump</a>
+      <a href="https://lazy-senior-dev.github.io/paranoid-sre/" data-nav="sre">Paranoid SRE</a>
+      <a href="https://lazy-senior-dev.github.io/tenured/" data-nav="tenured" aria-current="page">Tenured</a>
+    </nav>
+    <div class="right">
+      <button class="iconbtn" id="theme" type="button" aria-label="Toggle light and dark theme">☀</button>
+      <button class="iconbtn menubtn" id="menu" type="button" aria-label="Menu">☰</button>
+      <a class="ghbtn" href="https://github.com/lazy-senior-dev/tenured">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero wrap">
+  <div class="pill"><i style="background:var(--warn);animation:none"></i> in progress · ruleset draft published · Apache-2.0</div>
+  <div style="margin:1.6rem 0 .4rem"><span class="sketch"><svg viewBox="0 0 320 320" aria-hidden="true">
+  <title id="t">Tenured</title>
+  <desc id="d">Line sketch of a veteran engineer: bald on top with hair at the sides, thick round glasses, a calm half-smile, a cardigan, and a notebook marked 2017 in the pocket.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shoulders and cardigan -->
+    <path d="M 22 318 C 40 262, 92 250, 118 226"/>
+    <path d="M 298 318 C 280 262, 228 250, 202 226"/>
+    <path d="M 118 226 L 150 268 L 160 260 L 170 268 L 202 226"/>
+    <path d="M 160 260 L 160 318" stroke-width="2"/>
+    <circle cx="160" cy="280" r="2.5" fill="currentColor" stroke="none"/>
+    <circle cx="160" cy="300" r="2.5" fill="currentColor" stroke="none"/>
+    <!-- pocket with a notebook -->
+    <path d="M 70 292 L 70 318 M 70 292 L 108 292" stroke-width="2"/>
+    <rect x="78" y="274" width="24" height="30" rx="2" stroke-width="2"/>
+    <path d="M 82 282 L 98 282 M 82 288 L 98 288" stroke-width="1.5"/>
+    <!-- head -->
+    <path d="M 104 100 C 106 48, 214 48, 216 100 L 218 168 C 220 212, 100 212, 102 168 Z"/>
+    <!-- bald top, hair at the sides -->
+    <path d="M 104 100 C 100 118, 98 132, 100 146" stroke-width="5"/>
+    <path d="M 216 100 C 220 118, 222 132, 220 146" stroke-width="5"/>
+    <path d="M 96 108 C 90 118, 88 130, 92 142" stroke-width="2"/>
+    <path d="M 224 108 C 230 118, 232 130, 228 142" stroke-width="2"/>
+    <!-- ears -->
+    <path d="M 103 130 C 88 126, 86 154, 102 160"/>
+    <path d="M 217 130 C 232 126, 234 154, 218 160"/>
+    <!-- bushy brows -->
+    <path d="M 118 108 C 128 100, 142 102, 152 108" stroke-width="6"/>
+    <path d="M 202 108 C 192 100, 178 102, 168 108" stroke-width="6"/>
+    <!-- round glasses worn on the nose -->
+    <circle cx="137" cy="130" r="18" stroke-width="3.5"/>
+    <circle cx="183" cy="130" r="18" stroke-width="3.5"/>
+    <path d="M 155 128 C 158 124, 162 124, 165 128" stroke-width="3"/>
+    <path d="M 119 128 L 106 124" stroke-width="2.5"/>
+    <path d="M 201 128 L 214 124" stroke-width="2.5"/>
+    <!-- calm half-lidded eyes (open / closed for the blink) -->
+    <g class="eye-open">
+      <path d="M 128 130 C 133 125, 141 125, 146 130" stroke-width="2.5"/>
+      <path d="M 174 130 C 179 125, 187 125, 192 130" stroke-width="2.5"/>
+      <circle cx="137" cy="131" r="2.5" fill="currentColor" stroke="none"/>
+      <circle cx="183" cy="131" r="2.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g class="eye-closed">
+      <path d="M 128 131 L 146 131" stroke-width="2.5"/>
+      <path d="M 174 131 L 192 131" stroke-width="2.5"/>
+    </g>
+    <!-- a glint across the lenses -->
+    <g class="glint" stroke-width="2">
+      <path d="M 126 120 L 146 140"/>
+      <path d="M 172 120 L 192 140"/>
+    </g>
+    <!-- nose -->
+    <path d="M 161 136 L 154 164 C 157 168, 165 168, 168 164"/>
+    <!-- moustache and the knowing half-smile -->
+    <path d="M 140 176 C 150 170, 170 170, 180 176" stroke-width="4"/>
+    <path d="M 142 190 C 152 196, 172 196, 184 186" stroke-width="3"/>
+    <!-- laugh lines -->
+    <path d="M 126 170 C 124 178, 126 186, 132 192" stroke-width="1.5"/>
+    <path d="M 194 170 C 196 178, 194 186, 188 192" stroke-width="1.5"/>
+  </g>
+  <text x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="currentColor">2017</text>
+</svg></span></div>
+  <h1 class="display">Tenured<br><span class="g">remembers 2017.</span></h1>
+  <p class="lede">Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce. Every objection comes with a commit hash the author can open. <strong>We tried that in 2017.</strong></p>
+  <div class="ctas">
+    <a class="btn primary" href="https://github.com/lazy-senior-dev/tenured/blob/main/rules/tenured.md">Read the ruleset draft →</a>
+    <a class="btn" href="https://github.com/lazy-senior-dev/tenured">Repository</a>
+    <a class="btn" href="https://lazy-senior-dev.github.io/grumpy-reviewer/">Meet the Grump first</a>
+  </div>
+  <div class="pipe reveal">
+    <div class="node"><small>Agent</small><b>proposes a change</b><em>any file, any language</em></div>
+    <div class="node"><small>History</small><b>git log · changelog · postmortems</b><em>gathered before the review</em></div>
+    <div class="node hot"><small>Verdict</small><b>TENURED: DO_NOT_REPEAT</b><em>file:line — evidence — fix</em></div>
+    <div class="node"><small>Gate</small><b>same hook</b><em>with a citation</em></div>
+    <div class="node ok"><small>Branch</small><b>nothing repeated</b><em>NEW → New to me.</em></div>
+  </div>
+  <p class="pipe-note">No evidence, no objection. NEW is a good verdict.</p>
+</section>
+
+<section class="wrap reveal">
+  <div class="eyebrow">What he asks</div>
+  <h2>Ten questions about what the repository already knows</h2>
+  <ol class="check">
+    <li><strong>Resurrection.</strong> Does this re-add code, config, or behaviour a previous commit deliberately removed?</li>
+    <li><strong>Reverted before.</strong> Has a change to these files been reverted in the last two years? Why?</li>
+    <li><strong>Postmortem match.</strong> Does any incident note describe a failure this change could reproduce?</li>
+    <li><strong>Warnings in place.</strong> A comment, README line, or ADR near the changed lines that says not to?</li>
+    <li><strong>Deprecated paths.</strong> Does this call something the repository marked for removal?</li>
+    <li><strong>Copied config.</strong> Copied from elsewhere without the parts that made it work there?</li>
+    <li><strong>Half-migration.</strong> Does this extend the old side of a migration in progress?</li>
+    <li><strong>Ownership.</strong> Has the owner of these files rejected a change like this before?</li>
+    <li><strong>Naming collision.</strong> A name, flag, or event that once meant something else?</li>
+    <li><strong>Lessons recorded.</strong> If it is new, does it leave a note the next person will find?</li>
+  </ol>
+  <p class="sub" style="margin-top:1.4rem">Verdict block: <code>TENURED: NEW | SEEN_BEFORE | DO_NOT_REPEAT</code>. <code>DO_NOT_REPEAT</code> is reserved for changes that reproduce a recorded incident or resurrect a deliberate removal.</p>
+</section>
+
+<section class="wrap reveal">
+  <div class="eyebrow">Status</div>
+  <h2>What exists, what is next</h2>
+  <div class="grid c4">
+    <div class="stat"><b>1</b><span>ruleset draft, v0</span></div>
+    <div class="stat"><b>10</b><span>questions, evidence required</span></div>
+    <div class="stat"><b>3</b><span>verdicts: NEW · SEEN_BEFORE · DO_NOT_REPEAT</span></div>
+    <div class="stat"><b>0</b><span>adapters shipped yet</span></div>
+  </div>
+  <div class="grid c3" style="margin-top:1rem">
+    <div class="card"><h3>1. History gathering</h3><p>A step that collects <code>git log</code> for the touched files, the changelog, and <code>docs/postmortems*</code> before each review, then the adapters from the generator.</p></div>
+    <div class="card"><h3>2. The gate and the memory</h3><p>The same <code>PreToolUse</code> hook, plus <code>/tenured-remember</code> to append dated lessons to the repository's own notes.</p></div>
+    <div class="card"><h3>3. The benchmark</h3><p>Small repositories with real histories, each containing a change that repeats a recorded mistake. Measured on repeated outages avoided, raw replies committed.</p></div>
+  </div>
+  <p class="sub" style="margin-top:1.2rem">Have a bug that happened twice in the same codebase? <a href="https://github.com/lazy-senior-dev/tenured/issues">Open an issue</a> with both commits; it becomes a benchmark case.</p>
+</section>
+
+<section class="wrap reveal">
+  <div class="eyebrow">Same desk</div>
+  <h2>The rest of the cast</h2>
+  <div class="grid c3">
+    <a class="card" href="https://lazy-senior-dev.github.io/grumpy-reviewer/" style="display:block"><span class="sketch" style="animation:none;filter:none"><svg viewBox="0 0 320 320" aria-hidden="true" style="width:120px">
+  <title id="t">The Grump</title>
+  <desc id="d">Line sketch of a grey-stubbled reviewer with reading glasses pushed up into his hair, frowning over a mug that says NOT LGTM.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shoulders and collar -->
+    <path d="M 22 318 C 40 262, 92 250, 118 226"/>
+    <path d="M 202 226 C 212 234, 220 240, 226 246"/>
+    <path d="M 293 302 C 296 308, 297 313, 298 318"/>
+    <path d="M 118 226 L 138 262 L 160 236 L 182 262 L 202 226"/>
+    <!-- head -->
+    <path d="M 104 96 C 106 46, 214 46, 216 96 L 218 168 C 220 214, 100 214, 102 168 Z"/>
+    <!-- ears -->
+    <path d="M 103 128 C 88 124, 86 152, 102 158"/>
+    <path d="M 217 128 C 232 124, 234 152, 218 158"/>
+    <!-- thinning hair -->
+    <path d="M 118 72 C 124 60, 132 56, 140 58" stroke-width="2.5"/>
+    <path d="M 128 62 C 134 52, 142 50, 150 52" stroke-width="2.5"/>
+    <path d="M 196 68 C 192 56, 186 54, 178 56" stroke-width="2.5"/>
+    <path d="M 206 84 C 212 76, 214 70, 212 64" stroke-width="2.5"/>
+    <!-- reading glasses pushed up on the forehead -->
+    <circle cx="137" cy="78" r="17" stroke-width="2.5"/>
+    <circle cx="183" cy="78" r="17" stroke-width="2.5"/>
+    <path d="M 154 78 C 158 73, 162 73, 166 78" stroke-width="2.5"/>
+    <path d="M 120 78 C 112 80, 106 88, 104 100" stroke-width="2.5"/>
+    <path d="M 200 78 C 208 80, 214 88, 216 100" stroke-width="2.5"/>
+    <!-- brows: heavy, pinched inward -->
+    <path d="M 116 110 L 150 121" stroke-width="5.5"/>
+    <path d="M 204 110 L 170 121" stroke-width="5.5"/>
+    <path d="M 156 112 L 158 120 M 164 112 L 162 120" stroke-width="2"/>
+    <!-- half-lidded eyes (open / closed for the blink) -->
+    <g class="eye-open">
+      <path d="M 124 134 C 130 126, 144 126, 150 134"/>
+      <path d="M 126 135 C 132 140, 142 140, 148 135" stroke-width="2"/>
+      <circle cx="137" cy="134" r="2.5" fill="currentColor" stroke="none"/>
+      <path d="M 170 134 C 176 126, 190 126, 196 134"/>
+      <path d="M 172 135 C 178 140, 188 140, 194 135" stroke-width="2"/>
+      <circle cx="183" cy="134" r="2.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g class="eye-closed">
+      <path d="M 125 135 L 149 135"/>
+      <path d="M 171 135 L 195 135"/>
+    </g>
+    <!-- nose -->
+    <path d="M 161 132 L 153 163 C 156 168, 166 168, 169 163"/>
+    <!-- mouth: down at both corners -->
+    <path d="M 136 188 C 148 178, 172 178, 184 188" stroke-width="3.5"/>
+    <path d="M 136 188 L 133 193 M 184 188 L 187 193" stroke-width="2.5"/>
+    <!-- frown lines -->
+    <path d="M 128 172 C 126 178, 128 184, 132 190" stroke-width="2"/>
+    <path d="M 192 172 C 194 178, 192 184, 188 190" stroke-width="2"/>
+  </g>
+  <!-- stubble -->
+  <g fill="currentColor" stroke="none">
+    <circle cx="138.9" cy="201.8" r="1.2"/>
+    <circle cx="200.4" cy="181.5" r="1.2"/>
+    <circle cx="162.0" cy="200.9" r="1.2"/>
+    <circle cx="156.9" cy="203.7" r="1.2"/>
+    <circle cx="128.5" cy="184.9" r="1.2"/>
+    <circle cx="119.7" cy="182.1" r="1.2"/>
+    <circle cx="169.9" cy="194.4" r="1.2"/>
+    <circle cx="146.9" cy="204.6" r="1.2"/>
+    <circle cx="128.4" cy="184.5" r="1.2"/>
+    <circle cx="170.3" cy="198.3" r="1.2"/>
+    <circle cx="157.6" cy="204.4" r="1.2"/>
+    <circle cx="168.5" cy="196.4" r="1.2"/>
+    <circle cx="203.3" cy="176.7" r="1.2"/>
+    <circle cx="114.9" cy="173.4" r="1.2"/>
+    <circle cx="211.4" cy="170.2" r="1.2"/>
+    <circle cx="205.0" cy="182.5" r="1.2"/>
+    <circle cx="184.4" cy="188.5" r="1.2"/>
+    <circle cx="210.3" cy="172.1" r="1.2"/>
+    <circle cx="122.7" cy="178.6" r="1.2"/>
+    <circle cx="152.3" cy="203.4" r="1.2"/>
+    <circle cx="172.9" cy="205.6" r="1.2"/>
+    <circle cx="180.1" cy="195.3" r="1.2"/>
+    <circle cx="199.5" cy="182.0" r="1.2"/>
+    <circle cx="151.6" cy="195.0" r="1.2"/>
+    <circle cx="160.9" cy="204.6" r="1.2"/>
+    <circle cx="109.4" cy="175.2" r="1.2"/>
+    <circle cx="196.6" cy="189.6" r="1.2"/>
+    <circle cx="143.3" cy="196.2" r="1.2"/>
+    <circle cx="146.2" cy="198.5" r="1.2"/>
+    <circle cx="115.9" cy="178.0" r="1.2"/>
+    <circle cx="123.5" cy="182.8" r="1.2"/>
+    <circle cx="167.3" cy="201.8" r="1.2"/>
+    <circle cx="200.5" cy="177.9" r="1.2"/>
+    <circle cx="160.3" cy="203.4" r="1.2"/>
+    <circle cx="163.7" cy="204.0" r="1.2"/>
+    <circle cx="206.0" cy="179.4" r="1.2"/>
+    <circle cx="121.8" cy="175.4" r="1.2"/>
+    <circle cx="181.4" cy="198.0" r="1.2"/>
+    <circle cx="196.6" cy="185.9" r="1.2"/>
+    <circle cx="202.4" cy="178.3" r="1.2"/>
+    <circle cx="161.0" cy="204.5" r="1.2"/>
+    <circle cx="115.2" cy="171.0" r="1.2"/>
+    <circle cx="201.8" cy="182.2" r="1.2"/>
+    <circle cx="188.8" cy="192.5" r="1.2"/>
+    <circle cx="200.5" cy="181.0" r="1.2"/>
+    <circle cx="137.1" cy="189.3" r="1.2"/>
+    <circle cx="188.8" cy="195.1" r="1.2"/>
+    <circle cx="177.2" cy="196.9" r="1.2"/>
+    <circle cx="131.3" cy="193.8" r="1.2"/>
+    <circle cx="159.7" cy="198.7" r="1.2"/>
+    <circle cx="155.4" cy="203.2" r="1.2"/>
+    <circle cx="159.0" cy="200.3" r="1.2"/>
+    <circle cx="117.2" cy="175.7" r="1.2"/>
+    <circle cx="195.4" cy="184.9" r="1.2"/>
+    <circle cx="166.7" cy="204.2" r="1.2"/>
+    <circle cx="190.6" cy="190.7" r="1.2"/>
+    <circle cx="115.7" cy="174.9" r="1.2"/>
+    <circle cx="147.3" cy="203.0" r="1.2"/>
+    <circle cx="161.3" cy="194.1" r="1.2"/>
+    <circle cx="148.1" cy="203.8" r="1.2"/>
+    <circle cx="197.9" cy="177.6" r="1.2"/>
+    <circle cx="185.3" cy="196.4" r="1.2"/>
+    <circle cx="135.6" cy="197.1" r="1.2"/>
+    <circle cx="151.3" cy="199.4" r="1.2"/>
+    <circle cx="153.6" cy="196.4" r="1.2"/>
+    <circle cx="191.6" cy="195.3" r="1.2"/>
+    <circle cx="191.8" cy="188.1" r="1.2"/>
+    <circle cx="172.8" cy="205.8" r="1.2"/>
+    <circle cx="198.6" cy="174.8" r="1.2"/>
+    <circle cx="204.6" cy="179.4" r="1.2"/>
+    <circle cx="122.8" cy="185.2" r="1.2"/>
+    <circle cx="188.2" cy="191.1" r="1.2"/>
+    <circle cx="124.6" cy="183.9" r="1.2"/>
+    <circle cx="139.2" cy="201.3" r="1.2"/>
+    <circle cx="197.3" cy="189.6" r="1.2"/>
+    <circle cx="168.8" cy="196.2" r="1.2"/>
+    <circle cx="200.2" cy="180.4" r="1.2"/>
+    <circle cx="144.8" cy="202.4" r="1.2"/>
+    <circle cx="206.1" cy="171.6" r="1.2"/>
+    <circle cx="119.4" cy="179.1" r="1.2"/>
+    <circle cx="142.5" cy="194.5" r="1.2"/>
+    <circle cx="198.1" cy="189.4" r="1.2"/>
+    <circle cx="166.9" cy="194.3" r="1.2"/>
+    <circle cx="194.5" cy="181.6" r="1.2"/>
+    <circle cx="121.8" cy="186.6" r="1.2"/>
+    <circle cx="187.6" cy="186.9" r="1.2"/>
+    <circle cx="114.8" cy="171.8" r="1.2"/>
+    <circle cx="198.9" cy="183.4" r="1.2"/>
+    <circle cx="142.6" cy="196.7" r="1.2"/>
+    <circle cx="125.9" cy="192.2" r="1.2"/>
+    <circle cx="162.8" cy="196.1" r="1.2"/>
+    <circle cx="157.0" cy="198.0" r="1.2"/>
+    <circle cx="182.0" cy="189.4" r="1.2"/>
+    <circle cx="120.0" cy="174.9" r="1.2"/>
+    <circle cx="160.8" cy="208.0" r="1.2"/>
+    <circle cx="161.2" cy="199.1" r="1.2"/>
+    <circle cx="160.8" cy="200.7" r="1.2"/>
+    <circle cx="132.9" cy="195.8" r="1.2"/>
+    <circle cx="193.4" cy="192.3" r="1.2"/>
+    <circle cx="143.5" cy="199.4" r="1.2"/>
+    <circle cx="203.9" cy="179.8" r="1.2"/>
+    <circle cx="157.1" cy="201.5" r="1.2"/>
+    <circle cx="136.3" cy="186.6" r="1.2"/>
+    <circle cx="172.8" cy="204.1" r="1.2"/>
+    <circle cx="165.1" cy="198.3" r="1.2"/>
+    <circle cx="176.5" cy="203.1" r="1.2"/>
+    <circle cx="119.0" cy="185.1" r="1.2"/>
+    <circle cx="116.3" cy="172.0" r="1.2"/>
+    <circle cx="180.7" cy="202.4" r="1.2"/>
+    <circle cx="160.1" cy="202.3" r="1.2"/>
+    <circle cx="116.5" cy="173.4" r="1.2"/>
+    <circle cx="201.1" cy="174.4" r="1.2"/>
+    <circle cx="167.8" cy="205.5" r="1.2"/>
+    <circle cx="177.8" cy="199.8" r="1.2"/>
+    <circle cx="173.5" cy="197.0" r="1.2"/>
+    <circle cx="159.7" cy="200.4" r="1.2"/>
+    <circle cx="182.2" cy="197.5" r="1.2"/>
+    <circle cx="147.5" cy="194.2" r="1.2"/>
+    <circle cx="114.4" cy="175.0" r="1.2"/>
+    <circle cx="174.1" cy="194.5" r="1.2"/>
+    <circle cx="168.2" cy="195.5" r="1.2"/>
+    <circle cx="141.9" cy="197.0" r="1.2"/>
+    <circle cx="209.9" cy="175.0" r="1.2"/>
+    <circle cx="118.4" cy="179.3" r="1.2"/>
+    <circle cx="158.7" cy="195.8" r="1.2"/>
+    <circle cx="150.8" cy="199.9" r="1.2"/>
+    <circle cx="182.3" cy="190.7" r="1.2"/>
+    <circle cx="198.9" cy="188.0" r="1.2"/>
+    <circle cx="130.3" cy="193.0" r="1.2"/>
+    <circle cx="147.6" cy="199.5" r="1.2"/>
+    <circle cx="177.2" cy="204.1" r="1.2"/>
+    <circle cx="208.0" cy="173.4" r="1.2"/>
+    <circle cx="111.6" cy="173.6" r="1.2"/>
+    <circle cx="164.2" cy="206.8" r="1.2"/>
+    <circle cx="181.1" cy="198.3" r="1.2"/>
+    <circle cx="151.1" cy="197.1" r="1.2"/>
+    <circle cx="199.4" cy="178.8" r="1.2"/>
+    <circle cx="117.6" cy="183.1" r="1.2"/>
+    <circle cx="105.8" cy="170.3" r="1.2"/>
+    <circle cx="184.0" cy="196.6" r="1.2"/>
+    <circle cx="175.0" cy="205.0" r="1.2"/>
+    <circle cx="190.0" cy="185.1" r="1.2"/>
+    <circle cx="192.0" cy="183.1" r="1.2"/>
+    <circle cx="149.5" cy="202.6" r="1.2"/>
+    <circle cx="205.6" cy="172.3" r="1.2"/>
+    <circle cx="112.4" cy="175.3" r="1.2"/>
+    <circle cx="202.9" cy="184.3" r="1.2"/>
+    <circle cx="154.7" cy="194.5" r="1.2"/>
+    <circle cx="192.9" cy="180.4" r="1.2"/>
+    <circle cx="172.6" cy="202.8" r="1.2"/>
+    <circle cx="193.7" cy="192.8" r="1.2"/>
+    <circle cx="152.5" cy="196.7" r="1.2"/>
+    <circle cx="186.4" cy="184.6" r="1.2"/>
+    <circle cx="136.1" cy="195.3" r="1.2"/>
+    <circle cx="131.3" cy="184.3" r="1.2"/>
+    <circle cx="132.0" cy="186.1" r="1.2"/>
+    <circle cx="207.6" cy="178.4" r="1.2"/>
+    <circle cx="213.2" cy="171.3" r="1.2"/>
+    <circle cx="165.3" cy="201.5" r="1.2"/>
+    <circle cx="115.5" cy="181.2" r="1.2"/>
+    <circle cx="185.8" cy="191.7" r="1.2"/>
+    <circle cx="151.9" cy="198.1" r="1.2"/>
+    <circle cx="191.0" cy="184.5" r="1.2"/>
+    <circle cx="211.7" cy="170.6" r="1.2"/>
+    <circle cx="166.3" cy="203.7" r="1.2"/>
+    <circle cx="206.1" cy="171.7" r="1.2"/>
+    <circle cx="120.3" cy="185.7" r="1.2"/>
+    <circle cx="177.0" cy="199.0" r="1.2"/>
+    <circle cx="159.2" cy="198.3" r="1.2"/>
+    <circle cx="212.2" cy="173.7" r="1.2"/>
+    <circle cx="150.8" cy="202.1" r="1.2"/>
+    <circle cx="121.1" cy="183.4" r="1.2"/>
+    <circle cx="141.8" cy="202.0" r="1.2"/>
+    <circle cx="156.9" cy="194.4" r="1.2"/>
+    <circle cx="147.8" cy="200.9" r="1.2"/>
+    <circle cx="183.2" cy="200.2" r="1.2"/>
+    <circle cx="200.8" cy="175.9" r="1.2"/>
+    <circle cx="180.6" cy="196.9" r="1.2"/>
+    <circle cx="113.1" cy="173.2" r="1.2"/>
+    <circle cx="207.7" cy="176.3" r="1.2"/>
+    <circle cx="184.3" cy="187.9" r="1.2"/>
+    <circle cx="189.9" cy="186.8" r="1.2"/>
+    <circle cx="181.3" cy="196.8" r="1.2"/>
+    <circle cx="204.8" cy="178.2" r="1.2"/>
+    <circle cx="135.6" cy="196.0" r="1.2"/>
+    <circle cx="132.0" cy="198.0" r="1.2"/>
+    <circle cx="170.4" cy="195.4" r="1.2"/>
+    <circle cx="205.6" cy="173.6" r="1.2"/>
+    <circle cx="118.4" cy="183.4" r="1.2"/>
+    <circle cx="144.3" cy="194.3" r="1.2"/>
+    <circle cx="152.9" cy="200.4" r="1.2"/>
+    <circle cx="134.7" cy="188.7" r="1.2"/>
+    <circle cx="159.9" cy="204.4" r="1.2"/>
+    <circle cx="147.8" cy="198.7" r="1.2"/>
+    <circle cx="140.3" cy="197.2" r="1.2"/>
+    <circle cx="164.1" cy="201.2" r="1.2"/>
+    <circle cx="125.1" cy="190.1" r="1.2"/>
+    <circle cx="191.7" cy="194.2" r="1.2"/>
+    <circle cx="157.0" cy="199.3" r="1.2"/>
+    <circle cx="124.5" cy="179.9" r="1.2"/>
+    <circle cx="124.7" cy="181.1" r="1.2"/>
+    <circle cx="162.7" cy="203.7" r="1.2"/>
+    <circle cx="145.9" cy="198.9" r="1.2"/>
+    <circle cx="110.1" cy="173.9" r="1.2"/>
+    <circle cx="155.8" cy="198.9" r="1.2"/>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- the mug -->
+    <path d="M 226 246 L 226 296 C 226 304, 234 306, 242 306 L 274 306 C 282 306, 290 304, 290 296 L 290 246 Z"/>
+    <path d="M 290 258 C 308 256, 308 288, 290 288" stroke-width="3"/>
+    <path d="M 226 246 C 240 252, 276 252, 290 246" stroke-width="2"/>
+    <!-- steam -->
+    <g class="steam">
+      <path d="M 246 236 C 240 228, 252 222, 246 212" stroke-width="2"/>
+      <path d="M 262 236 C 256 228, 268 222, 262 212" stroke-width="2"/>
+      <path d="M 278 236 C 272 228, 284 222, 278 212" stroke-width="2"/>
+    </g>
+  </g>
+  <text x="258" y="286" font-family="Menlo, Consolas, monospace" font-size="8.5" font-weight="700" text-anchor="middle" fill="currentColor">NOT LGTM</text>
+</svg></span><h3>The Grump <small style="color:var(--ok);font-weight:500">live</small></h3><p><em>Show me where it breaks.</em> Reviews the diff before it reaches your branch.</p></a>
+    <a class="card" href="https://lazy-senior-dev.github.io/paranoid-sre/" style="display:block"><span class="sketch dim" style="animation:none;filter:none"><svg viewBox="0 0 320 320" aria-hidden="true" style="width:120px">
+  <title id="t">The Paranoid SRE</title>
+  <desc id="d">Line sketch of an on-call engineer with her hair in a bun, a headset, wide alert eyes, and a pager clipped to her collar.</desc>
+  <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shoulders and collar -->
+    <path d="M 22 318 C 40 262, 92 250, 118 226"/>
+    <path d="M 298 318 C 280 262, 228 250, 202 226"/>
+    <path d="M 118 226 C 130 244, 150 250, 160 250 C 170 250, 190 244, 202 226"/>
+    <!-- rolled sleeve seam hints -->
+    <path d="M 44 296 L 70 304" stroke-width="2"/>
+    <path d="M 276 296 L 250 304" stroke-width="2"/>
+    <!-- head -->
+    <path d="M 108 100 C 108 52, 212 52, 212 100 L 214 166 C 214 210, 106 210, 106 166 Z"/>
+    <!-- hair: pulled back, bun on top -->
+    <path d="M 108 100 C 112 70, 140 58, 160 58 C 180 58, 208 70, 212 100" stroke-width="3.5"/>
+    <path d="M 120 92 C 130 78, 145 72, 160 72" stroke-width="2"/>
+    <path d="M 200 92 C 190 78, 175 72, 160 72" stroke-width="2"/>
+    <circle cx="160" cy="46" r="16"/>
+    <path d="M 150 40 C 156 34, 166 34, 170 40" stroke-width="2"/>
+    <!-- ears -->
+    <path d="M 107 128 C 92 124, 90 152, 106 158"/>
+    <path d="M 213 128 C 228 124, 230 152, 214 158"/>
+    <!-- headset band and earpiece with mic -->
+    <path d="M 104 118 C 96 84, 224 84, 216 118" stroke-width="3.5"/>
+    <rect x="86" y="126" width="18" height="28" rx="6"/>
+    <path d="M 95 154 C 92 176, 112 190, 134 192" stroke-width="2.5"/>
+    <circle cx="138" cy="192" r="4"/>
+    <!-- brows: raised, alert -->
+    <path d="M 122 104 C 132 96, 146 98, 152 104" stroke-width="4.5"/>
+    <path d="M 198 104 C 188 96, 174 98, 168 104" stroke-width="4.5"/>
+    <!-- wide eyes (open / closed for the blink) -->
+    <g class="eye-open">
+      <circle cx="137" cy="126" r="10"/>
+      <circle cx="183" cy="126" r="10"/>
+      <circle cx="137" cy="127" r="3.5" fill="currentColor" stroke="none"/>
+      <circle cx="183" cy="127" r="3.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g class="eye-closed">
+      <path d="M 127 127 L 147 127"/>
+      <path d="M 173 127 L 193 127"/>
+    </g>
+    <!-- tired lines under the eyes -->
+    <path d="M 128 140 C 134 144, 142 144, 148 140" stroke-width="1.5"/>
+    <path d="M 172 140 C 178 144, 186 144, 192 140" stroke-width="1.5"/>
+    <!-- nose -->
+    <path d="M 161 130 L 156 158 C 158 162, 164 162, 166 158"/>
+    <!-- mouth: small, tight -->
+    <path d="M 148 182 L 172 182" stroke-width="3.5"/>
+    <!-- pager clipped at the collar -->
+    <rect x="196" y="238" width="44" height="26" rx="4"/>
+    <rect x="202" y="244" width="24" height="12" rx="2" stroke-width="2"/>
+    <rect class="led" x="234" y="243" width="4" height="4" rx="1" fill="currentColor" stroke="none"/>
+    <path d="M 232 244 L 232 256" stroke-width="2"/>
+    <path d="M 240 246 L 246 240" stroke-width="2"/>
+    <!-- lanyard -->
+    <path d="M 150 250 L 200 262" stroke-width="2"/>
+  </g>
+</svg></span><h3>Paranoid SRE <small style="color:var(--faint);font-weight:500">coming soon</small></h3><p><em>It works. Now tell me how it fails.</em> Reviews the deploy.</p></a>
+    <a class="card" href="https://lazy-senior-dev.github.io/" style="display:block"><h3>All personas</h3><p>One persona per plugin, each measured on the number that engineer cares about.</p></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><h4>The cast</h4><ul>
+        <li><a href="https://lazy-senior-dev.github.io/grumpy-reviewer/">The Grump</a>, reviews the diff</li>
+        <li><a href="https://lazy-senior-dev.github.io/paranoid-sre/">Paranoid SRE</a>, reviews the deploy</li>
+        <li><a href="https://lazy-senior-dev.github.io/tenured/">Tenured</a>, reviews against history</li>
+        <li><a href="https://lazy-senior-dev.github.io/">All personas</a></li>
+      </ul></div>
+      <div><h4>This project</h4><ul>
+        <li><a href="https://github.com/lazy-senior-dev/tenured">Repository</a></li>
+        <li><a href="https://github.com/lazy-senior-dev/tenured/issues">Issues and ideas</a></li>
+        <li><a href="https://github.com/lazy-senior-dev/tenured/blob/main/README.md">README</a></li>
+        <li><a href="https://github.com/lazy-senior-dev/tenured/blob/main/LICENSE">Apache-2.0 license</a></li>
+      </ul></div>
+      <div><h4>The org</h4><ul>
+        <li><a href="https://github.com/lazy-senior-dev">github.com/lazy-senior-dev</a></li>
+        <li><a href="https://github.com/sponsors/sandeepbazar">Sponsor the desk</a></li>
+        <li><a href="https://github.com/sandeepbazar">@sandeepbazar</a></li>
+      </ul></div>
+    </div>
+    <div class="by">
+      <span>Built by <strong><a href="https://www.linkedin.com/in/sandeepbazar/">Sandeep Bazar</a></strong> · <a href="https://www.linkedin.com/in/sandeepbazar/">LinkedIn</a> · <a href="https://github.com/sandeepbazar">GitHub</a></span>
+      <span>Apache-2.0 · 2026 · No tracker, no framework, one HTML file.</span>
+    </div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>
