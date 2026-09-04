@@ -1,0 +1,1 @@
+{"id":"t04-deprecated-api","language":"go","category":"deprecated","verdict":"REQUEST_CHANGES","file":"internal/billing/invoice.go","lines":[7],"defect":"calls ledger.PostLegacy, marked deprecated in CHANGELOG 2.3.0 and scheduled for removal in 3.0","match":["deprecat|PostLegacy|removal|2\\.3\\.0|3\\.0|ledger\\.Post\\b"]}

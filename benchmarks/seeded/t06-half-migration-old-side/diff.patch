@@ -1,0 +1,27 @@
+Ticket: NOTIF-63 "Add push notifications for shipped orders"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- app/notifications/
+f2a9c1d notifications: new sender handles email+sms; legacy_sender kept for the 3 remaining templates, remove by Q4
+b9e0d33 notifications: start migration to sender.py (ADR-014)
+
+docs/adr/ADR-014-notifications.md (excerpt):
+"All new notification features go in sender.py. legacy_sender.py is frozen except for bug fixes and is deleted when the last three templates are migrated."
+
+diff --git a/app/notifications/legacy_sender.py b/app/notifications/legacy_sender.py
+--- a/app/notifications/legacy_sender.py
++++ b/app/notifications/legacy_sender.py
+@@ -3,6 +3,13 @@ from app.notifications.templates import render
+ from app.push import push_client
+ 
+ 
++def send_push(user, template, **ctx):
++    token = user.push_token
++    if not token:
++        return False
++    return push_client.send(token, render(template, **ctx))
++
++
+ def send_email(user, template, **ctx):
+     return smtp.send(user.email, render(template, **ctx))

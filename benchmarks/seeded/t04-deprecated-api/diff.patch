@@ -1,0 +1,29 @@
+Ticket: BILL-58 "Post credit notes to the ledger"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- internal/ledger/
+5e1a7c9 ledger: add Post(ctx, Entry); deprecate PostLegacy (removed in 3.0)
+
+CHANGELOG.md (excerpt):
+## 2.3.0
+- ledger.PostLegacy is deprecated and logs a warning on every call. Use ledger.Post. PostLegacy will be removed in 3.0.
+
+diff --git a/internal/billing/invoice.go b/internal/billing/invoice.go
+--- a/internal/billing/invoice.go
++++ b/internal/billing/invoice.go
+@@ -1,12 +1,17 @@
+ package billing
+ 
+ import (
+ 	"context"
+ 	"internal/ledger"
+ )
+ 
++func PostCreditNote(ctx context.Context, n CreditNote) error {
++	return ledger.PostLegacy(n.AccountID, -n.AmountCents, n.Ref)
++}
++
+ func PostInvoice(ctx context.Context, inv Invoice) error {
+ 	return ledger.Post(ctx, ledger.Entry{Account: inv.AccountID, Amount: inv.AmountCents, Ref: inv.Ref})
+ }

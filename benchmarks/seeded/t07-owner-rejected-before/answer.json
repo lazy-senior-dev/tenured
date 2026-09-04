@@ -1,0 +1,1 @@
+{"id":"t07-owner-rejected-before","language":"typescript","category":"ownership","verdict":"REQUEST_CHANGES","file":"src/auth/session.ts","lines":[6],"defect":"extends the session lifetime to 90 days, a change the auth owners rejected in PR 412 for compliance reasons recorded in the CODEOWNERS note","match":["412|owner|rejected|compliance|90 days|CODEOWNERS|auth team|declined"]}

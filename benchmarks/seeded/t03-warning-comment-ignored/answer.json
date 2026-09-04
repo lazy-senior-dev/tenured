@@ -1,0 +1,1 @@
+{"id":"t03-warning-comment-ignored","language":"typescript","category":"warnings","verdict":"REQUEST_CHANGES","file":"src/queue/consumer.ts","lines":[9],"defect":"lowers the visibility timeout below the processing time despite the comment above it explaining that this caused duplicate deliveries","match":["comment|visibility|duplicate|below|processing time|do not lower|warning"]}

@@ -1,0 +1,24 @@
+Ticket: EVT-104 "Add the events service to production"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- config/
+c31f8a2 config: production kafka requires SASL_SSL (brokers reject PLAINTEXT since the 2024 hardening)
+8d0b4e7 config: add staging kafka config (PLAINTEXT, internal only)
+
+docs/runbooks/kafka.md (excerpt):
+"Production brokers accept SASL_SSL only. Staging is PLAINTEXT because it never leaves the VPC. Do not copy staging config to prod."
+
+diff --git a/config/prod/kafka.yaml b/config/prod/kafka.yaml
+--- /dev/null
++++ b/config/prod/kafka.yaml
+@@ -0,0 +1,9 @@
++bootstrap.servers: kafka-1.prod.internal:9092,kafka-2.prod.internal:9092
++client.id: events-service
++security.protocol: PLAINTEXT
++sasl.mechanism: none
++group.id: events-service
++auto.offset.reset: earliest
++enable.auto.commit: false
++max.poll.records: 500
++session.timeout.ms: 30000

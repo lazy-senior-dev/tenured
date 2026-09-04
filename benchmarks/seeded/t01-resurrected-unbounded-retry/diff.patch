@@ -1,0 +1,29 @@
+Ticket: CACHE-41 "Cache Get() gives up too early under load, make it more resilient"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- internal/cache/client.go
+a81d0e2 cache: expose Stats()
+3f9c2a1 cache: cap retries at 5 with backoff; unbounded retry storm caused INC-2019-07
+77c4b10 cache: initial client
+
+docs/postmortems/INC-2019-07.md (excerpt):
+"When the cache cluster rebooted, every API pod retried Get() in a tight loop with no cap. Load on the cluster went 40x and it stayed down for 52 minutes. Action item: cap retries and add backoff (done in 3f9c2a1). Do not remove the cap."
+
+diff --git a/internal/cache/client.go b/internal/cache/client.go
+--- a/internal/cache/client.go
++++ b/internal/cache/client.go
+@@ -8,12 +8,10 @@ import (
+ 
+ func (c *Client) Get(ctx context.Context, key string) ([]byte, error) {
+-	for attempt := 0; attempt < 5; attempt++ {
++	for {
+ 		v, err := c.conn.Get(ctx, key)
+ 		if err == nil {
+ 			return v, nil
+ 		}
+-		time.Sleep(time.Duration(attempt*attempt) * 50 * time.Millisecond)
++		time.Sleep(10 * time.Millisecond)
+ 	}
+-	return nil, ErrUnavailable
+ }

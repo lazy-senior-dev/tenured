@@ -1,0 +1,30 @@
+Ticket: OPS-77 "The sessions table is growing again, add a cleanup job"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- deploy/k8s/
+2b7f4e1 k8s: delete cleanup-cron; it raced the nightly archiver and purged unarchived rows (INC-2023-02). Cleanup now runs inside the archiver.
+5a0c3d8 k8s: add cleanup-cron (hourly)
+
+diff --git a/deploy/k8s/cleanup-cron.yaml b/deploy/k8s/cleanup-cron.yaml
+--- /dev/null
++++ b/deploy/k8s/cleanup-cron.yaml
+@@ -0,0 +1,18 @@
++apiVersion: batch/v1
++kind: CronJob
++metadata:
++  name: cleanup
++  namespace: core
++spec:
++  schedule: "0 * * * *"
++  jobTemplate:
++    spec:
++      template:
++        spec:
++          restartPolicy: OnFailure
++          containers:
++            - name: cleanup
++              image: registry.example.com/core/tools:2.9.0
++              args: ["cleanup", "--table", "sessions", "--older-than", "7d"]
++              resources:
++                limits: { cpu: 500m, memory: 256Mi }

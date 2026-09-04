@@ -1,0 +1,1 @@
+{"id":"t02-reverted-before-flag-default","language":"python","category":"reverted-before","verdict":"BLOCK","file":"app/flags.py","lines":[6],"defect":"flips the batch_checkout default to on, the exact change that was reverted in 9b2e5c4 after it double-charged customers","match":["9b2e5c4|revert|double.charg|INC-2023-11|batch_checkout|same change|tried before"]}

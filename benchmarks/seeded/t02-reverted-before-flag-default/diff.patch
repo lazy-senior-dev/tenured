@@ -1,0 +1,24 @@
+Ticket: CHK-77 "Turn on batch checkout, the queue is backing up again"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- app/flags.py
+9b2e5c4 Revert "flags: enable batch_checkout by default" (double charges, see INC-2023-11)
+c4d1a90 flags: enable batch_checkout by default
+1b0c7e3 flags: add batch_checkout (default off)
+
+CHANGELOG.md (excerpt):
+## 5.2.1
+- Reverted batch_checkout default to off after INC-2023-11: 212 customers charged twice when the batch path retried a settled payment.
+
+diff --git a/app/flags.py b/app/flags.py
+--- a/app/flags.py
++++ b/app/flags.py
+@@ -3,7 +3,7 @@ from app.config import env_bool
+ 
+ FLAGS = {
+     "new_search": env_bool("FLAG_NEW_SEARCH", True),
+-    "batch_checkout": env_bool("FLAG_BATCH_CHECKOUT", False),
++    "batch_checkout": env_bool("FLAG_BATCH_CHECKOUT", True),
+     "invoice_v2": env_bool("FLAG_INVOICE_V2", False),
+ }

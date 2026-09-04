@@ -1,0 +1,1 @@
+{"id":"u02-respects-deprecation","language":"go","clean":true,"note":"uses the non-deprecated ledger API"}

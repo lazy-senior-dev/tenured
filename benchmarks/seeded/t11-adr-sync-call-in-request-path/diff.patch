@@ -1,0 +1,26 @@
+Ticket: TAX-41 "Show the exact tax on the order confirmation"
+
+Repository history (what the reviewer can see):
+
+docs/adr/ADR-009-no-sync-third-party-calls.md (excerpt):
+"Decision: no third-party HTTP call may run inside a request handler. Use the outbox (app/outbox.py) and a worker. Context: in 2021 a 30s tax-provider outage stalled every checkout request for 30s and exhausted the worker pool."
+
+$ git log --oneline -- app/api/orders.py
+9e8d7c6 orders: move fraud check to the outbox (ADR-009)
+
+diff --git a/app/api/orders.py b/app/api/orders.py
+--- a/app/api/orders.py
++++ b/app/api/orders.py
+@@ -1,10 +1,12 @@
+ from flask import jsonify, request
+ from app.outbox import enqueue
++from app.tax import tax_provider
+ 
+ 
+ @bp.post("/orders")
+ def create_order():
+     order = Order.from_request(request.get_json())
++    order.tax_cents = tax_provider.quote(order.address, order.subtotal_cents)
+     order.save()
+     enqueue("fraud-check", order.id)
+     return jsonify(order.to_dict()), 201

@@ -1,0 +1,1 @@
+{"id":"t10-dependency-removed-for-cve","language":"typescript","category":"resurrection","verdict":"BLOCK","file":"package.json","lines":[6],"defect":"re-adds the xml-parse-lite dependency that commit 7d21e0f removed for CVE-2024-3104, at the same vulnerable version","match":["7d21e0f|CVE-2024-3104|CVE|removed|vulnerab|xml-parse-lite|re-add"]}

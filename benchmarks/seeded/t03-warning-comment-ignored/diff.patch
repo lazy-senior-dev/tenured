@@ -1,0 +1,21 @@
+Ticket: QUEUE-19 "Messages sit too long in the queue when a consumer dies"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- src/queue/consumer.ts
+e7f3c22 queue: raise visibility timeout to 300s; document why (duplicate deliveries at 30s)
+4a9b0d1 queue: initial consumer
+
+diff --git a/src/queue/consumer.ts b/src/queue/consumer.ts
+--- a/src/queue/consumer.ts
++++ b/src/queue/consumer.ts
+@@ -4,9 +4,9 @@ import { Consumer } from "./sqs";
+ 
+ // Do not lower this below the p99 processing time (currently 240s). At 30s the
+ // message became visible again mid-processing and every order was handled twice.
+-const VISIBILITY_TIMEOUT_S = 300;
++const VISIBILITY_TIMEOUT_S = 45;
+ 
+ export const consumer = new Consumer({
+   queueUrl: process.env.ORDERS_QUEUE_URL!,
+   visibilityTimeout: VISIBILITY_TIMEOUT_S,

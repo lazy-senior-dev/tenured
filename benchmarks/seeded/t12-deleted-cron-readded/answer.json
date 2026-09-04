@@ -1,0 +1,1 @@
+{"id":"t12-deleted-cron-readded","language":"yaml","category":"resurrection","verdict":"REQUEST_CHANGES","file":"deploy/k8s/cleanup-cron.yaml","lines":[7],"defect":"re-adds the hourly cleanup cron that commit 2b7f4e1 deleted because it raced the nightly archiver and deleted unarchived rows","match":["2b7f4e1|deleted|removed|race|archiv|re-add|resurrect|hourly|INC-2023-02"]}

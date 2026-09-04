@@ -1,0 +1,1 @@
+{"id":"t09-postmortem-match-cache-stampede","language":"python","category":"postmortem","verdict":"BLOCK","file":"app/catalogue/cache.py","lines":[8,9,10],"defect":"expires every product cache entry at the same wall-clock time, reproducing the cache stampede described in INC-2022-03","match":["INC-2022-03|stampede|same time|jitter|thundering|expire|postmortem|midnight"]}

@@ -1,0 +1,1 @@
+{"id":"t01-resurrected-unbounded-retry","language":"go","category":"resurrection","verdict":"BLOCK","file":"internal/cache/client.go","lines":[12,13,14],"defect":"reintroduces the unbounded retry loop that commit 3f9c2a1 removed after INC-2019-07 took the cache cluster down","match":["3f9c2a1|INC-2019-07|unbounded|retry budget|removed|reintroduc|resurrect|incident|postmortem"]}

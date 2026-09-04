@@ -1,0 +1,30 @@
+Ticket: CAT-311 "Prices must be fresh at the start of each day"
+
+Repository history (what the reviewer can see):
+
+docs/postmortems/INC-2022-03.md (excerpt):
+"At 00:00 every product cache key expired at once (fixed TTL to midnight). 30k requests hit postgres in the same second; the database saturated for 18 minutes. Action item: add jitter to cache TTLs and never expire on a wall-clock boundary."
+
+$ git log --oneline -- app/catalogue/cache.py
+6c2d9f0 catalogue: jittered TTL (INC-2022-03)
+1f4a8b2 catalogue: add product cache
+
+diff --git a/app/catalogue/cache.py b/app/catalogue/cache.py
+--- a/app/catalogue/cache.py
++++ b/app/catalogue/cache.py
+@@ -1,12 +1,13 @@
+-import random
++from datetime import datetime, timedelta
+ from app.cache import redis
+ 
+ 
+ def cache_product(product):
+-    ttl = 3600 + random.randint(0, 600)
+-    redis.set(f"product:{product.id}", product.to_json(), ex=ttl)
++    now = datetime.utcnow()
++    midnight = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
++    redis.set(f"product:{product.id}", product.to_json(), ex=int((midnight - now).total_seconds()))
+ 
+ 
+ def get_product(product_id):
+     return redis.get(f"product:{product_id}")

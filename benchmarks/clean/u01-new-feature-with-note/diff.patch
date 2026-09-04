@@ -1,0 +1,29 @@
+Ticket: NOTIF-64 "Notify customers when a refund is issued"
+
+Repository history (what the reviewer can see):
+
+$ git log --oneline -- app/notifications/
+f2a9c1d notifications: new sender handles email+sms; legacy_sender kept for the 3 remaining templates
+
+docs/adr/ADR-014-notifications.md: all new notification features go in sender.py.
+
+diff --git a/app/notifications/sender.py b/app/notifications/sender.py
+--- a/app/notifications/sender.py
++++ b/app/notifications/sender.py
+@@ -20,3 +20,8 @@ def send_shipped(user, order):
+     return send(user, "order_shipped", order=order)
++
++
++def send_refunded(user, refund):
++    """Email and SMS when a refund settles. New template: notifications/templates/refunded.*"""
++    return send(user, "refund_issued", refund=refund)
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,4 +1,7 @@
+ # Changelog
+ 
++## Unreleased
++- Refund notifications (email and SMS) through the new sender.
++
+ ## 5.2.1

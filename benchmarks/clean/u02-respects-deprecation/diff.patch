@@ -1,0 +1,21 @@
+Ticket: BILL-59 "Post refunds to the ledger"
+
+Repository history (what the reviewer can see):
+
+CHANGELOG.md: ledger.PostLegacy is deprecated (2.3.0). Use ledger.Post.
+
+diff --git a/internal/billing/refund.go b/internal/billing/refund.go
+--- /dev/null
++++ b/internal/billing/refund.go
+@@ -0,0 +1,12 @@
++package billing
++
++import (
++	"context"
++	"internal/ledger"
++)
++
++// PostRefund records a settled refund as a negative entry on the customer's account.
++func PostRefund(ctx context.Context, r Refund) error {
++	return ledger.Post(ctx, ledger.Entry{Account: r.AccountID, Amount: -r.AmountCents, Ref: r.Ref})
++}
