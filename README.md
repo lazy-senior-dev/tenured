@@ -25,15 +25,15 @@
 <!-- recordings:start -->
 ## Watch him work on every agent
 
-The same staged diff, one CLI, 3 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-04.
+The same staged diff, one CLI, 4 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-04.
 
 | **Claude Code** | **Codex CLI** |
 |---|---|
 | <img src="assets/recordings/claude.gif" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT with 2 numbered findings" width="440"> | <img src="assets/recordings/codex.gif" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
 | TENURED: DO_NOT_REPEAT · 2 findings · 9 s · $0.03 | TENURED: DO_NOT_REPEAT · 1 finding · 5 s |
-| **Antigravity CLI** |
-| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
-| TENURED: DO_NOT_REPEAT · 1 finding · 117 s |
+| **Antigravity CLI** | **IBM Bob Shell** |
+| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> | <img src="assets/recordings/bob.gif" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT with 3 numbered findings" width="440"> |
+| TENURED: DO_NOT_REPEAT · 1 finding · 117 s | TENURED: DO_NOT_REPEAT · 3 findings · 6 s · $0.01 |
 
 Agents that narrate the whole checklist before the verdict (Bob does) are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with `--agent claude|codex|agy|bob`; Bob needs `BOB_API_KEY`.
 <!-- recordings:end -->

@@ -13,6 +13,12 @@ const P = JSON.parse(readFileSync(join(ROOT, "persona.json"), "utf8"));
 const LABELS = { claude: "Claude Code", codex: "Codex CLI", agy: "Antigravity CLI", bob: "IBM Bob Shell", api: "Claude API" };
 const ORDER = ["claude", "codex", "agy", "bob", "api"];
 
+// width and height from the GIF header (little-endian, bytes 6 to 9)
+function gifSize(file) {
+  const b = readFileSync(file);
+  return { width: b.readUInt16LE(6), height: b.readUInt16LE(8) };
+}
+
 export function loadRecordings(root = ROOT) {
   const dir = join(root, "assets", "recordings");
   if (!existsSync(dir)) return [];
@@ -26,7 +32,7 @@ export function loadRecordings(root = ROOT) {
       for (const l of t.stdout || []) { const m = head.exec(l); if (m) verdict = m[1]; }
       const cost = (/\$(\d+\.\d+)/.exec(status) || [])[1];
       const findings = (t.stdout || []).filter((l) => /^\d+\.\s/.test(l)).length;
-      return { agent: t.agent, label: LABELS[t.agent] || t.agent, seconds: Math.round((t.durationMs || 0) / 1000), cost: cost ? Number(cost) : null, verdict, findings, gif: existsSync(join(dir, `${t.agent}.gif`)), recordedAt: (t.recordedAt || "").slice(0, 10), exitCode: t.exitCode };
+      return { agent: t.agent, label: LABELS[t.agent] || t.agent, seconds: Math.round((t.durationMs || 0) / 1000), cost: cost ? Number(cost) : null, verdict, findings, gif: existsSync(join(dir, `${t.agent}.gif`)), ...(existsSync(join(dir, `${t.agent}.gif`)) ? gifSize(join(dir, `${t.agent}.gif`)) : {}), recordedAt: (t.recordedAt || "").slice(0, 10), exitCode: t.exitCode };
     })
     .filter((r) => r.gif && r.verdict)
     .sort((a, b) => ORDER.indexOf(a.agent) - ORDER.indexOf(b.agent));
@@ -82,5 +88,5 @@ writeFileSync(readmePath, readme);
 const out = join(ROOT, "docs", "assets", "recordings");
 mkdirSync(out, { recursive: true });
 for (const r of recs) copyFileSync(join(ROOT, "assets", "recordings", `${r.agent}.gif`), join(out, `${r.agent}.gif`));
-writeFileSync(join(ROOT, "docs", "data", "recordings.json"), JSON.stringify(recs.map((r) => ({ agent: r.agent, label: r.label, verdict: r.verdict, findings: r.findings, seconds: r.seconds, cost: r.cost, recordedAt: r.recordedAt })), null, 2) + "\n");
+writeFileSync(join(ROOT, "docs", "data", "recordings.json"), JSON.stringify(recs.map((r) => ({ agent: r.agent, label: r.label, verdict: r.verdict, findings: r.findings, seconds: r.seconds, cost: r.cost, recordedAt: r.recordedAt, width: r.width, height: r.height })), null, 2) + "\n");
 console.log(`README gallery: ${recs.map((r) => `${r.agent} ${r.verdict} ${r.seconds}s`).join(", ")}; ${recs.length} GIFs copied to docs/assets/recordings`);

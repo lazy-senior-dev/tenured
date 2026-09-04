@@ -1,0 +1,19 @@
+{
+  "persona": "tenured",
+  "agent": "bob",
+  "case": "t01-resurrected-unbounded-retry",
+  "command": "npx github:lazy-senior-dev/tenured review --staged --agent bob",
+  "durationMs": 6276,
+  "exitCode": 1,
+  "stderr": [
+    "Reading the staged changes (21 lines) with IBM Bob Shell. Tenured does not skim; give it a moment.",
+    "6 s · $0.0098"
+  ],
+  "stdout": [
+    "TENURED: DO_NOT_REPEAT",
+    "1. internal/cache/client.go:9 — resurrects the unbounded retry loop removed in ccb1868 after INC-2019-07: \"every API pod retried Get() in a tight loop with no cap…stayed down for 52 minutes…Do not remove the cap\" — restore `attempt < 5` and the quadratic backoff from that commit",
+    "2. internal/cache/client.go:13 — replaces the quadratic backoff (`attempt*attempt * 50ms`) with a flat 10ms sleep, removing the spacing that prevented the retry storm described in INC-2019-07 — keep the original backoff formula",
+    "3. internal/cache/client.go:15 — removes the `return nil, ErrUnavailable` terminal condition, making the loop infinite even on a permanently unavailable cache — restore the error return after the attempt budget is exhausted"
+  ],
+  "recordedAt": "2026-09-04T18:56:33.271Z"
+}

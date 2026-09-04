@@ -170,7 +170,7 @@ footer .by strong { color: var(--text); }
 }
 
 /* recordings gallery */
-.recs { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-top: 1.4rem; }
+.recs { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); margin-top: 1.4rem; }
 .rec { margin: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); box-shadow: 0 10px 30px rgba(0,0,0,.08); transition: transform .25s ease, box-shadow .25s ease; }
 .rec:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,.14); }
 .rec img { display: block; width: 100%; height: auto; }

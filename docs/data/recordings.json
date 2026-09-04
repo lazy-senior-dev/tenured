@@ -6,7 +6,9 @@
     "findings": 2,
     "seconds": 9,
     "cost": 0.0259,
-    "recordedAt": "2026-09-04"
+    "recordedAt": "2026-09-04",
+    "width": 1000,
+    "height": 346
   },
   {
     "agent": "codex",
@@ -15,7 +17,9 @@
     "findings": 1,
     "seconds": 5,
     "cost": null,
-    "recordedAt": "2026-09-04"
+    "recordedAt": "2026-09-04",
+    "width": 1000,
+    "height": 258
   },
   {
     "agent": "agy",
@@ -24,6 +28,19 @@
     "findings": 1,
     "seconds": 117,
     "cost": null,
-    "recordedAt": "2026-09-04"
+    "recordedAt": "2026-09-04",
+    "width": 1000,
+    "height": 236
+  },
+  {
+    "agent": "bob",
+    "label": "IBM Bob Shell",
+    "verdict": "DO_NOT_REPEAT",
+    "findings": 3,
+    "seconds": 6,
+    "cost": 0.0098,
+    "recordedAt": "2026-09-04",
+    "width": 1000,
+    "height": 390
   }
 ]
