@@ -112,23 +112,36 @@ export const AGENTS = {
     available: () => which("agy"),
     defaultModel: "",
     async run({ system, user, model }) {
-      const prompt = system ? `# Reviewer instructions\n\n${system}\n\n# Task\n\n${user}` : user;
+      // Plan mode denies file reads, and a denied search ends the turn with an empty response, so the
+      // prompt says the whole change is inline. An empty reply is retried once before it counts as an error.
+      const note = "\n\nThe complete change is above. Do not search or open files; answer from the diff.";
+      const prompt = (system ? `# Reviewer instructions\n\n${system}\n\n# Task\n\n${user}` : user) + note;
       const args = ["-p", prompt, "--output-format", "json", "--disable-slash-commands", "--mode", "plan"];
       if (model) args.push("--model", model);
-      const res = await exec("agy", args, { cwd: scratch() });
-      let data;
-      try {
-        data = JSON.parse(res.stdout.trim().split("\n").pop());
-      } catch {
-        throw new Error(`agy returned no JSON (exit ${res.code}): ${(res.stderr || res.stdout).slice(0, 300)}`);
+      let data, res, usage = { input: 0, output: 0 }, durationMs = 0;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        res = await exec("agy", args, { cwd: scratch() });
+        durationMs += res.durationMs;
+        try {
+          data = JSON.parse(res.stdout.trim().split("\n").pop());
+        } catch {
+          throw new Error(`agy returned no JSON (exit ${res.code}): ${(res.stderr || res.stdout).slice(0, 300)}`);
+        }
+        if (data.status && data.status !== "SUCCESS") throw new Error(`agy status ${data.status}: ${String(data.response || "").slice(0, 200)}`);
+        const u = data.usage || {};
+        usage.input += u.input_tokens || 0;
+        usage.output += (u.output_tokens || 0) + (u.thinking_tokens || 0);
+        if (String(data.response || "").trim()) break;
       }
-      if (data.status && data.status !== "SUCCESS") throw new Error(`agy status ${data.status}: ${String(data.response || "").slice(0, 200)}`);
-      const u = data.usage || {};
+      if (!String(data.response || "").trim()) {
+        const denied = (data.denied_actions || []).map((d) => d.display_name || d.action).join(", ");
+        throw new Error(`agy returned an empty response${denied ? ` after denied actions: ${denied}` : ""}`);
+      }
       return {
-        text: data.response || "",
-        usage: { input: u.input_tokens || 0, output: (u.output_tokens || 0) + (u.thinking_tokens || 0) },
+        text: data.response,
+        usage,
         costUsd: undefined,
-        durationMs: res.durationMs,
+        durationMs,
         model: model || "agy-default",
       };
     },
@@ -138,8 +151,9 @@ export const AGENTS = {
     available: async () => (process.env.BOB_API_KEY ? await which("bob") : null),
     defaultModel: "",
     async run({ system, user }) {
-      const prompt = system ? `# Reviewer instructions\n\n${system}\n\n# Task\n\n${user}` : user;
-      const args = ["run", "--format", "stream-json", "--mode", "ask", "--max-turns", "1", "--disable-mcp", "--disable-subagents", "--trust", "--accept-license"];
+      // The whole change is in the prompt; every tool group is disabled so Bob answers instead of reading files.
+      const prompt = (system ? `# Reviewer instructions\n\n${system}\n\n# Task\n\n${user}` : user) + "\n\nThe complete change is above. There are no files to open; answer from the diff.";
+      const args = ["run", "--format", "stream-json", "--mode", "ask", "--max-turns", "2", "--disable-mcp", "--disable-subagents", "--disable-tool-groups", "read,edit,browser,command,mcp,subagent,modes", "--trust", "--accept-license"];
       const res = await exec("bob", args, { input: prompt, cwd: scratch() });
       let text = "";
       let usage = { input: 0, output: 0 };
