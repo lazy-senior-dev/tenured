@@ -1,0 +1,48 @@
+name: Slipped past him
+description: A defect Tenured should have caught and did not. The best kind of issue.
+title: "slipped: <one line: what broke>"
+labels: ["slipped-past-him"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Every one of these can become a seeded diff in the benchmark and, if a rule fixes it, a line in `rules/grump.md`.
+  - type: textarea
+    id: diff
+    attributes:
+      label: The diff
+      description: The change he approved or under-rated. Anonymise names and secrets; keep the structure.
+      render: diff
+    validations:
+      required: true
+  - type: textarea
+    id: verdict
+    attributes:
+      label: What he said
+      description: Paste the verdict block as printed.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: failure
+    attributes:
+      label: What actually broke
+      description: The production failure, in one or two sentences. Which checklist item should have caught it?
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Host and model
+      placeholder: "Claude Code 2.1 / claude-sonnet-5, mode nag"
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Should this have been
+      options:
+        - SEEN_BEFORE
+        - DO_NOT_REPEAT
+    validations:
+      required: true

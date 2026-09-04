@@ -1,0 +1,35 @@
+name: benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      n:
+        description: "Runs per diff"
+        default: "3"
+      model:
+        description: "Model id for the Messages API"
+        default: "claude-sonnet-5"
+
+permissions:
+  contents: write
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Run against the Messages API
+        run: node benchmarks/run.mjs --agents api --n "${{ inputs.n }}" --model.api "${{ inputs.model }}" --concurrency 3
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - run: node benchmarks/report.mjs && node scripts/render-chart.mjs && node scripts/sync-site.mjs && node scripts/update-readme.mjs
+      - name: Open a pull request with the results
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
+        with:
+          branch: bench/results-${{ github.run_id }}
+          title: "bench: results from ${{ inputs.model }} (${{ inputs.n }} runs)"
+          commit-message: "bench: results from ${{ inputs.model }}"
+          body: "Automated benchmark run. Review the report under benchmarks/results before merging."

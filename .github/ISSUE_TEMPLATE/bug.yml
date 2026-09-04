@@ -1,0 +1,36 @@
+name: Bug
+description: A hook, adapter, command, or the Action misbehaved.
+title: "bug: <what happened>"
+labels: ["bug"]
+body:
+  - type: input
+    id: host
+    attributes:
+      label: Host and version
+      placeholder: "Codex CLI 0.145, macOS 15" 
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: tenured version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Hook output, scorecard lines, or Action log
+      description: "Scorecard: ~/.config/tenured/scorecard/. Remove anything private."
+      render: text

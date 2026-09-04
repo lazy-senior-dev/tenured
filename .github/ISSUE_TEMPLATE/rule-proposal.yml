@@ -1,0 +1,32 @@
+name: Rule proposal
+description: Propose a change to the checklist, the verdict format, or the non-negotiables.
+title: "rule: <short name>"
+labels: ["rule-proposal"]
+body:
+  - type: textarea
+    id: rule
+    attributes:
+      label: The rule, as it would appear in rules/grump.md
+      description: One question the agent must answer in writing, or one line under Non-negotiables.
+    validations:
+      required: true
+  - type: textarea
+    id: failure
+    attributes:
+      label: A real failure this rule would have prevented
+      description: Without a production failure it is taste, and Tenured does not block on taste.
+    validations:
+      required: true
+  - type: textarea
+    id: diff
+    attributes:
+      label: A diff that should trigger it
+      description: Optional but strongly preferred. It becomes a benchmark case.
+      render: diff
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: It does not duplicate an existing checklist item.
+        - label: It names a production failure, not a preference.
