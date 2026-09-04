@@ -21,6 +21,7 @@ jobs:
         with:
           mode: nag            # or gate: request changes and fail the check until NEW
           # provider: openai   # then set OPENAI_API_KEY below instead
+          # provider: bob      # IBM Bob: set BOB_API_KEY below instead; the Bob CLI is installed on the runner
           # model: claude-opus-5
           # max_files: 25
           # ignore: |

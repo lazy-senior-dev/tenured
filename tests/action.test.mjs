@@ -231,3 +231,39 @@ test("composeReview and overallVerdict", () => {
   assert.match(r.body, /a\.lock/);
   assert.match(r.body, /boom/);
 });
+
+test("the bob provider reassembles streamed assistant text and reads the session cost", async () => {
+  const { parseBobStream } = await import("../action/lib/providers.mjs");
+  const stream = [
+    JSON.stringify({ type: "message", role: "user", content: "Review this" }),
+    JSON.stringify({ type: "message", role: "assistant", content: "GRUMP" }),
+    JSON.stringify({ type: "message", role: "assistant", content: ": BLOCK\n1. a.py:3 — x — y" }),
+    "not json",
+    JSON.stringify({ type: "result", status: "success", stats: { session_costs: 0.0106, tool_calls: 0 } }),
+  ].join("\n");
+  const parsed = parseBobStream(stream);
+  assert.equal(parsed.text, "GRUMP: BLOCK\n1. a.py:3 — x — y");
+  assert.equal(parsed.cost, 0.0106);
+  assert.equal(parsed.status, "success");
+  assert.equal(parseBobStream("").text, "");
+});
+
+test("the bob provider runs the cli with tools off and rejects an empty reply", async () => {
+  const { EventEmitter } = await import("node:events");
+  const calls = [];
+  const spawnImpl = (cmd, args, opts) => {
+    calls.push({ cmd, args, key: opts.env.BOB_API_KEY });
+    const child = new EventEmitter();
+    child.stdout = new EventEmitter(); child.stderr = new EventEmitter();
+    child.stdin = { end: (prompt) => { calls[calls.length - 1].prompt = prompt; setImmediate(() => { child.stdout.emit("data", JSON.stringify({ type: "message", role: "assistant", content: calls.length === 1 ? "GRUMP: APPROVE — a.py\nFine." : "" }) + "\n"); child.emit("close", 0); }); } };
+    return child;
+  };
+  const p = makeProvider({ provider: "bob", apiKey: "k", spawnImpl, env: {}, sleep: async () => {} });
+  const res = await p.complete("system text", "user text");
+  assert.equal(res.text, "GRUMP: APPROVE — a.py\nFine.");
+  assert.equal(calls[0].cmd, "bob");
+  assert.ok(calls[0].args.includes("--disable-tool-groups"));
+  assert.equal(calls[0].key, "k");
+  assert.ok(calls[0].prompt.startsWith("system text\n\nuser text"));
+  await assert.rejects(() => p.complete("s", "u"), /no message/);
+});

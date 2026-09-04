@@ -174,7 +174,7 @@ export function readInputs(env = process.env) {
   const mode = (env.INPUT_MODE || "nag").toLowerCase();
   if (!["nag", "gate"].includes(mode)) throw new Error(`mode must be nag or gate, got "${mode}"`);
   const provider = (env.INPUT_PROVIDER || "anthropic").toLowerCase();
-  const apiKey = provider === "openai" ? env.OPENAI_API_KEY : env.ANTHROPIC_API_KEY;
+  const apiKey = provider === "openai" ? env.OPENAI_API_KEY : provider === "bob" ? env.BOB_API_KEY : env.ANTHROPIC_API_KEY;
   return {
     mode,
     provider,
@@ -208,7 +208,7 @@ export async function run({ inputs, event, fetchImpl = fetch, sleep, log = conso
       log("fork without secrets: posted a note and exited 0");
       return { status: "fork" };
     }
-    throw new Error(`No API key. Set ANTHROPIC_API_KEY (or OPENAI_API_KEY with provider: openai) in the workflow env.`);
+    throw new Error(`No API key. Set ANTHROPIC_API_KEY (or OPENAI_API_KEY with provider: openai, BOB_API_KEY with provider: bob) in the workflow env.`);
   }
 
   const provider = makeProvider({ provider: inputs.provider, model: inputs.model, apiKey: inputs.apiKey, fetchImpl, sleep });

@@ -7,3 +7,4 @@
 5. The benchmark corpus is smaller than grumpy-reviewer's and each case is original; the needle tier is chosen deterministically from the seeded and clean sets. Numbers are medians over runs and the raw replies are committed.
 6. Licensed Apache-2.0 with a NOTICE file, like every repository in the org.
 7. The ruleset was calibrated once after a pilot benchmark run (kept in `benchmarks/results/pilot/`): `DO_NOT_REPEAT` now needs a recorded incident or a deliberate removal, findings are capped at five, and one corpus case was reclassed to match the rule. The persona arm was rerun on the revised rules; the bare and generic arms were kept from the pilot because nothing they see changed.
+8. The Action reviews through IBM Bob when `provider: bob` is set: the composite step installs the Bob CLI on the runner, the whole change goes in the prompt with every tool group off, and the session cost from the stream is reported in place of token counts, which Bob does not expose.

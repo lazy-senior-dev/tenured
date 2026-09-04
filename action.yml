@@ -10,11 +10,11 @@ inputs:
     required: false
     default: "nag"
   provider:
-    description: "anthropic or openai. The matching API key must be in the job env (ANTHROPIC_API_KEY or OPENAI_API_KEY)."
+    description: "anthropic, openai, or bob. The matching API key must be in the job env (ANTHROPIC_API_KEY, OPENAI_API_KEY, or BOB_API_KEY)."
     required: false
     default: "anthropic"
   model:
-    description: "Model id. Defaults to claude-sonnet-5 for anthropic and gpt-5 for openai."
+    description: "Model id. Defaults to claude-sonnet-5 for anthropic, gpt-5 for openai, and the Bob default for bob."
     required: false
     default: ""
   max_files:
@@ -42,6 +42,9 @@ runs:
     - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: "22"
+    - if: ${{ inputs.provider == 'bob' }}
+      shell: bash
+      run: npm install -g bobshell@2
     - id: review
       shell: bash
       run: node "${{ github.action_path }}/action/review.mjs"

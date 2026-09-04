@@ -19,7 +19,7 @@
 **Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.**
 
 <!-- bench:hero:start -->
-**Numbers: TBD.** Run `npm run bench` and `npm run bench:report`.
+**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-04; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
 <!-- bench:hero:end -->
 
 <!-- recordings:start -->
@@ -83,7 +83,30 @@ New to me.
 ## Numbers
 
 <!-- bench:table:start -->
-_No results yet._
+| Agent | Model | Arm | Defects caught (of 12) | False alarms (of 4) | Replies without a verdict (per run) | BLOCK precision | Median input tokens | Median output tokens | Median latency |
+|---|---|---|---|---|---|---|---|---|---|
+| Claude Code | `claude-sonnet-5` (n=2) | no skill | 12 | 4 | 0 | n/a | 5714 | 370 | 7 s |
+| Claude Code | `claude-sonnet-5` (n=2) | generic review prompt | 12 | 4 | 1 | n/a | 5820 | 794 | 11 s |
+| Claude Code | `claude-sonnet-5` (n=2) | **tenured** | **12** | **0** | **0** | **65%** | 7815 | 573 | 8 s |
+| Codex CLI | `codex-default` (n=2) | no skill | 12 | 4 | 0 | n/a | 14117 | 168 | 7 s |
+| Codex CLI | `codex-default` (n=2) | generic review prompt | 12 | 4 | 0 | n/a | 43239 | 870 | 22 s |
+| Codex CLI | `codex-default` (n=2) | **tenured** | **12** | **0** | **0** | **77%** | 15533 | 188 | 7 s |
+| IBM Bob Shell | `bob-default` (n=2) | no skill | 12 | 4 | 0 | n/a | 0 | 0 | 13 s |
+| IBM Bob Shell | `bob-default` (n=2) | generic review prompt | 12 | 2 | 2 | n/a | 0 | 0 | 14 s |
+| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **12** | **1** | **2** | **53%** | 0 | 0 | 6 s |
+| Antigravity CLI | `agy-default` (n=1) | no skill | 6 | 0 | 0 | n/a | 19509 | 1735 | 41 s |
+| Antigravity CLI | `agy-default` (n=1) | generic review prompt | 5 | 0 | 0 | n/a | 19562 | 4888 | 47 s |
+| Antigravity CLI | `agy-default` (n=1) | **tenured** | **3** | **0** | **0** | **100%** | 20997 | 31031 | 82 s |
+
+
+**Needle tier** (one defect in a four-file pull request of about 150 lines):
+
+| Agent | Model | No skill | Generic prompt | **Tenured** |
+|---|---|---|---|---|
+| Claude Code | `claude-sonnet-5` (n=2) | 3/4 | 4/4 | **4/4** |
+| Codex CLI | `codex-default` (n=2) | 4/4 | 4/4 | **4/4** |
+| IBM Bob Shell | `bob-default` (n=2) | 4/4 | 4/4 | **4/4** |
+
 <!-- bench:table:end -->
 
 Twelve changes, each shown with the history the reviewer can see and each repeating a recorded mistake: a resurrected retry loop, a reverted flag flipped back, a warning comment ignored, a deprecated API, staging config copied to production, the old side of a migration extended, a change an owner already declined, a metric name that still drives an old alert, a cache stampede from a postmortem, a dependency removed for a CVE, an ADR ignored, a deleted cron re-added. Plus four clean changes with the same history in view. Every case goes to the same agent three ways: no skill, a generic "review this carefully" prompt, and Tenured. Method, per-case table, raw replies and limitations: [benchmarks/results](benchmarks/results). Reproduce: `npm run bench && npm run bench:report`.
