@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "BeforeAgent": [
+      {
+        "hooks": [
+          {
+            "name": "tenured-context",
+            "type": "command",
+            "command": "node \"$HOME/.tenured/hooks/review-context.mjs\" --host gemini 2>/dev/null || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "write_file|replace|edit|run_shell_command",
+        "hooks": [
+          {
+            "name": "tenured-gate",
+            "type": "command",
+            "command": "node \"$HOME/.tenured/hooks/review-gate.mjs\" --host gemini 2>/dev/null || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

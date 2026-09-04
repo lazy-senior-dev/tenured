@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "node \"$HOME/.tenured/hooks/review-context.mjs\" --host copilot 2>/dev/null || true",
+        "timeoutSec": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "node \"$HOME/.tenured/hooks/review-gate.mjs\" --host copilot 2>/dev/null || true",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+name: "tenured"
+description: "Your pull request, reviewed by the staff engineer who has rejected 4,000 of them. One review, inline findings, a verdict."
+author: "Sandeep Bazar"
+branding:
+  icon: "eye"
+  color: "gray-dark"
+inputs:
+  mode:
+    description: "nag posts findings as a comment. gate posts SEEN_BEFORE and fails the check unless the verdict is NEW."
+    required: false
+    default: "nag"
+  provider:
+    description: "anthropic or openai. The matching API key must be in the job env (ANTHROPIC_API_KEY or OPENAI_API_KEY)."
+    required: false
+    default: "anthropic"
+  model:
+    description: "Model id. Defaults to claude-sonnet-5 for anthropic and gpt-5 for openai."
+    required: false
+    default: ""
+  max_files:
+    description: "Review at most this many files, largest first. The rest are listed as not reviewed."
+    required: false
+    default: "25"
+  ignore:
+    description: "Newline- or comma-separated globs to skip, in addition to lockfiles, minified assets, and vendor directories."
+    required: false
+    default: ""
+  github_token:
+    description: "Token used to read the diff and post the review."
+    required: false
+    default: ${{ github.token }}
+outputs:
+  verdict:
+    description: "NEW, SEEN_BEFORE, or DO_NOT_REPEAT."
+    value: ${{ steps.review.outputs.verdict }}
+  findings:
+    description: "Number of findings posted."
+    value: ${{ steps.review.outputs.findings }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: "22"
+    - id: review
+      shell: bash
+      run: node "${{ github.action_path }}/action/review.mjs"
+      env:
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_PROVIDER: ${{ inputs.provider }}
+        INPUT_MODEL: ${{ inputs.model }}
+        INPUT_MAX_FILES: ${{ inputs.max_files }}
+        INPUT_IGNORE: ${{ inputs.ignore }}
+        INPUT_GITHUB_TOKEN: ${{ inputs.github_token }}
