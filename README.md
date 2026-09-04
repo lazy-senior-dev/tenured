@@ -27,15 +27,17 @@
 
 The same staged diff, one CLI, 4 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-04.
 
-| **Claude Code** | **Codex CLI** |
+| Claude Code | Codex CLI |
 |---|---|
 | <img src="assets/recordings/claude.gif" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT with 2 numbered findings" width="440"> | <img src="assets/recordings/codex.gif" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
-| TENURED: DO_NOT_REPEAT · 2 findings · 9 s · $0.03 | TENURED: DO_NOT_REPEAT · 1 finding · 5 s |
-| **Antigravity CLI** | **IBM Bob Shell** |
-| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> | <img src="assets/recordings/bob.gif" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT with 3 numbered findings" width="440"> |
-| TENURED: DO_NOT_REPEAT · 1 finding · 117 s | TENURED: DO_NOT_REPEAT · 3 findings · 6 s · $0.01 |
+| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 2<br><b>Time</b> 9 s<br><b>Tokens</b> 7,737 in / 609 out<br><b>Cost</b> $0.0259 | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 5 s<br><b>Tokens</b> 15,488 in / 77 out<br><b>Cost</b> not reported by the host |
 
-Agents that narrate the whole checklist before the verdict (Bob does) are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with `--agent claude|codex|agy|bob`; Bob needs `BOB_API_KEY`.
+| Antigravity CLI | IBM Bob Shell |
+|---|---|
+| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> | <img src="assets/recordings/bob.gif" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT with 3 numbered findings" width="440"> |
+| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 117 s<br><b>Tokens</b> 20,981 in / 56,452 out<br><b>Cost</b> not reported by the host | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 3<br><b>Time</b> 6 s<br><b>Tokens</b> not reported by the host<br><b>Cost</b> $0.0098 |
+
+Every card lists the same five things; a host that does not report tokens or cost says so rather than leaving a blank. Agents that narrate the whole checklist before the verdict are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with `--agent claude|codex|agy|bob`; Bob needs `BOB_API_KEY`.
 <!-- recordings:end -->
 
 ## The thirty-second version
@@ -94,9 +96,9 @@ New to me.
 | IBM Bob Shell | `bob-default` (n=2) | no skill | 12 | 4 | 0 | n/a | 0 | 0 | 13 s |
 | IBM Bob Shell | `bob-default` (n=2) | generic review prompt | 12 | 2 | 2 | n/a | 0 | 0 | 14 s |
 | IBM Bob Shell | `bob-default` (n=2) | **tenured** | **12** | **1** | **2** | **53%** | 0 | 0 | 6 s |
-| Antigravity CLI | `agy-default` (n=1) | no skill | 6 | 0 | 0 | n/a | 19509 | 1735 | 41 s |
-| Antigravity CLI | `agy-default` (n=1) | generic review prompt | 5 | 0 | 0 | n/a | 19562 | 4888 | 47 s |
-| Antigravity CLI | `agy-default` (n=1) | **tenured** | **3** | **0** | **0** | **100%** | 20997 | 31031 | 82 s |
+| Antigravity CLI | `agy-default` (n=1) | no skill | 11 | 3 | 0 | n/a | 19509 | 2058 | 42 s |
+| Antigravity CLI | `agy-default` (n=1) | generic review prompt | 12 | 4 | 0 | n/a | 19593 | 5469 | 48 s |
+| Antigravity CLI | `agy-default` (n=1) | **tenured** | **12** | **0** | **0** | **100%** | 20997 | 25644 | 74 s |
 
 
 **Needle tier** (one defect in a four-file pull request of about 150 lines):
@@ -106,6 +108,7 @@ New to me.
 | Claude Code | `claude-sonnet-5` (n=2) | 3/4 | 4/4 | **4/4** |
 | Codex CLI | `codex-default` (n=2) | 4/4 | 4/4 | **4/4** |
 | IBM Bob Shell | `bob-default` (n=2) | 4/4 | 4/4 | **4/4** |
+| Antigravity CLI | `agy-default` (n=1) | 4/4 | 4/4 | **4/4** |
 
 <!-- bench:table:end -->
 
