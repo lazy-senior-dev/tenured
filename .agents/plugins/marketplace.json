@@ -1,0 +1,20 @@
+{
+  "name": "lazy-senior-dev",
+  "interface": {
+    "displayName": "lazy-senior-dev"
+  },
+  "plugins": [
+    {
+      "name": "tenured",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

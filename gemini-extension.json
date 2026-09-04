@@ -1,0 +1,6 @@
+{
+  "name": "tenured",
+  "version": "0.1.0",
+  "description": "Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.",
+  "contextFileName": "GEMINI.md"
+}

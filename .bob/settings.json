@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/review-context.mjs --host bob 2>/dev/null || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "^(edit|write_file|apply_diff|insert_content|search_and_replace|execute_command|bash|shell)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/review-gate.mjs --host bob 2>/dev/null || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

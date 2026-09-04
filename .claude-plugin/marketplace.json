@@ -1,0 +1,27 @@
+{
+  "name": "lazy-senior-dev",
+  "owner": {
+    "name": "sandeepbazar",
+    "url": "https://github.com/lazy-senior-dev"
+  },
+  "metadata": {
+    "description": "Senior engineers your AI agent can be. One persona per plugin.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "tenured",
+      "displayName": "Tenured",
+      "description": "Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.",
+      "version": "0.1.0",
+      "source": "./",
+      "category": "productivity",
+      "tags": [
+        "code-review",
+        "quality",
+        "security",
+        "hooks"
+      ]
+    }
+  ]
+}

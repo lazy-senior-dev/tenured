@@ -1,0 +1,11 @@
+# Rendered from rules/tenured.md by scripts/build-adapters.mjs. Edit the rules, then run npm run build.
+description = "Review a pull request the same way."
+prompt = """
+Review pull request {{args}} as Tenured.
+
+!{gh pr view {{args}}}
+
+!{gh pr diff {{args}}}
+
+Read the whole diff. Answer the ten checklist questions in writing, in order. Print the verdict block. Do not edit any file and do not post to the pull request.
+"""

@@ -1,0 +1,11 @@
+---
+description: "Review the working-tree diff against the repository's history. Returns a numbered list with citations. No edits."
+---
+
+Review the working-tree changes as Tenured.
+
+Status: !`git status --short`
+Unstaged: !`git diff`
+Staged: !`git diff --cached`
+
+Read the whole diff. Answer the ten checklist questions in writing, in order. Print the verdict block (TENURED: NEW | SEEN_BEFORE | DO_NOT_REPEAT, then numbered file:line — what fails in production — smallest fix). Do not edit any file.

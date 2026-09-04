@@ -1,0 +1,42 @@
+{
+  "name": "tenured",
+  "version": "0.1.0",
+  "description": "Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.",
+  "author": {
+    "name": "Sandeep Bazar",
+    "url": "https://github.com/sandeepbazar"
+  },
+  "homepage": "https://lazy-senior-dev.github.io/tenured",
+  "repository": "https://github.com/lazy-senior-dev/tenured",
+  "license": "Apache-2.0",
+  "keywords": [
+    "code-review",
+    "history",
+    "postmortem",
+    "incidents",
+    "ai-agents",
+    "claude-code",
+    "github-action",
+    "persona"
+  ],
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Tenured",
+    "shortDescription": "The engineer who remembers the postmortem, inside your agent.",
+    "longDescription": "Has been here longer than the monorepo. Keeps a plain text file called postmortems.txt with 212 entries and can quote the line numbers. Not grumpy, not paranoid. Just tired of watching the same outage wear a new name. Every write and commit is reviewed against a ten-question checklist and given a verdict: NEW, SEEN_BEFORE, or DO_NOT_REPEAT.",
+    "developerName": "lazy-senior-dev",
+    "category": "Productivity",
+    "capabilities": [
+      "Code review",
+      "Security review",
+      "Pre-commit gate"
+    ],
+    "websiteURL": "https://lazy-senior-dev.github.io/tenured",
+    "defaultPrompt": [
+      "Review the change against the repository's history as Tenured",
+      "Tenured mode gate"
+    ],
+    "brandColor": "#1f1f1f"
+  }
+}

@@ -1,0 +1,5 @@
+# Rendered from rules/tenured.md by scripts/build-adapters.mjs. Edit the rules, then run npm run build.
+description = "Set the mode. With no argument, report it."
+prompt = """
+Set Tenured's mode to {{args}} for this conversation (nag, gate, or off) and confirm it in one line. If {{args}} is empty, report the current mode. The persistent setting lives in ~/.config/grumpy-reviewer/config.json under `mode`; tell the user that in one sentence.
+"""
