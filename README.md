@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/tenured.svg" alt="Tenured: bald on top, thick round glasses, a calm half-smile, a cardigan, a notebook marked 2017 in the pocket" width="220">
+</p>
+
 <h1 align="center">tenured</h1>
 
 <p align="center"><em>We tried that in 2017.</em></p>

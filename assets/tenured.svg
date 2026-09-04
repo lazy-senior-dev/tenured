@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-labelledby="t d">
+  <title id="t">Tenured</title>
+  <desc id="d">Line sketch of a veteran engineer: bald on top with hair at the sides, thick round glasses, a calm half-smile, a cardigan, and a notebook marked 2017 in the pocket.</desc>
+  <g fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shoulders and cardigan -->
+    <path d="M 22 318 C 40 262, 92 250, 118 226"/>
+    <path d="M 298 318 C 280 262, 228 250, 202 226"/>
+    <path d="M 118 226 L 150 268 L 160 260 L 170 268 L 202 226"/>
+    <path d="M 160 260 L 160 318" stroke-width="2"/>
+    <circle cx="160" cy="280" r="2.5" fill="#000" stroke="none"/>
+    <circle cx="160" cy="300" r="2.5" fill="#000" stroke="none"/>
+    <!-- pocket with a notebook -->
+    <path d="M 70 292 L 70 318 M 70 292 L 108 292" stroke-width="2"/>
+    <rect x="78" y="274" width="24" height="30" rx="2" stroke-width="2"/>
+    <path d="M 82 282 L 98 282 M 82 288 L 98 288" stroke-width="1.5"/>
+    <!-- head -->
+    <path d="M 104 100 C 106 48, 214 48, 216 100 L 218 168 C 220 212, 100 212, 102 168 Z"/>
+    <!-- bald top, hair at the sides -->
+    <path d="M 104 100 C 100 118, 98 132, 100 146" stroke-width="5"/>
+    <path d="M 216 100 C 220 118, 222 132, 220 146" stroke-width="5"/>
+    <path d="M 96 108 C 90 118, 88 130, 92 142" stroke-width="2"/>
+    <path d="M 224 108 C 230 118, 232 130, 228 142" stroke-width="2"/>
+    <!-- ears -->
+    <path d="M 103 130 C 88 126, 86 154, 102 160"/>
+    <path d="M 217 130 C 232 126, 234 154, 218 160"/>
+    <!-- bushy brows -->
+    <path d="M 118 108 C 128 100, 142 102, 152 108" stroke-width="6"/>
+    <path d="M 202 108 C 192 100, 178 102, 168 108" stroke-width="6"/>
+    <!-- round glasses worn on the nose -->
+    <circle cx="137" cy="130" r="18" stroke-width="3.5"/>
+    <circle cx="183" cy="130" r="18" stroke-width="3.5"/>
+    <path d="M 155 128 C 158 124, 162 124, 165 128" stroke-width="3"/>
+    <path d="M 119 128 L 106 124" stroke-width="2.5"/>
+    <path d="M 201 128 L 214 124" stroke-width="2.5"/>
+    <!-- calm half-lidded eyes -->
+    <path d="M 128 130 C 133 125, 141 125, 146 130" stroke-width="2.5"/>
+    <path d="M 174 130 C 179 125, 187 125, 192 130" stroke-width="2.5"/>
+    <circle cx="137" cy="131" r="2.5" fill="#000" stroke="none"/>
+    <circle cx="183" cy="131" r="2.5" fill="#000" stroke="none"/>
+    <!-- nose -->
+    <path d="M 161 136 L 154 164 C 157 168, 165 168, 168 164"/>
+    <!-- moustache and the knowing half-smile -->
+    <path d="M 140 176 C 150 170, 170 170, 180 176" stroke-width="4"/>
+    <path d="M 142 190 C 152 196, 172 196, 184 186" stroke-width="3"/>
+    <!-- laugh lines -->
+    <path d="M 126 170 C 124 178, 126 186, 132 192" stroke-width="1.5"/>
+    <path d="M 194 170 C 196 178, 194 186, 188 192" stroke-width="1.5"/>
+  </g>
+  <text x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="#000">2017</text>
+</svg>
