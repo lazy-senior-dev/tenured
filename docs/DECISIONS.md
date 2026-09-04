@@ -6,3 +6,4 @@
 4. Tenured is installed from the grumpy-reviewer marketplace (`/plugin marketplace add lazy-senior-dev/grumpy-reviewer`), which lists all three personas, so a team adds one marketplace once.
 5. The benchmark corpus is smaller than grumpy-reviewer's and each case is original; the needle tier is chosen deterministically from the seeded and clean sets. Numbers are medians over runs and the raw replies are committed.
 6. Licensed Apache-2.0 with a NOTICE file, like every repository in the org.
+7. The ruleset was calibrated once after a pilot benchmark run (kept in `benchmarks/results/pilot/`): `DO_NOT_REPEAT` now needs a recorded incident or a deliberate removal, findings are capped at five, and one corpus case was reclassed to match the rule. The persona arm was rerun on the revised rules; the bare and generic arms were kept from the pilot because nothing they see changed.
