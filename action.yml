@@ -1,9 +1,9 @@
 name: "tenured"
-description: "Your pull request, reviewed by the staff engineer who has rejected 4,000 of them. One review, inline findings, a verdict."
+description: "Your pull request, reviewed against the repository's own history by the engineer who remembers the postmortem: removals it resurrects, reverts it repeats, warnings it ignores. Every finding cites a commit. One review, a NEW, SEEN_BEFORE, or DO_NOT_REPEAT verdict."
 author: "Sandeep Bazar"
 branding:
-  icon: "eye"
-  color: "gray-dark"
+  icon: "book-open"
+  color: "purple"
 inputs:
   mode:
     description: "nag posts findings as a comment. gate posts SEEN_BEFORE and fails the check unless the verdict is NEW."
@@ -39,7 +39,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+    - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: "22"
     - id: review
