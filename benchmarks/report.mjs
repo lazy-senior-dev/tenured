@@ -45,7 +45,10 @@ let md = `# Benchmark results, ${date}
 for (const [agent, a] of Object.entries(perAgent)) {
   md += `## ${a.label}\n\n`;
   md += `Model per arm is listed in the table. ${a.calls} calls, ${a.errors} errors (errors are excluded from the scores).\n\n`;
-  md += `| Arm | Model | Runs | Defects caught (median of ${seeded.length}) | Mean | False positives (median of ${clean.length}) | BLOCK precision | Unparseable replies | Median input tokens | Median output tokens | Median latency |\n|---|---|---|---|---|---|---|---|---|---|---|\n`;
+  const anyArm = Object.values(a.arms)[0] || {};
+  const nSeeded = anyArm.seeded ?? seeded.length, nClean = anyArm.clean ?? clean.length;
+  if (anyArm.droppedCases?.length) md += `\nNot counted for this agent, because at least one arm has no reply for them: ${anyArm.droppedCases.join(", ")}.\n`;
+  md += `| Arm | Model | Runs | Defects caught (median of ${nSeeded}) | Mean | False positives (median of ${nClean}) | BLOCK precision | Unparseable replies | Median input tokens | Median output tokens | Median latency |\n|---|---|---|---|---|---|---|---|---|---|---|\n`;
   for (const arm of armOrder) {
     const s = a.arms[arm];
     if (!s) continue;
@@ -106,6 +109,8 @@ for (const [agent, a] of Object.entries(perAgent)) {
       label: ARMS[arm]?.label || arm,
       model: s.model,
       runs: s.runs,
+      seeded: s.seeded,
+      clean: s.clean,
       caughtMedian: s.caught.median,
       caughtMean: s.caught.mean,
       falsePositivesMedian: s.falsePositives.median,

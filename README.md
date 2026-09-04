@@ -99,8 +99,8 @@ The tier above measures what Tenured changes about code the agent writes. This o
 | IBM Bob Shell | `bob-default` (n=2) | generic review prompt | 12 | 4 | 1 | n/a | 0 | 0 | 14 s |
 | IBM Bob Shell | `bob-default` (n=2) | **tenured** | **12** | **0** | **0** | **71%** | 0 | 0 | 11 s |
 | Antigravity CLI | `agy-default` (n=1) | no skill | 11 | 3 | 0 | n/a | 19509 | 2058 | 42 s |
-| Antigravity CLI | `agy-default` (n=1) | generic review prompt | 12 | 4 | 0 | n/a | 19593 | 5469 | 48 s |
-| Antigravity CLI | `agy-default` (n=1) | **tenured** | **12** | **0** | **0** | **100%** | 20997 | 25644 | 74 s |
+| Antigravity CLI | `agy-default` (n=1) | generic review prompt | 12 | 3 | 0 | n/a | 19590 | 5348 | 48 s |
+| Antigravity CLI | `agy-default` (n=1) | **tenured** | **12** | **0** | **0** | **100%** | 20997 | 25645 | 74 s |
 
 
 **Needle tier** (one defect in a four-file pull request of about 150 lines):

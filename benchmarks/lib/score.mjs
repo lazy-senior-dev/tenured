@@ -63,10 +63,21 @@ const mean = (xs) => {
 // Aggregate one agent's records (all arms, cases, runs) into the summary the report prints.
 export function aggregate(records, cases) {
   const byArm = {};
-  const seeded = cases.filter((c) => !c.clean);
-  const clean = cases.filter((c) => c.clean);
+  let seeded = cases.filter((c) => !c.clean);
+  let clean = cases.filter((c) => c.clean);
   const ids = new Set(cases.map((c) => c.id));
   records = records.filter((r) => ids.has(r.case));
+  // Every arm is scored on the same cases. When one arm is missing a case (a host that errored on
+  // it, say), that case is dropped from all arms rather than letting the arms answer different
+  // question sets; scoredCases below reports what was actually counted.
+  const armNames = [...new Set(records.filter((r) => !r.error).map((r) => r.arm))];
+  const seenByArm = {};
+  for (const r of records) if (!r.error) (seenByArm[r.arm] ||= new Set()).add(r.case);
+  const common = new Set([...ids].filter((id) => armNames.every((a) => seenByArm[a]?.has(id))));
+  const dropped = [...ids].filter((id) => !common.has(id));
+  records = records.filter((r) => common.has(r.case));
+  seeded = seeded.filter((c) => common.has(c.id));
+  clean = clean.filter((c) => common.has(c.id));
   const caseById = Object.fromEntries(cases.map((c) => [c.id, c]));
   for (const r of records) {
     if (r.error || !caseById[r.case]) continue;
@@ -109,6 +120,7 @@ export function aggregate(records, cases) {
       runs: runs.length,
       seeded: seeded.length,
       clean: clean.length,
+      droppedCases: dropped,
       caught: { median: median(runs.map((r) => r.caught)), mean: mean(runs.map((r) => r.caught)), perRun: runs.map((r) => r.caught) },
       falsePositives: { median: median(runs.map((r) => r.fp)), mean: mean(runs.map((r) => r.fp)), perRun: runs.map((r) => r.fp) },
       unparseable: runs.reduce((s, r) => s + r.unparseable, 0),
