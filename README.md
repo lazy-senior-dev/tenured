@@ -82,7 +82,9 @@ TENURED: NEW — internal/cache/client.go
 New to me.
 ```
 
-## Numbers
+## Numbers: reviewing a change someone else wrote
+
+The tier above measures what Tenured changes about code the agent writes. This one measures the review itself, on diffs the agent did not author.
 
 <!-- bench:table:start -->
 | Agent | Model | Arm | Defects caught (of 12) | False alarms (of 4) | Replies without a verdict (per run) | BLOCK precision | Median input tokens | Median output tokens | Median latency |

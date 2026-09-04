@@ -76,7 +76,7 @@ function authorBlock() {
 }
 const author = authorBlock();
 if (author) {
-  const wrapped = `<!-- bench:author:start -->\n${author}\n<!-- bench:author:end -->`;
+  const wrapped = `<!-- bench:author:start -->\n## The number that matters: what ships\n\n${author}\n<!-- bench:author:end -->`;
   if (readme.includes("<!-- bench:author:start -->")) readme = readme.replace(/<!-- bench:author:start -->[\s\S]*?<!-- bench:author:end -->/, () => wrapped);
   else readme = readme.replace("<!-- bench:hero:start -->", () => wrapped + "\n\n<!-- bench:hero:start -->");
 } else {
