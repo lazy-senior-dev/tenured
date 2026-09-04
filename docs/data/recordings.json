@@ -1,0 +1,29 @@
+[
+  {
+    "agent": "claude",
+    "label": "Claude Code",
+    "verdict": "DO_NOT_REPEAT",
+    "findings": 2,
+    "seconds": 9,
+    "cost": 0.0259,
+    "recordedAt": "2026-09-04"
+  },
+  {
+    "agent": "codex",
+    "label": "Codex CLI",
+    "verdict": "DO_NOT_REPEAT",
+    "findings": 1,
+    "seconds": 5,
+    "cost": null,
+    "recordedAt": "2026-09-04"
+  },
+  {
+    "agent": "agy",
+    "label": "Antigravity CLI",
+    "verdict": "DO_NOT_REPEAT",
+    "findings": 1,
+    "seconds": 117,
+    "cost": null,
+    "recordedAt": "2026-09-04"
+  }
+]

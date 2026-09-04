@@ -1,0 +1,17 @@
+{
+  "persona": "tenured",
+  "agent": "codex",
+  "case": "t01-resurrected-unbounded-retry",
+  "command": "npx github:lazy-senior-dev/tenured review --staged --agent codex",
+  "durationMs": 5474,
+  "exitCode": 1,
+  "stderr": [
+    "Reading the staged changes (21 lines) with Codex CLI. Tenured does not skim; give it a moment.",
+    "5 s · 15488 in / 77 out tokens"
+  ],
+  "stdout": [
+    "TENURED: DO_NOT_REPEAT",
+    "1. internal/cache/client.go:10 — reintroduces the unbounded retry deliberately removed in 7be3f52 after INC-2019-07; the postmortem says the retry storm increased load 40x and explicitly says “Do not remove the cap” — keep the five-attempt cap and backoff"
+  ],
+  "recordedAt": "2026-09-04T18:50:16.102Z"
+}

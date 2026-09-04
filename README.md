@@ -22,6 +22,22 @@
 **Numbers: TBD.** Run `npm run bench` and `npm run bench:report`.
 <!-- bench:hero:end -->
 
+<!-- recordings:start -->
+## Watch him work on every agent
+
+The same staged diff, one CLI, 3 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-04.
+
+| **Claude Code** | **Codex CLI** |
+|---|---|
+| <img src="assets/recordings/claude.gif" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT with 2 numbered findings" width="440"> | <img src="assets/recordings/codex.gif" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
+| TENURED: DO_NOT_REPEAT · 2 findings · 9 s · $0.03 | TENURED: DO_NOT_REPEAT · 1 finding · 5 s |
+| **Antigravity CLI** |
+| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
+| TENURED: DO_NOT_REPEAT · 1 finding · 117 s |
+
+Agents that narrate the whole checklist before the verdict (Bob does) are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with `--agent claude|codex|agy|bob`; Bob needs `BOB_API_KEY`.
+<!-- recordings:end -->
+
 ## The thirty-second version
 
 Every repository older than a year has a graveyard: the retry loop that was capped after an incident, the flag that was reverted after it double-charged customers, the dependency removed for a CVE, the comment that says "do not lower this". An agent does not read graveyards. It sees a ticket that says "make it more resilient" and puts the unbounded retry back, cleanly, with tests.

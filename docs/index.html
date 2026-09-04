@@ -4,22 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>tenured: the engineer who remembers the postmortem</title>
-<meta name="description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Ruleset draft published.">
+<meta name="description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Plugin for 14 agents and a GitHub Action.">
 <meta name="author" content="Sandeep Bazar">
 <link rel="icon" href="assets/tenured.svg" type="image/svg+xml">
 <link rel="canonical" href="https://lazy-senior-dev.github.io/tenured/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="tenured: the engineer who remembers the postmortem">
-<meta property="og:description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Ruleset draft published.">
+<meta property="og:description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Plugin for 14 agents and a GitHub Action.">
 <meta property="og:url" content="https://lazy-senior-dev.github.io/tenured/">
 <meta property="og:image" content="https://lazy-senior-dev.github.io/assets/social-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="tenured: the engineer who remembers the postmortem">
-<meta name="twitter:description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Ruleset draft published.">
+<meta name="twitter:description" content="Your agent's change, reviewed against the repository's own history: removals it resurrects, reverts it repeats, postmortems it ignores. Plugin for 14 agents and a GitHub Action.">
 <meta name="twitter:image" content="https://lazy-senior-dev.github.io/assets/social-card.png">
 <meta name="theme-color" content="#fff6d6">
 <!-- Custom domain: create a CNAME file containing only the bare domain in this Pages folder, then set it under Settings > Pages. -->
-<link rel="stylesheet" href="assets/site.css?v=eb00b0ca">
+<link rel="stylesheet" href="assets/site.css?v=cc4a5711">
 </head>
 <body>
 <header class="top">
@@ -42,7 +42,7 @@
 
 <main>
 <section class="hero wrap">
-  <div class="pill"><i style="background:var(--warn);animation:none"></i> in progress · ruleset draft published · Apache-2.0</div>
+  <div class="pill"><i></i> v0.1.0 · plugin for 14 agents · GitHub Action · Apache-2.0</div>
   <div style="margin:1.6rem 0 .4rem"><span class="sketch"><svg viewBox="0 0 320 320" aria-hidden="true">
   <title id="t">Tenured</title>
   <desc id="d">Line sketch of a veteran engineer: bald on top with hair at the sides, thick round glasses, a calm half-smile, a cardigan, and a notebook marked 2017 in the pocket.</desc>
@@ -104,7 +104,7 @@
   </g>
   <text x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="currentColor">2017</text>
 </svg></span></div>
-  <h1 class="display">Tenured<br><span class="g">remembers 2017.</span></h1>
+  <h1 class="display">Your agent has no memory.<br><span class="g">Tenured remembers 2017.</span></h1>
   <p class="lede">Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce. Every objection comes with a commit hash the author can open. <strong>We tried that in 2017.</strong></p>
   <div class="ctas">
     <a class="btn primary" href="https://github.com/lazy-senior-dev/tenured/blob/main/rules/tenured.md">Read the ruleset draft →</a>
@@ -119,6 +119,17 @@
     <div class="node ok"><small>Branch</small><b>nothing repeated</b><em>NEW → New to me.</em></div>
   </div>
   <p class="pipe-note">No evidence, no objection. NEW is a good verdict.</p>
+</section>
+
+<section class="wrap reveal" id="recordings">
+  <div class="eyebrow">Recorded</div>
+  <h2>Watch him work on every agent</h2>
+  <p class="sub">The same staged diff, one CLI, 3 agents. Real runs captured from the terminal transcript and rendered frame by frame, nothing typed by hand and nothing cut. Captions come from the recording itself. Captured 2026-09-04.</p>
+  <div class="recs">
+    <figure class="rec"><img src="assets/recordings/claude.gif" loading="lazy" width="1000" height="420" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT"><figcaption><strong>Claude Code</strong><span>TENURED: DO_NOT_REPEAT · 2 findings · 9 s · $0.03</span></figcaption></figure>
+    <figure class="rec"><img src="assets/recordings/codex.gif" loading="lazy" width="1000" height="420" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT"><figcaption><strong>Codex CLI</strong><span>TENURED: DO_NOT_REPEAT · 1 finding · 5 s</span></figcaption></figure>
+    <figure class="rec"><img src="assets/recordings/agy.gif" loading="lazy" width="1000" height="420" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT"><figcaption><strong>Antigravity CLI</strong><span>TENURED: DO_NOT_REPEAT · 1 finding · 117 s</span></figcaption></figure>
+  </div>
 </section>
 
 <section class="wrap reveal">
@@ -139,21 +150,21 @@
   <p class="sub" style="margin-top:1.4rem">Verdict block: <code>TENURED: NEW | SEEN_BEFORE | DO_NOT_REPEAT</code>. <code>DO_NOT_REPEAT</code> is reserved for changes that reproduce a recorded incident or resurrect a deliberate removal.</p>
 </section>
 
-<section class="wrap reveal">
-  <div class="eyebrow">Status</div>
-  <h2>What exists, what is next</h2>
+<section class="wrap reveal" id="ships">
+  <div class="eyebrow">What ships</div>
+  <h2>Everything the Grump has, pointed at the repository's memory</h2>
   <div class="grid c4">
-    <div class="stat"><b>1</b><span>ruleset draft, v0</span></div>
-    <div class="stat"><b>10</b><span>questions, evidence required</span></div>
+    <div class="stat"><b>14</b><span>agent adapters, one ruleset</span></div>
+    <div class="stat"><b>10</b><span>questions, with a stop rule</span></div>
     <div class="stat"><b>3</b><span>verdicts: NEW · SEEN_BEFORE · DO_NOT_REPEAT</span></div>
-    <div class="stat"><b>0</b><span>adapters shipped yet</span></div>
+    <div class="stat"><b>20</b><span>benchmark cases: 12 seeded · 4 clean · 4 needle</span></div>
   </div>
   <div class="grid c3" style="margin-top:1rem">
-    <div class="card"><h3>1. History gathering</h3><p>A step that collects <code>git log</code> for the touched files, the changelog, and <code>docs/postmortems*</code> before each review, then the adapters from the generator.</p></div>
-    <div class="card"><h3>2. The gate and the memory</h3><p>The same <code>PreToolUse</code> hook, plus <code>/tenured-remember</code> to append dated lessons to the repository's own notes.</p></div>
-    <div class="card"><h3>3. The benchmark</h3><p>Small repositories with real histories, each containing a change that repeats a recorded mistake. Measured on repeated outages avoided, raw replies committed.</p></div>
+    <div class="card"><h3>Adapters</h3><p>Generated from <code>rules/tenured.md</code> for Claude Code, Codex, Copilot CLI, Gemini CLI and Antigravity, OpenCode, Cursor, Windsurf, Cline, Kiro, OpenClaw, Devin, Qoder, IBM Bob, and any <code>AGENTS.md</code> reader. <code>tenured install &lt;host&gt;</code> drops the right files in.</p></div>
+    <div class="card"><h3>The gate</h3><p>The same <code>PreToolUse</code> hook. <code>DO_NOT_REPEAT</code> denies the write in every mode; <code>SEEN_BEFORE</code> denies in gate mode.</p></div>
+    <div class="card"><h3>The benchmark</h3><p>Three arms (agent alone, generic reviewer prompt, Tenured) on the same diffs, every reply kept. Numbers and the per-diff table live in the README and <code>benchmarks/results</code>.</p></div>
   </div>
-  <p class="sub" style="margin-top:1.2rem">Have a bug that happened twice in the same codebase? <a href="https://github.com/lazy-senior-dev/tenured/issues">Open an issue</a> with both commits; it becomes a benchmark case.</p>
+  <p class="sub" style="margin-top:1.2rem">Have a repeated outage one of the ten questions would have caught? <a href="https://github.com/lazy-senior-dev/tenured/issues">Open an issue</a>; it becomes a benchmark case.</p>
 </section>
 
 <section class="wrap reveal">
@@ -425,7 +436,7 @@
   </g>
   <text x="258" y="286" font-family="Menlo, Consolas, monospace" font-size="8.5" font-weight="700" text-anchor="middle" fill="#000">NOT LGTM</text>
 </svg></span><h3>The Grump <small style="color:var(--ok);font-weight:500">live</small></h3><p><em>Show me where it breaks.</em> Reviews the diff before it reaches your branch.</p></a>
-    <a class="card" href="https://lazy-senior-dev.github.io/paranoid-sre/" style="display:block"><span class="sketch dim" style="animation:none;filter:none"><svg viewBox="0 0 320 320" aria-hidden="true" style="width:120px">
+    <a class="card" href="https://lazy-senior-dev.github.io/paranoid-sre/" style="display:block"><span class="sketch" style="animation:none"><svg viewBox="0 0 320 320" aria-hidden="true" style="width:120px">
   <title id="t">The Paranoid SRE</title>
   <desc id="d">Line sketch of an on-call engineer with her hair in a bun, a headset, wide alert eyes, and a pager clipped to her collar.</desc>
   <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -482,7 +493,7 @@
     <!-- lanyard -->
     <path d="M 150 250 L 200 262" stroke-width="2"/>
   </g>
-</svg></span><h3>Paranoid SRE <small style="color:var(--faint);font-weight:500">coming soon</small></h3><p><em>It works. Now tell me how it fails.</em> Reviews the deploy.</p></a>
+</svg></span><h3>Paranoid SRE</h3><p><em>It works. Now tell me how it fails.</em> Reviews the deploy.</p></a>
     <a class="card" href="https://lazy-senior-dev.github.io/" style="display:block"><h3>All personas</h3><p>One persona per plugin, each measured on the number that engineer cares about.</p></a>
   </div>
 </section>

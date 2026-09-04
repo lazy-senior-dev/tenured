@@ -1,0 +1,17 @@
+{
+  "persona": "tenured",
+  "agent": "agy",
+  "case": "t01-resurrected-unbounded-retry",
+  "command": "npx github:lazy-senior-dev/tenured review --staged --agent agy",
+  "durationMs": 116935,
+  "exitCode": 1,
+  "stderr": [
+    "Reading the staged changes (21 lines) with Antigravity CLI. Tenured does not skim; give it a moment.",
+    "117 s · 20981 in / 56452 out tokens"
+  ],
+  "stdout": [
+    "TENURED: DO_NOT_REPEAT",
+    "1. internal/cache/client.go:10 — reintroduces the unbounded retry removed in bc03661 after INC-2019-07 (done in 3f9c2a1) — keep the retry cap of 5 and backoff from that commit"
+  ],
+  "recordedAt": "2026-09-04T18:53:04.631Z"
+}

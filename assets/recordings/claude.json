@@ -1,0 +1,18 @@
+{
+  "persona": "tenured",
+  "agent": "claude",
+  "case": "t01-resurrected-unbounded-retry",
+  "command": "npx github:lazy-senior-dev/tenured review --staged --agent claude",
+  "durationMs": 9365,
+  "exitCode": 1,
+  "stderr": [
+    "Reading the staged changes (21 lines) with Claude Code (claude-sonnet-5). Tenured does not skim; give it a moment.",
+    "9 s · 7737 in / 609 out tokens · $0.0259"
+  ],
+  "stdout": [
+    "TENURED: DO_NOT_REPEAT",
+    "1. internal/cache/client.go:9 — removes the retry cap added in 3f9c2a1 to fix the unbounded retry storm from INC-2019-07 (\"Do not remove the cap\") — restore `for attempt := 0; attempt < 5; attempt++` with the `ErrUnavailable` return",
+    "2. internal/cache/client.go:14 — replaces the exponential backoff (attempt*attempt*50ms) from 3f9c2a1 with a flat 10ms sleep, removing the backoff that same postmortem's action item required — restore the exponential backoff"
+  ],
+  "recordedAt": "2026-09-04T18:50:10.119Z"
+}
