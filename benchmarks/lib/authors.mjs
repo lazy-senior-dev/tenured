@@ -89,7 +89,7 @@ export const AUTHORS = {
     label: "IBM Bob Shell",
     available: () => which("bob") && !!process.env.BOB_API_KEY,
     async write({ prompt, cwd, model }) {
-      const args = ["run", "--format", "stream-json", "--mode", "code", "--max-turns", "40", "--disable-mcp", "--disable-subagents", "--trust", "--accept-license"];
+      const args = ["run", "--format", "stream-json", "--mode", "agent", "--max-turns", "40", "--disable-mcp", "--disable-subagents", "--trust", "--accept-license"];
       if (model) args.push("--model", model);
       const res = await run("bob", args, { cwd, input: prompt });
       let text = "", cost;
