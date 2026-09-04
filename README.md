@@ -18,6 +18,18 @@
 
 **Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.**
 
+<!-- bench:author:start -->
+## The number that matters: what ships
+
+**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 2 of 8 tasks (19%), 0 of 8 with a generic "be careful" prompt, and 0 of 8 with Tenured loaded (0%), reviewing its own change before finishing in 8 of 8 runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Median of 2 runs; [method, per-task table, raw diffs](benchmarks/results/author).
+
+| Agent | Model | Arm | Made the change (of 8) | Shipped the defect (of 8) | Self-reviewed | Median time | Median cost |
+|---|---|---|---|---|---|---|---|
+| IBM Bob Shell | `bob-default` (n=2) | no skill | 6 | 2 (19%) | n/a | 14 s | $0.10 |
+| IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 6 | 0 (0%) | n/a | 21 s | $0.13 |
+| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **5** | **0 (0%)** | **8** | 36 s | $0.25 |
+<!-- bench:author:end -->
+
 <!-- bench:hero:start -->
 **On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-04; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
 <!-- bench:hero:end -->

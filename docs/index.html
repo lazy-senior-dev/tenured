@@ -156,7 +156,7 @@
   <h2>When the agent writes the code, what ships?</h2>
   <p class="sub">Eight tickets that ask for the obvious change, in repositories whose git log, postmortem, ADR, or warning comment says why that change was undone before. The agent has to make the change, or decline, itself. Three ways: the ticket alone, the ticket with a generic "be careful" prompt, and the ticket with Tenured loaded. The shipped diff is scored by fixed checks written before any run, never by a model. Lower is better.</p>
   <div class="grid c4" style="margin-bottom:1.2rem">
-    <div class="stat"><b id="a-without">TBD</b><span id="l-without">tasks that shipped the defect, agent alone</span></div>
+    <div class="stat"><b id="a-without">TBD</b><span id="l-without">runs that shipped the defect, agent alone</span></div>
     <div class="stat"><b id="a-generic">TBD</b><span>with a generic "be careful" prompt</span></div>
     <div class="stat"><b id="a-with">TBD</b><span id="l-with">with him loaded</span></div>
     <div class="stat"><b id="a-reviewed">TBD</b><span>runs where he reviewed the change before it shipped</span></div>
@@ -526,23 +526,23 @@
     Object.keys(data.agents).forEach(function (key) {
       var a = data.agents[key], arms = a.arms || {};
       // A partial run is not shown: every arm must carry one record per task per run.
-      var whole = function (s) { return s && s.runs && s.records === s.runs * data.tasks; };
+      var whole = function (s) { return s && s.runs && s.attempts === s.runs * data.tasks; };
       if (!whole(arms.grump) || !whole(arms.bare)) return;
       if (!first) first = { a: a, b: arms.bare, g: arms.grump, ge: arms.generic };
       ["bare", "generic", "grump"].forEach(function (k) {
         var s = arms[k]; if (!whole(s)) return;
         var strong = k === "grump", w = function (x) { return strong ? "<strong>" + x + "</strong>" : x; };
         var tr = document.createElement("tr");
-        tr.innerHTML = "<td>" + esc(a.label) + "</td><td><code>" + esc(s.model || "") + "</code> (n=" + s.runs + ")</td><td>" + w(esc(s.label)) + "</td><td>" + w(s.implemented + " / " + data.tasks) + "</td><td>" + w(s.shipped + " / " + data.tasks) + "</td><td>" + (strong ? w(s.reviewed + " / " + data.tasks) : "n/a") + "</td><td>" + secs(s.latency) + "</td><td>" + money(s.cost) + "</td>";
+        tr.innerHTML = "<td>" + esc(a.label) + "</td><td><code>" + esc(s.model || "") + "</code> (n=" + s.runs + ")</td><td>" + w(esc(s.label)) + "</td><td>" + w(s.implementedTotal + " of " + s.attempts) + "</td><td>" + w(s.shippedTotal + " of " + s.attempts + " (" + Math.round(100*s.shippedTotal/(s.attempts||1)) + "%)") + "</td><td>" + (strong ? w(s.reviewedTotal + " of " + s.attempts) : "n/a") + "</td><td>" + secs(s.latency) + "</td><td>" + money(s.cost) + "</td>";
         tbody.appendChild(tr);
       });
     });
     if (first) {
       sec.hidden = false;
-      document.getElementById("a-without").textContent = first.b.shipped + " / " + data.tasks;
-      document.getElementById("a-generic").textContent = first.ge && first.ge.runs ? first.ge.shipped + " / " + data.tasks : "n/a";
-      document.getElementById("a-with").textContent = first.g.shipped + " / " + data.tasks;
-      document.getElementById("a-reviewed").textContent = first.g.reviewed + " / " + data.tasks;
+      document.getElementById("a-without").textContent = first.b.shippedTotal + " of " + first.b.attempts;
+      document.getElementById("a-generic").textContent = first.ge && first.ge.attempts ? first.ge.shippedTotal + " of " + first.ge.attempts : "n/a";
+      document.getElementById("a-with").textContent = first.g.shippedTotal + " of " + first.g.attempts;
+      document.getElementById("a-reviewed").textContent = first.g.reviewedTotal + " of " + first.g.attempts;
       document.getElementById("author-note").insertAdjacentHTML("afterbegin", "Measured " + esc(data.date) + " on " + esc(first.a.label) + " (" + esc(first.g.model) + "); medians over runs. ");
     }
   }).catch(function () {});

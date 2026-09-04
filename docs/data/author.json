@@ -2,6 +2,184 @@
   "date": "2026-09-04",
   "tasks": 8,
   "agents": {
+    "bob": {
+      "label": "IBM Bob Shell",
+      "calls": 48,
+      "errors": 0,
+      "arms": {
+        "bare": {
+          "label": "no skill",
+          "runs": 2,
+          "records": 16,
+          "errors": 0,
+          "implemented": 6,
+          "shipped": 1.5,
+          "shippedMean": 1.5,
+          "reviewed": 0,
+          "approved": 0,
+          "latency": 14473.5,
+          "output": 0,
+          "cost": 0.102876,
+          "model": "bob-default",
+          "perTask": {
+            "batch-checkout-flag": {
+              "runs": 2,
+              "implemented": 1,
+              "shipped": 1
+            },
+            "cache-retry": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "http-errors-metric": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "prod-kafka-config": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 2
+            },
+            "sessions-cleanup-cron": {
+              "runs": 2,
+              "implemented": 0,
+              "shipped": 0
+            },
+            "tax-at-checkout": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "visibility-timeout": {
+              "runs": 2,
+              "implemented": 1,
+              "shipped": 0
+            },
+            "xml-catalog-import": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            }
+          }
+        },
+        "generic": {
+          "label": "generic care prompt",
+          "runs": 2,
+          "records": 16,
+          "errors": 0,
+          "implemented": 6,
+          "shipped": 0,
+          "shippedMean": 0,
+          "reviewed": 0,
+          "approved": 0,
+          "latency": 21417,
+          "output": 0,
+          "cost": 0.126494,
+          "model": "bob-default",
+          "perTask": {
+            "batch-checkout-flag": {
+              "runs": 2,
+              "implemented": 0,
+              "shipped": 0
+            },
+            "cache-retry": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "http-errors-metric": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "prod-kafka-config": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "sessions-cleanup-cron": {
+              "runs": 2,
+              "implemented": 1,
+              "shipped": 0
+            },
+            "tax-at-checkout": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "visibility-timeout": {
+              "runs": 2,
+              "implemented": 1,
+              "shipped": 0
+            },
+            "xml-catalog-import": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            }
+          }
+        },
+        "grump": {
+          "label": "tenured",
+          "runs": 2,
+          "records": 16,
+          "errors": 0,
+          "implemented": 4.5,
+          "shipped": 0,
+          "shippedMean": 0,
+          "reviewed": 8,
+          "approved": 5.5,
+          "latency": 35631,
+          "output": 0,
+          "cost": 0.246168,
+          "model": "bob-default",
+          "perTask": {
+            "batch-checkout-flag": {
+              "runs": 2,
+              "implemented": 0,
+              "shipped": 0
+            },
+            "cache-retry": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "http-errors-metric": {
+              "runs": 2,
+              "implemented": 0,
+              "shipped": 0
+            },
+            "prod-kafka-config": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "sessions-cleanup-cron": {
+              "runs": 2,
+              "implemented": 0,
+              "shipped": 0
+            },
+            "tax-at-checkout": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            },
+            "visibility-timeout": {
+              "runs": 2,
+              "implemented": 1,
+              "shipped": 0
+            },
+            "xml-catalog-import": {
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 0
+            }
+          }
+        }
+      }
+    },
     "claude": {
       "label": "Claude Code",
       "calls": 10,
