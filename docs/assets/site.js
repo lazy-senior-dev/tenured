@@ -3,7 +3,7 @@
   var root = document.documentElement;
   function setTheme(t) { root.setAttribute("data-theme", t); try { localStorage.setItem("lsd-theme", t); } catch (e) {} var b = document.getElementById("theme"); if (b) b.textContent = t === "dark" ? "☀" : "☾"; }
   var saved = null; try { saved = localStorage.getItem("lsd-theme"); } catch (e) {}
-  setTheme(saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
+  setTheme(saved || "dark");
   var tb = document.getElementById("theme");
   if (tb) tb.addEventListener("click", function () { setTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark"); });
   var mb = document.getElementById("menu");
