@@ -21,13 +21,13 @@
 <!-- bench:author:start -->
 ## The number that matters: what ships
 
-**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 2 of 8 tasks (19%), 0 of 8 with a generic "be careful" prompt, and 0 of 8 with Tenured loaded (0%), reviewing its own change before finishing in 8 of 8 runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Median of 2 runs; [method, per-task table, raw diffs](benchmarks/results/author).
+**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 3 of 16 runs (19%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured loaded (0%), reviewing its own change before finishing in 16 of 16 runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
 
-| Agent | Model | Arm | Made the change (of 8) | Shipped the defect (of 8) | Self-reviewed | Median time | Median cost |
+| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time | Median cost |
 |---|---|---|---|---|---|---|---|
-| IBM Bob Shell | `bob-default` (n=2) | no skill | 6 | 2 (19%) | n/a | 14 s | $0.10 |
-| IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 6 | 0 (0%) | n/a | 21 s | $0.13 |
-| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **5** | **0 (0%)** | **8** | 36 s | $0.25 |
+| IBM Bob Shell | `bob-default` (n=2) | no skill | 12 of 16 | 3 of 16 (19%) | n/a | 14 s | $0.10 |
+| IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 12 of 16 | 0 of 16 (0%) | n/a | 21 s | $0.13 |
+| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **9 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s | $0.25 |
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->

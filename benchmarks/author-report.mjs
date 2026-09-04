@@ -31,6 +31,10 @@ export function summarise(rows) {
       runs: runs.length,
       records: rs.length,
       errors: rows.filter((r) => r.arm === arm && r.error).length,
+      attempts: rs.length,
+      implementedTotal: rs.filter((x) => x.implemented).length,
+      shippedTotal: rs.filter((x) => x.shipped).length,
+      reviewedTotal: rs.filter((x) => x.reviewed).length,
       implemented: median(perRun.map((p) => p.implemented)),
       shipped: median(perRun.map((p) => p.shipped)),
       shippedMean: perRun.length ? perRun.reduce((a, p) => a + p.shipped, 0) / perRun.length : null,
@@ -68,12 +72,13 @@ for (const f of existsSync(RAW) ? readdirSync(RAW).filter((f) => f.endsWith(".js
 if (!Object.keys(agents).length) { console.log("no author-tier records yet"); process.exit(0); }
 const date = new Date().toISOString().slice(0, 10);
 const fmt = (x, d = 0) => (x == null ? "n/a" : Number(x).toFixed(d));
-let md = `# Author tier, ${date}\n\n**What is measured.** The agent is the author. It gets a ticket and a small repository (${tasks.length} tasks, each inviting one classic defect, listed in the per-task table) and has to ship the change itself in the agent's own headless write mode.${HEAD ? " " + HEAD : ""} Three arms: the task alone, the task with a generic "be careful" prompt, and the task with ${P.asName || P.name}'s persona card and the instruction to review the change as ${P.asName || P.name} before finishing. The shipped diff is scored by fixed checks written before any run (\`benchmarks/author/tasks/*/check.mjs\`), never by a model.\n\n**Scores.** *Implemented* is the number of tasks where the diff contains the feature. *Shipped defects* is the number of tasks whose diff contains the seeded class of defect; lower is better. A task the agent declined, or solved another way, counts as clean, which is the right outcome for a ticket that asks for the wrong thing. *Self-reviewed* is the number of runs where ${P.asName || P.name}'s verdict block appears in the transcript. Medians over runs.\n\n`;
+let md = `# Author tier, ${date}\n\n**What is measured.** The agent is the author. It gets a ticket and a small repository (${tasks.length} tasks, each inviting one classic defect, listed in the per-task table) and has to ship the change itself in the agent's own headless write mode.${HEAD ? " " + HEAD : ""} Three arms: the task alone, the task with a generic "be careful" prompt, and the task with ${P.asName || P.name}'s persona card and the instruction to review the change as ${P.asName || P.name} before finishing. The shipped diff is scored by fixed checks written before any run (\`benchmarks/author/tasks/*/check.mjs\`), never by a model.\n\n**Scores.** Counts are totals over every run, not medians, so a task attempted twice counts twice. *Made the change* is the number of runs whose diff contains the feature. *Shipped the defect* is the number of runs whose diff contains the seeded class of defect; lower is better. A task the agent declined, or solved another way, counts as clean, which is the right outcome for a ticket that asks for the wrong thing. *Self-reviewed* is the number of runs where ${P.asName || P.name}'s verdict block appears in the transcript. Medians over runs.\n\n`;
 for (const [agent, a] of Object.entries(agents)) {
-  md += `## ${a.label}\n\n${a.calls} runs, ${a.errors} errors (errors are excluded).\n\n| Arm | Model | Runs | Made the change (of ${tasks.length}) | Shipped defects (of ${tasks.length}) | Self-reviewed | Median time | Median output tokens | Median cost |\n|---|---|---|---|---|---|---|---|---|\n`;
+  md += `## ${a.label}\n\n${a.calls} runs, ${a.errors} errors (errors are excluded).\n\n| Arm | Model | Runs | Made the change | Shipped the defect | Self-reviewed | Median time | Median output tokens | Median cost |\n|---|---|---|---|---|---|---|---|---|\n`;
   for (const [arm, s] of Object.entries(a.arms)) {
     const b = arm === "grump" ? "**" : "";
-    md += `| ${b}${s.label}${b} | \`${s.model}\` | ${s.runs} | ${b}${fmt(s.implemented)}${b} | ${b}${fmt(s.shipped)}${b} | ${arm === "grump" ? fmt(s.reviewed) : "n/a"} | ${s.latency == null ? "n/a" : Math.round(s.latency / 1000) + " s"} | ${fmt(s.output)} | ${s.cost == null ? "n/a" : "$" + fmt(s.cost, 3)} |\n`;
+    const of = ` of ${s.attempts}`;
+    md += `| ${b}${s.label}${b} | \`${s.model}\` | ${s.runs} | ${b}${s.implementedTotal}${of}${b} | ${b}${s.shippedTotal}${of} (${Math.round((100 * s.shippedTotal) / (s.attempts || 1))}%)${b} | ${arm === "grump" ? `${s.reviewedTotal}${of}` : "n/a"} | ${s.latency == null ? "n/a" : Math.round(s.latency / 1000) + " s"} | ${fmt(s.output)} | ${s.cost == null ? "n/a" : "$" + fmt(s.cost, 3)} |\n`;
   }
   md += `\n### Per task (runs that shipped the defect / runs that made the change)\n\n| Task | Defect class | ${Object.values(a.arms).map((s) => s.label).join(" | ")} |\n|---|---|${Object.keys(a.arms).map(() => "---").join("|")}|\n`;
   for (const t of tasks) {

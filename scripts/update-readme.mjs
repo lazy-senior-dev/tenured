@@ -64,13 +64,13 @@ function authorBlock() {
   if (!rows.length) return "";
   const [, first] = rows[0];
   const b = first.arms.bare, g = first.arms.grump, ge = first.arms.generic;
-  const pct = (s) => Math.round((100 * s.shipped) / d.tasks);
-  const lead = `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${n(b.shipped)} of ${d.tasks} tasks (${pct(b)}%)${ge && ge.runs ? `, ${n(ge.shipped)} of ${d.tasks} with a generic "be careful" prompt` : ""}, and ${n(g.shipped)} of ${d.tasks} with ${WHO} loaded (${pct(g)}%), reviewing its own change before finishing in ${n(g.reviewed)} of ${d.tasks} runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Median of ${g.runs} runs; [method, per-task table, raw diffs](benchmarks/results/author).`;
-  let table = `| Agent | Model | Arm | Made the change (of ${d.tasks}) | Shipped the defect (of ${d.tasks}) | Self-reviewed | Median time | Median cost |\n|---|---|---|---|---|---|---|---|\n`;
+  const pct = (s) => Math.round((100 * s.shippedTotal) / (s.attempts || 1));
+  const lead = `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%)${ge && ge.attempts ? `, ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%)` : ""}, and ${g.shippedTotal} of ${g.attempts} with ${WHO} loaded (${pct(g)}%), reviewing its own change before finishing in ${g.reviewedTotal} of ${g.attempts} runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).`;
+  let table = `| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time | Median cost |\n|---|---|---|---|---|---|---|---|\n`;
   for (const [, a] of rows) for (const arm of ["bare", "generic", "grump"]) {
     const s = a.arms[arm]; if (!s || !s.runs) continue;
     const w = (x) => (arm === "grump" ? `**${x}**` : x);
-    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(n(s.implemented))} | ${w(n(s.shipped) + " (" + pct(s) + "%)")} | ${arm === "grump" ? w(n(s.reviewed)) : "n/a"} | ${secs(s.latency)} | ${s.cost == null ? "n/a" : "$" + n(s.cost, 2)} |\n`;
+    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(s.implementedTotal + " of " + s.attempts)} | ${w(s.shippedTotal + " of " + s.attempts + " (" + pct(s) + "%)")} | ${arm === "grump" ? w(s.reviewedTotal + " of " + s.attempts) : "n/a"} | ${secs(s.latency)} | ${s.cost == null ? "n/a" : "$" + n(s.cost, 2)} |\n`;
   }
   return `${lead}\n\n${table.trim()}`;
 }
