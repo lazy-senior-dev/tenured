@@ -11,11 +11,19 @@
   --radius: 14px;
 }
 [data-theme="light"] {
-  --bg: #f6f7fb; --bg-2: #eef1f8; --panel: #ffffff; --panel-2: #f0f3fa; --line: #d9dfec;
-  --text: #121a30; --muted: #4f5b78; --faint: #8b95ad;
-  --grad: linear-gradient(90deg, #121a30 0%, #2b3d7a 55%, #1f6fd1 100%);
-  --ink: #121a30;
+  /* warm paper: the sticky-note yellow of a code review that is not going well */
+  --bg: #fff6d6; --bg-2: #ffefb8; --panel: #fffdf5; --panel-2: #fff4cc; --line: #eddba0;
+  --text: #1b1a17; --muted: #5a5238; --faint: #9a8f66;
+  --accent: #b86e00; --accent-2: #e08a00; --block: #d9480f; --ok: #2f8f46; --warn: #e6a700;
+  --grad: linear-gradient(90deg, #1b1a17 0%, #7a4b00 50%, #e08a00 100%);
+  --cta: linear-gradient(135deg, #ffb703, #fb8500);
+  --ink: #1b1a17;
 }
+[data-theme="light"] body::before { opacity: .45; }
+[data-theme="light"] .btn.primary { color: #1b1a17; box-shadow: 0 10px 30px -10px rgba(251,133,0,.6); }
+[data-theme="light"] .pill i { background: #2f8f46; }
+[data-theme="light"] .stat b { color: #b86e00; }
+[data-theme="light"] .term, [data-theme="light"] .cmd { background: #1b1a17; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
@@ -91,6 +99,8 @@ h2 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); letter-spacing: -.01em; margin: 0 
 .grid.c4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.3rem 1.4rem; }
 .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+a.card, a.card:hover { text-decoration: none; color: inherit; }
+a.card h3 { color: var(--accent); }
 .card h3 { margin: 0 0 .4rem; font-size: 1.1rem; }
 .card p { margin: 0; color: var(--muted); }
 .stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.3rem; text-align: center; }
