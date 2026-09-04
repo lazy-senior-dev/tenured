@@ -40,7 +40,7 @@ jobs:
       - name: link check
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
         with:
-          args: --no-progress --accept 200,204,206,429 --exclude-path node_modules --exclude 'https://github.com/lazy-senior-dev/tenured/(issues|discussions|releases|actions)' --exclude 'https://lazy-senior-dev.github.io' --exclude 'https://github.com/sponsors' README.md docs/agent-portability.md docs/RELATED.md
+          args: --no-progress --accept 200,204,206,429 --exclude-path node_modules --exclude 'https://www.linkedin.com/.*' --exclude 'https://github.com/lazy-senior-dev/tenured/(issues|discussions|releases|actions)' --exclude 'https://lazy-senior-dev.github.io' --exclude 'https://github.com/sponsors' README.md docs/agent-portability.md docs/RELATED.md
           fail: true
 
   plugin:
