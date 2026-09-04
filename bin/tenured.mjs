@@ -137,13 +137,33 @@ const wanted = opt("--agent", null);
 const available = await availableAgents();
 const agentName = wanted && AGENTS[wanted] ? wanted : available[0];
 if (!agentName || (wanted && !available.includes(wanted))) {
-  console.error(`No headless agent found${wanted ? ` for --agent ${wanted}` : ""}. Install and sign in to one of: claude, codex, agy; or set ANTHROPIC_API_KEY / OPENAI_API_KEY.`);
+  console.error(`No headless agent found${wanted ? ` for --agent ${wanted}` : ""}. Install and sign in to one of: claude, codex, agy, bob (with BOB_API_KEY); or set ANTHROPIC_API_KEY.`);
   process.exit(2);
 }
 const agent = AGENTS[agentName];
 const model = opt("--model", agent.defaultModel);
 const system = readFileSync(join(HERE, "..", "hooks", "persona.md"), "utf8") + "\n\nPrint the verdict block and nothing else.";
-const user = `Review this change as ${P.asName || P.name}. It is the ${label}.\n\n${diff}`;
+// Personas that judge a change against what the repository remembers get the log of every touched
+// file, plus changelog and postmortem notes, appended as repository history. Others get the diff alone.
+function repoHistory() {
+  if (!P.context || !P.context.history) return "";
+  const files = [...new Set([...diff.matchAll(/^\+\+\+ (?:b\/)?(\S+)/gm)].map((m) => m[1]).filter((f) => f !== "/dev/null"))];
+  const parts = [];
+  for (const f of files) {
+    try {
+      const log = sh("git", ["log", "--oneline", "-n", "12", "--", f]).trim();
+      if (log) parts.push(`$ git log --oneline -- ${f}\n${log}`);
+    } catch { /* not tracked yet */ }
+  }
+  const notes = [];
+  for (const dir of ["docs/postmortems", "docs/incidents", "postmortems"]) {
+    if (fs.existsSync(dir)) for (const n of fs.readdirSync(dir).filter((n) => /\.md$/.test(n)).sort().slice(0, 8)) notes.push({ path: `${dir}/${n}`, text: readFileSync(`${dir}/${n}`, "utf8") });
+  }
+  for (const ch of ["CHANGELOG.md", "docs/CHANGELOG.md"]) if (fs.existsSync(ch)) notes.push({ path: ch, text: readFileSync(ch, "utf8").split("\n").slice(0, 60).join("\n") });
+  for (const n of notes) parts.push(`${n.path} (excerpt):\n${n.text.trim().slice(0, 1500)}`);
+  return parts.length ? `\n\nRepository history (what the reviewer can see):\n\n${parts.join("\n\n")}` : "";
+}
+const user = `Review this change as ${P.asName || P.name}. It is the ${label}.${repoHistory()}\n\n${diff}\n\nEverything the review needs is above: the complete change${P.context && P.context.history ? " and what the repository records" : ""}. Do not search or open files; answer from what is here.`;
 
 process.stderr.write(`Reading the ${label} (${diff.split("\n").length} lines) with ${agent.label}${model ? ` (${model})` : ""}. ${P.name} does not skim; give it a moment.\n`);
 const started = Date.now();
@@ -155,6 +175,16 @@ try {
   process.exit(1);
 }
 const verdict = lastVerdict(res.text);
-console.log(res.text.trim());
-process.stderr.write(`\n${Math.round((Date.now() - started) / 1000)} s · ${res.usage.input} in / ${res.usage.output} out tokens${res.costUsd != null ? ` · $${res.costUsd.toFixed(4)}` : ""}\n`);
+// Some hosts narrate the whole checklist before the verdict, or wrap it in a code fence. Print from the
+// last verdict header onward, without fences, so the terminal shows the block the rules ask for.
+const printable = (() => {
+  const lines = res.text.trim().split("\n").filter((l) => !/^\s*```/.test(l));
+  const head = new RegExp(`^\\s*\\*{0,2}${P.verdictPrefix}:`);
+  let start = -1;
+  lines.forEach((l, i) => { if (head.test(l)) start = i; });
+  return (start >= 0 ? lines.slice(start) : lines).join("\n").trim();
+})();
+console.log(printable);
+const tokens = res.usage.input || res.usage.output ? ` · ${res.usage.input} in / ${res.usage.output} out tokens` : "";
+process.stderr.write(`\n${Math.round((Date.now() - started) / 1000)} s${tokens}${res.costUsd != null ? ` · $${res.costUsd.toFixed(4)}` : ""}\n`);
 process.exit(verdict && verdict.verdict !== "APPROVE" ? 1 : 0);

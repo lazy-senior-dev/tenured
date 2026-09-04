@@ -9,7 +9,11 @@
   "pronoun": "he",
   "rules": "rules/tenured.md",
   "verdictPrefix": "TENURED",
-  "verdicts": { "approve": "NEW", "changes": "SEEN_BEFORE", "block": "DO_NOT_REPEAT" },
+  "verdicts": {
+    "approve": "NEW",
+    "changes": "SEEN_BEFORE",
+    "block": "DO_NOT_REPEAT"
+  },
   "approveWord": "New to me.",
   "reviews": "the change against the repository's history",
   "measures": "repeated outages avoided",
@@ -18,7 +22,26 @@
   "description": "Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce.",
   "shortDescription": "The engineer who remembers the postmortem, inside your agent.",
   "homepage": "https://lazy-senior-dev.github.io/tenured",
-  "keywords": ["code-review", "history", "postmortem", "incidents", "ai-agents", "claude-code", "github-action", "persona"],
-  "checklist": { "first": "Resurrection", "last": "Lessons recorded" },
-  "bench": { "seeded": 12, "clean": 4, "needle": 4 }
+  "keywords": [
+    "code-review",
+    "history",
+    "postmortem",
+    "incidents",
+    "ai-agents",
+    "claude-code",
+    "github-action",
+    "persona"
+  ],
+  "checklist": {
+    "first": "Resurrection",
+    "last": "Lessons recorded"
+  },
+  "bench": {
+    "seeded": 12,
+    "clean": 4,
+    "needle": 4
+  },
+  "context": {
+    "history": true
+  }
 }
