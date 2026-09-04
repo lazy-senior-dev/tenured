@@ -525,10 +525,12 @@
     var money = function (c) { return c == null ? "n/a" : "$" + Number(c).toFixed(2); };
     Object.keys(data.agents).forEach(function (key) {
       var a = data.agents[key], arms = a.arms || {};
-      if (!arms.grump || !arms.grump.runs || !arms.bare || !arms.bare.runs) return;
+      // A partial run is not shown: every arm must carry one record per task per run.
+      var whole = function (s) { return s && s.runs && s.records === s.runs * data.tasks; };
+      if (!whole(arms.grump) || !whole(arms.bare)) return;
       if (!first) first = { a: a, b: arms.bare, g: arms.grump, ge: arms.generic };
       ["bare", "generic", "grump"].forEach(function (k) {
-        var s = arms[k]; if (!s || !s.runs) return;
+        var s = arms[k]; if (!whole(s)) return;
         var strong = k === "grump", w = function (x) { return strong ? "<strong>" + x + "</strong>" : x; };
         var tr = document.createElement("tr");
         tr.innerHTML = "<td>" + esc(a.label) + "</td><td><code>" + esc(s.model || "") + "</code> (n=" + s.runs + ")</td><td>" + w(esc(s.label)) + "</td><td>" + w(s.implemented + " / " + data.tasks) + "</td><td>" + w(s.shipped + " / " + data.tasks) + "</td><td>" + (strong ? w(s.reviewed + " / " + data.tasks) : "n/a") + "</td><td>" + secs(s.latency) + "</td><td>" + money(s.cost) + "</td>";
