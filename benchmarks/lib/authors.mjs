@@ -69,6 +69,22 @@ export const AUTHORS = {
       return { text: text.trim() || res.stdout.slice(-2000), usage, costUsd: undefined, model: mdl, durationMs: res.durationMs, exit: res.code, stderr: res.stderr.slice(0, 500) };
     },
   },
+  agy: {
+    label: "Antigravity CLI",
+    // Headless Antigravity aborts the whole run when a tool asks for a permission it cannot prompt
+    // for, and it asks for one on most tasks, so it is not run unless named with --agents.
+    experimental: true,
+    available: () => which("agy"),
+    async write({ prompt, cwd, model }) {
+      const args = ["-p", prompt, "--output-format", "json", "--mode", "accept-edits", "--disable-slash-commands", "--print-timeout", "15m"];
+      if (model) args.push("--model", model);
+      const res = await run("agy", args, { cwd, timeoutMs: 1_000_000 });
+      let data = {};
+      try { data = JSON.parse(res.stdout.trim().split("\n").filter((l) => l.startsWith("{")).pop() || "{}"); } catch { /* keep raw */ }
+      const u = data.usage || {};
+      return { text: data.response || res.stdout, usage: { input: u.input_tokens || 0, output: (u.output_tokens || 0) + (u.thinking_tokens || 0) }, costUsd: undefined, model: model || "agy-default", durationMs: res.durationMs, exit: res.code, stderr: res.stderr.slice(0, 500) };
+    },
+  },
   bob: {
     label: "IBM Bob Shell",
     available: () => which("bob") && !!process.env.BOB_API_KEY,
@@ -90,7 +106,7 @@ export const AUTHORS = {
 
 export async function availableAuthors() {
   const out = [];
-  for (const [k, a] of Object.entries(AUTHORS)) if (await a.available()) out.push(k);
+  for (const [k, a] of Object.entries(AUTHORS)) if (!a.experimental && (await a.available())) out.push(k);
   return out;
 }
 
