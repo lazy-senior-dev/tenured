@@ -156,7 +156,7 @@ npx github:lazy-senior-dev/tenured review            # working tree
 npx github:lazy-senior-dev/tenured pr 123            # a pull request, via gh
 ```
 
-Finds `claude`, `codex`, `agy`, or `bob` on your PATH, sends the diff with his ruleset, prints the verdict, and exits 1 on anything but `NEW`.
+Finds `claude`, `codex`, `agy`, or `bob` on your PATH, or any other agent through `LSD_AGENT_CMD`, sends the diff with his ruleset, prints the verdict, and exits 1 on anything but `NEW`.
 
 ## Install
 
