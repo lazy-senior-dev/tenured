@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    tags: ["v*"]
+    tags: ["v*.*.*"] # the moving major tag (v1) is not a release
 
 permissions:
   contents: write
