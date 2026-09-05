@@ -27,6 +27,12 @@ function usage(code = 0) {
 }
 if (!cmd || cmd === "help" || cmd === "--help") usage();
 
+// ---- mcp: speak the Model Context Protocol on stdio, for any client that has no adapter here ----
+if (cmd === "mcp") {
+  await import(join(HERE, "..", "mcp", "server.mjs"));
+} else {
+
+
 // ---- install / uninstall: copy the files a host reads into the current repository ----
 const ROOT = join(HERE, "..");
 const CMDS = [CMD, `${CMD}-review`, `${CMD}-pr`, `${CMD}-fix`, `${CMD}-scorecard`, `${CMD}-help`];
@@ -188,3 +194,4 @@ console.log(printable);
 const tokens = res.usage.input || res.usage.output ? ` · ${res.usage.input} in / ${res.usage.output} out tokens` : "";
 process.stderr.write(`\n${Math.round((Date.now() - started) / 1000)} s${tokens}${res.costUsd != null ? ` · $${res.costUsd.toFixed(4)}` : ""}\n`);
 process.exit(verdict && verdict.verdict !== "APPROVE" ? 1 : 0);
+}

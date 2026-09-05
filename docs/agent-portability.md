@@ -2,9 +2,10 @@
 
 One ruleset, `rules/grump.md`, rendered by `npm run build` into the file each host reads. This page says which file that is, what the host can enforce, how to install, and how to remove it. Nothing here is hand-written twice: if a row disagrees with the repo, the repo wins and this page has a bug.
 
-Hosts fall into two tiers:
+Hosts fall into three tiers:
 
 - **Gate hosts** run lifecycle hooks. Tenured is injected every turn and the `PreToolUse` gate can deny a write or a commit until a verdict is printed.
+- **MCP clients** connect to the stdio server in `mcp/` and call its tools. Any client that speaks the Model Context Protocol works without a file in this repository, which covers the editors and desktop apps that have no adapter here.
 - **Instruction hosts** load a rules file. Tenured reviews in the conversation; nothing is enforced.
 
 ## What each host reads
@@ -67,6 +68,7 @@ Hosts fall into two tiers:
 | IBM Bob | `npx github:lazy-senior-dev/tenured uninstall bob` |
 | Any AGENTS.md host | Delete `AGENTS.md` (or Tenured section of it) |
 | Everywhere | `rm -rf ~/.config/tenured` removes the mode setting and scorecards |
+| Any MCP client | mcp | none; the client runs `npx -y github:lazy-senior-dev/tenured mcp` | tools `tenured_review_diff`, `tenured_review_staged`, `tenured_review_pr`, `tenured_parse_verdict` | protocol test in `tests/adapters.test.mjs` | `npm test` |
 
 ## Notes on what is and is not verified
 

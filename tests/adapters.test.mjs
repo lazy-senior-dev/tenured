@@ -98,3 +98,33 @@ test("banned reviewer words never appear in the Grump's instructions", () => {
     for (const word of ["nice work", "great job", "looks good", "minor nit"]) assert.ok(!stripped.includes(word), `${rel}: ${word}`);
   }
 });
+
+test("the MCP server speaks the protocol and names its tools after the persona", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const input = [
+    JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2024-11-05" } }),
+    JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }),
+    JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list" }),
+    JSON.stringify({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: `${P.command}_parse_verdict`, arguments: { text: `${P.verdictPrefix}: ${P.verdicts.block}\n1. app/api/users.py:12 — the id comes from the body — take it from the session` } } }),
+    JSON.stringify({ jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "nope" } }),
+  ].join("\n") + "\n";
+  const out = execFileSync(process.execPath, ["mcp/server.mjs"], { input, encoding: "utf8", cwd: ROOT });
+  const msgs = out.trim().split("\n").map((l) => JSON.parse(l));
+  const byId = Object.fromEntries(msgs.filter((m) => m.id !== undefined).map((m) => [m.id, m]));
+  assert.equal(msgs.filter((m) => m.id === undefined).length, 0, "a notification must not be answered");
+  assert.equal(byId[1].result.serverInfo.name, P.slug);
+  assert.ok(byId[1].result.capabilities.tools, "tools capability");
+  const names = byId[2].result.tools.map((t) => t.name);
+  for (const suffix of ["review_diff", "review_staged", "review_pr", "parse_verdict"]) {
+    assert.ok(names.includes(`${P.command}_${suffix}`), `missing tool ${suffix}: ${names.join(", ")}`);
+  }
+  for (const tool of byId[2].result.tools) {
+    assert.equal(tool.inputSchema.type, "object", `${tool.name} schema`);
+    assert.ok(tool.description.length > 40, `${tool.name} needs a description a client can act on`);
+  }
+  const parsed = JSON.parse(byId[3].result.content[0].text);
+  assert.equal(parsed.level, "BLOCK");
+  assert.equal(parsed.word, P.verdicts.block);
+  assert.equal(parsed.findings.length, 1);
+  assert.equal(byId[4].result.isError, true, "an unknown tool is an error, not a crash");
+});

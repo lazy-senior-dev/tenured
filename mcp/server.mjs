@@ -1,0 +1,110 @@
+#!/usr/bin/env node
+// Model Context Protocol server, spoken over stdio as newline-delimited JSON-RPC 2.0. It exposes
+// the same review the CLI and the hook use, so any MCP client (VS Code, Claude Desktop, Cursor,
+// Zed, Windsurf, and the rest) gets the persona without a host-specific adapter. No dependencies:
+// the protocol here is small enough to write out.
+//   node mcp/server.mjs
+import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { AGENTS, availableAgents } from "../benchmarks/lib/agents.mjs";
+import { lastVerdict } from "../hooks/lib/verdict.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const P = JSON.parse(readFileSync(join(ROOT, "persona.json"), "utf8"));
+const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
+const SYSTEM = () => readFileSync(join(ROOT, "hooks", "persona.md"), "utf8") + "\n\nPrint the verdict block and nothing else.";
+const WHO = P.asName || P.name;
+
+const send = (msg) => process.stdout.write(JSON.stringify(msg) + "\n");
+const ok = (id, result) => send({ jsonrpc: "2.0", id, result });
+const fail = (id, code, message) => send({ jsonrpc: "2.0", id, error: { code, message } });
+const text = (s) => ({ content: [{ type: "text", text: s }] });
+const errorText = (s) => ({ content: [{ type: "text", text: s }], isError: true });
+
+const TOOLS = [
+  {
+    name: `${P.command}_review_diff`,
+    description: `Review a unified diff as ${WHO}. Returns the verdict block: ${P.verdictPrefix} followed by ${P.verdicts.approve}, ${P.verdicts.changes}, or ${P.verdicts.block}, then one numbered finding per line as file:line — what breaks — the smallest fix. Use this before writing or committing a change.`,
+    inputSchema: { type: "object", properties: { diff: { type: "string", description: "The unified diff to review." }, agent: { type: "string", description: "Headless agent to review with: claude, codex, agy, bob, or api. Defaults to the first one installed." } }, required: ["diff"] },
+  },
+  {
+    name: `${P.command}_review_staged`,
+    description: `Review the staged changes of a git repository as ${WHO}. Returns the same verdict block.`,
+    inputSchema: { type: "object", properties: { path: { type: "string", description: "Path to the repository. Defaults to the current directory." }, unstaged: { type: "boolean", description: "Include unstaged changes as well." }, agent: { type: "string" } } },
+  },
+  {
+    name: `${P.command}_review_pr`,
+    description: `Review a pull request as ${WHO}, fetched with the GitHub CLI. Returns the same verdict block.`,
+    inputSchema: { type: "object", properties: { pr: { type: "string", description: "Pull request number or URL." }, path: { type: "string", description: "Repository the gh command runs in." }, agent: { type: "string" } }, required: ["pr"] },
+  },
+  {
+    name: `${P.command}_parse_verdict`,
+    description: `Turn a verdict block into JSON: the level (${P.verdicts.approve}, ${P.verdicts.changes}, ${P.verdicts.block}), the files it covers, and each finding. Use it to gate a commit or a merge on the verdict rather than on prose.`,
+    inputSchema: { type: "object", properties: { text: { type: "string", description: "Text containing a verdict block." } }, required: ["text"] },
+  },
+];
+
+async function review(diff, label, wanted) {
+  if (!diff.trim()) return text("Nothing to review.");
+  if (diff.length > 400_000) return errorText(`That diff is ${Math.round(diff.length / 1000)} KB. ${P.name} reads everything, but not that; review it in batches.`);
+  const available = await availableAgents();
+  const name = wanted && AGENTS[wanted] ? wanted : available[0];
+  if (!name || (wanted && !available.includes(wanted))) return errorText(`No headless agent found${wanted ? ` for "${wanted}"` : ""}. Install and sign in to one of: claude, codex, agy, bob (with BOB_API_KEY); or set ANTHROPIC_API_KEY.`);
+  const agent = AGENTS[name];
+  const res = await agent.run({ system: SYSTEM(), user: `Review this change as ${WHO}. It is the ${label}.\n\n${diff}\n\nEverything the review needs is above. Do not search or open files; answer from what is here.`, model: agent.defaultModel || "" });
+  const v = lastVerdict(res.text);
+  const head = v ? `${v.label}\n` : "";
+  return text(`${head}${res.text.trim()}\n\n— reviewed with ${agent.label}${res.costUsd != null ? `, $${res.costUsd.toFixed(4)}` : ""}`);
+}
+
+const git = (cwd, args) => execFileSync("git", args, { cwd, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 });
+
+async function call(name, a = {}) {
+  const short = name.replace(`${P.command}_`, "");
+  if (short === "review_diff") return review(String(a.diff || ""), "diff", a.agent);
+  if (short === "review_staged") {
+    const cwd = a.path || process.cwd();
+    try {
+      const diff = a.unstaged ? git(cwd, ["diff"]) + git(cwd, ["diff", "--cached"]) : git(cwd, ["diff", "--cached"]);
+      return review(diff, a.unstaged ? "working tree" : "staged changes", a.agent);
+    } catch (err) { return errorText(`Could not read the diff in ${cwd}: ${String(err.message).split("\n")[0]}`); }
+  }
+  if (short === "review_pr") {
+    try { return review(execFileSync("gh", ["pr", "diff", String(a.pr)], { cwd: a.path || process.cwd(), encoding: "utf8", maxBuffer: 20 * 1024 * 1024 }), `pull request ${a.pr}`, a.agent); }
+    catch (err) { return errorText(`Could not read pull request ${a.pr} (is gh installed and signed in?): ${String(err.message).split("\n")[0]}`); }
+  }
+  if (short === "parse_verdict") {
+    const v = lastVerdict(String(a.text || ""));
+    const word = v ? { APPROVE: P.verdicts.approve, REQUEST_CHANGES: P.verdicts.changes, BLOCK: P.verdicts.block }[v.verdict] || null : null;
+    return text(JSON.stringify(v ? { level: v.verdict, word, files: v.files || [], findings: v.findings || [] } : { level: null, word: null, files: [], findings: [] }, null, 2));
+  }
+  return errorText(`Unknown tool ${name}`);
+}
+
+let buffer = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", async (chunk) => {
+  buffer += chunk;
+  let nl;
+  while ((nl = buffer.indexOf("\n")) >= 0) {
+    const line = buffer.slice(0, nl).trim();
+    buffer = buffer.slice(nl + 1);
+    if (!line) continue;
+    let msg;
+    try { msg = JSON.parse(line); } catch { continue; }
+    const { id, method, params } = msg;
+    try {
+      if (method === "initialize") ok(id, { protocolVersion: params?.protocolVersion || "2024-11-05", capabilities: { tools: {} }, serverInfo: { name: P.slug, version: pkg.version } });
+      else if (method === "notifications/initialized" || method === "notifications/cancelled") { /* no reply */ }
+      else if (method === "ping") ok(id, {});
+      else if (method === "tools/list") ok(id, { tools: TOOLS });
+      else if (method === "tools/call") ok(id, await call(params?.name, params?.arguments));
+      else if (id !== undefined) fail(id, -32601, `Method not found: ${method}`);
+    } catch (err) {
+      if (id !== undefined) fail(id, -32603, String(err && err.message ? err.message : err));
+    }
+  }
+});
+process.stdin.on("end", () => process.exit(0));

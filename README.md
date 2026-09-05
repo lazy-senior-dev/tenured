@@ -189,6 +189,38 @@ Antigravity: `git clone https://github.com/lazy-senior-dev/tenured ~/.tenured &&
 
 One review per pull request, inline findings, updated in place. Runs beside the Grump's and the Paranoid SRE's Actions; each posts its own review.
 
+## Any MCP client
+
+Every editor and desktop app that speaks the Model Context Protocol can use Tenured without an adapter in this repository. The server is stdio, has no dependencies, and exposes four tools: `tenured_review_diff`, `tenured_review_staged`, `tenured_review_pr`, and `tenured_parse_verdict`, which turns a verdict block into JSON so a script can gate a commit or a merge on the level rather than on prose.
+
+Claude Desktop (`claude_desktop_config.json`), Cursor (`~/.cursor/mcp.json`), Windsurf, and Zed:
+
+```json
+{
+  "mcpServers": {
+    "tenured": {"command":"npx","args":["-y","github:lazy-senior-dev/tenured","mcp"]}
+  }
+}
+```
+
+VS Code (`.vscode/mcp.json`):
+
+```json
+{
+  "servers": {
+    "tenured": { "type": "stdio", "command":"npx","args":["-y","github:lazy-senior-dev/tenured","mcp"]}
+  }
+}
+```
+
+Claude Code, in one line:
+
+```sh
+claude mcp add tenured -- npx -y github:lazy-senior-dev/tenured mcp
+```
+
+The server reviews with whichever headless agent it finds (`claude`, `codex`, `agy`, `bob` with `BOB_API_KEY`, or `ANTHROPIC_API_KEY`), so the client asking for the review and the agent performing it can be different tools. Nothing leaves your machine except the diff, going to the agent you already trust.
+
 ## Commands
 
 | Command | What it does |
