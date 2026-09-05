@@ -21,13 +21,17 @@
 <!-- bench:author:start -->
 ## The number that matters: what ships
 
-**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 3 of 16 runs (19%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured loaded (0%), reviewing its own change before finishing in 16 of 16 runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
+**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 3 of 16 runs (19%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
 
 | Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time | Median cost |
 |---|---|---|---|---|---|---|---|
 | IBM Bob Shell | `bob-default` (n=2) | no skill | 12 of 16 | 3 of 16 (19%) | n/a | 14 s | $0.10 |
 | IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 12 of 16 | 0 of 16 (0%) | n/a | 21 s | $0.13 |
-| IBM Bob Shell | `bob-default` (n=2) | **tenured** | **9 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s | $0.25 |
+| IBM Bob Shell | `bob-default` (n=2) | tenured | 9 of 16 | 0 of 16 (0%) | 16 of 16 | 36 s | $0.25 |
+| IBM Bob Shell | `bob-default` (n=2) | **tenured + gate** | **9 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s | $0.23 |
+| Claude Code | `claude-sonnet-5` (n=2) | no skill | 12 of 16 | 0 of 16 (0%) | n/a | 59 s | $0.29 |
+| Claude Code | `claude-sonnet-5` (n=2) | generic care prompt | 14 of 16 | 0 of 16 (0%) | n/a | 85 s | $0.36 |
+| Claude Code | `claude-sonnet-5` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 12 of 16 | 74 s | $0.34 |
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->
