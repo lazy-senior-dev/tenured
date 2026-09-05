@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.lazy-senior-dev/tenured",
+  "description": "Tenured reviews a code diff, a pull request, or your staged changes and answers with a machine-readable verdict you can gate a commit or a merge on. We tried that in 2017.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/lazy-senior-dev/tenured",
+    "source": "github"
+  },
+  "websiteUrl": "https://lazy-senior-dev.github.io/tenured",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "tenured",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeArguments": [
+        {
+          "type": "positional",
+          "value": "mcp",
+          "isRequired": true
+        }
+      ]
+    }
+  ]
+}

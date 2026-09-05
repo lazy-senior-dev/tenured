@@ -115,14 +115,19 @@ test("the MCP server speaks the protocol and names its tools after the persona",
   assert.equal(byId[1].result.serverInfo.name, P.slug);
   assert.ok(byId[1].result.capabilities.tools, "tools capability");
   const names = byId[2].result.tools.map((t) => t.name);
-  for (const suffix of ["review_diff", "review_staged", "review_pr", "parse_verdict"]) {
+  for (const suffix of ["review_brief", "review_diff", "review_staged", "review_pr", "parse_verdict"]) {
     assert.ok(names.includes(`${P.command}_${suffix}`), `missing tool ${suffix}: ${names.join(", ")}`);
   }
   for (const tool of byId[2].result.tools) {
     assert.equal(tool.inputSchema.type, "object", `${tool.name} schema`);
     assert.ok(tool.description.length > 40, `${tool.name} needs a description a client can act on`);
   }
+  const brief = byId[2].result.tools.find((x) => x.name === `${P.command}_review_brief`);
+  assert.ok(brief.outputSchema, "the brief has to declare what it returns so a client can rely on it");
+  assert.equal(brief.annotations.readOnlyHint, true);
+  assert.match(brief.description, /No API key/, "the point of the brief is that it needs nothing installed");
   const parsed = JSON.parse(byId[3].result.content[0].text);
+  assert.deepEqual(byId[3].result.structuredContent, parsed, "structured output and the text block must agree");
   assert.equal(parsed.level, "BLOCK");
   assert.equal(parsed.word, P.verdicts.block);
   assert.equal(parsed.findings.length, 1);

@@ -235,7 +235,11 @@ Claude Code, in one line:
 claude mcp add tenured -- npx -y github:lazy-senior-dev/tenured mcp
 ```
 
-The server reviews with whichever headless agent it finds (`claude`, `codex`, `agy`, `bob` with `BOB_API_KEY`, or `ANTHROPIC_API_KEY`), so the client asking for the review and the agent performing it can be different tools. Nothing leaves your machine except the diff, going to the agent you already trust.
+`tenured_review_brief` needs no API key, no agent installed, and makes no network call of its own: it hands your client the change, the ruleset, and the exact verdict format, and your client's own model does the review. That works in every MCP client with nothing to configure.
+
+The other three review tools ask a headless agent instead (`claude`, `codex`, `agy`, `bob` with `BOB_API_KEY`, or `ANTHROPIC_API_KEY`), which is worth it when you want a second opinion from a different model than the one you are coding with. Nothing leaves your machine except the diff, going to the agent you already trust.
+
+Every tool is annotated read-only: Tenured reviews and never edits. `tenured_parse_verdict` returns structured output against a declared schema, so a script can gate a commit or a merge on `level` rather than on prose.
 
 ## Commands
 

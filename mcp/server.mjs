@@ -25,9 +25,48 @@ const send = (msg) => process.stdout.write(JSON.stringify(msg) + "\n");
 const ok = (id, result) => send({ jsonrpc: "2.0", id, result });
 const fail = (id, code, message) => send({ jsonrpc: "2.0", id, error: { code, message } });
 const text = (s) => ({ content: [{ type: "text", text: s }] });
+// Structured output alongside the text block: clients that understand outputSchema read the object,
+// everything else reads the same JSON as text.
+const structured = (obj) => ({ content: [{ type: "text", text: JSON.stringify(obj, null, 2) }], structuredContent: obj });
 const errorText = (s) => ({ content: [{ type: "text", text: s }], isError: true });
 
+const VERDICT_SCHEMA = {
+  type: "object",
+  properties: {
+    level: { type: ["string", "null"], enum: ["APPROVE", "REQUEST_CHANGES", "BLOCK", null], description: "The verdict in canonical form, the same across every persona, so a script can gate on it." },
+    word: { type: ["string", "null"], description: `The word this persona prints: ${P.verdicts.approve}, ${P.verdicts.changes}, or ${P.verdicts.block}.` },
+    files: { type: "array", items: { type: "string" }, description: "Files the verdict covers, when it names them." },
+    findings: { type: "array", items: { type: "object", properties: { n: { type: "number" }, file: { type: "string" }, line: { type: ["number", "null"] }, failure: { type: "string" }, fix: { type: "string" }, raw: { type: "string" } } } },
+  },
+  required: ["level", "findings"],
+};
+
 const TOOLS = [
+  {
+    name: `${P.command}_review_brief`,
+    description: `Ask for the review yourself. Returns the change plus ${WHO}'s ruleset and the exact verdict format, for you to review with your own model. No API key, no agent installed, no second model, and no network call: everything needed to perform the review comes back in one response. Use this first; the other review tools exist for a second opinion from a different model.`,
+    annotations: { title: "Get the change and the ruleset to review yourself", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    inputSchema: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        diff: { type: "string", description: "A unified diff to review. Omit it to read the repository's staged changes instead." },
+        path: { type: "string", description: "Repository to read when diff is omitted. Defaults to the current directory." },
+        unstaged: { type: "boolean", description: "Include unstaged changes when reading from a repository." },
+      },
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        ruleset: { type: "string", description: "The persona card, including any house rules the repository adds." },
+        diff: { type: "string" },
+        lines: { type: "number" },
+        format: { type: "string", description: "The exact shape the verdict block must take." },
+        instructions: { type: "string" },
+      },
+      required: ["ruleset", "diff", "format", "instructions"],
+    },
+  },
   {
     name: `${P.command}_review_diff`,
     description: `Review a unified diff as ${WHO}. Returns the verdict block: ${P.verdictPrefix} followed by ${P.verdicts.approve}, ${P.verdicts.changes}, or ${P.verdicts.block}, then one numbered finding per line as file:line — what breaks — the smallest fix. Use this before writing or committing a change.`,
@@ -50,6 +89,7 @@ const TOOLS = [
     name: `${P.command}_parse_verdict`,
     description: `Turn a verdict block into JSON: the level (${P.verdicts.approve}, ${P.verdicts.changes}, ${P.verdicts.block}), the files it covers, and each finding. Use it to gate a commit or a merge on the verdict rather than on prose.`,
     annotations: { title: "Parse a verdict block", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    outputSchema: VERDICT_SCHEMA,
     inputSchema: { type: "object", properties: { text: { type: "string", description: "Text containing a verdict block." } }, required: ["text"] },
   },
 ];
@@ -69,14 +109,32 @@ async function review(diff, label, wanted, cwd = process.cwd()) {
 
 const git = (cwd, args) => execFileSync("git", args, { cwd, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 });
 
+function stagedDiff(a) {
+  const cwd = a.path || process.cwd();
+  return a.unstaged ? git(cwd, ["diff"]) + git(cwd, ["diff", "--cached"]) : git(cwd, ["diff", "--cached"]);
+}
+
 async function call(name, a = {}) {
   const short = name.replace(`${P.command}_`, "");
+  if (short === "review_brief") {
+    let diff = String(a.diff || "");
+    if (!diff.trim()) {
+      try { diff = stagedDiff(a); } catch (err) { return errorText(`No diff was given and the staged changes could not be read: ${String(err.message).split("\n")[0]}`); }
+    }
+    if (!diff.trim()) return errorText("Nothing to review: no diff was given and there are no staged changes.");
+    return structured({
+      ruleset: SYSTEM(a.path || process.cwd()),
+      diff,
+      lines: diff.split("\n").length,
+      format: `${P.verdictPrefix}: ${P.verdicts.approve} | ${P.verdicts.changes} | ${P.verdicts.block}, then one numbered finding per line as "file:line — what breaks in production — the smallest fix". ${P.verdicts.approve} names the files it covers and is followed by "${P.approveWord}" and nothing else.`,
+      instructions: `Review the diff above as ${WHO}, following the ruleset exactly. Answer the checklist in writing, then print the verdict block in the format given. Then call ${P.command}_parse_verdict on your own answer if something downstream needs to gate on it.`,
+    });
+  }
   if (short === "review_diff") return review(String(a.diff || ""), "diff", a.agent);
   if (short === "review_staged") {
     const cwd = a.path || process.cwd();
     try {
-      const diff = a.unstaged ? git(cwd, ["diff"]) + git(cwd, ["diff", "--cached"]) : git(cwd, ["diff", "--cached"]);
-      return review(diff, a.unstaged ? "working tree" : "staged changes", a.agent, cwd);
+      return review(stagedDiff(a), a.unstaged ? "working tree" : "staged changes", a.agent, cwd);
     } catch (err) { return errorText(`Could not read the diff in ${cwd}: ${String(err.message).split("\n")[0]}`); }
   }
   if (short === "review_pr") {
@@ -86,7 +144,7 @@ async function call(name, a = {}) {
   if (short === "parse_verdict") {
     const v = lastVerdict(String(a.text || ""));
     const word = v ? { APPROVE: P.verdicts.approve, REQUEST_CHANGES: P.verdicts.changes, BLOCK: P.verdicts.block }[v.verdict] || null : null;
-    return text(JSON.stringify(v ? { level: v.verdict, word, files: v.files || [], findings: v.findings || [] } : { level: null, word: null, files: [], findings: [] }, null, 2));
+    return structured(v ? { level: v.verdict, word, files: v.files || [], findings: v.findings || [] } : { level: null, word: null, files: [], findings: [] });
   }
   return errorText(`Unknown tool ${name}`);
 }

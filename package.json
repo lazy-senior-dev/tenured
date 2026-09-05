@@ -18,10 +18,12 @@
     "rules/",
     "hooks/",
     "skills/",
+    "mcp/",
     "action/",
     "action.yml",
     ".claude-plugin/",
     "AGENTS.md",
+    "persona.json",
     "README.md",
     "LICENSE",
     "NOTICE",
@@ -51,5 +53,6 @@
   ],
   "bin": {
     "tenured": "bin/tenured.mjs"
-  }
+  },
+  "mcpName": "io.github.lazy-senior-dev/tenured"
 }
