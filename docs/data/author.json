@@ -508,27 +508,35 @@
     },
     "claude": {
       "label": "Claude Code",
-      "calls": 64,
-      "errors": 16,
-      "skippedTasks": [],
+      "calls": 8,
+      "errors": 0,
+      "skippedTasks": [
+        "cache-retry",
+        "http-errors-metric",
+        "prod-kafka-config",
+        "sessions-cleanup-cron",
+        "tax-at-checkout",
+        "visibility-timeout",
+        "xml-catalog-import"
+      ],
       "arms": {
         "bare": {
           "label": "no skill",
           "runs": 2,
-          "records": 16,
+          "records": 2,
           "errors": 0,
-          "attempts": 16,
-          "implementedTotal": 12,
+          "attempts": 2,
+          "implementedTotal": 0,
           "shippedTotal": 0,
           "reviewedTotal": 0,
-          "implemented": 6,
+          "implemented": 0,
           "shipped": 0,
           "shippedMean": 0,
           "reviewed": 0,
           "approved": 0,
-          "latency": 58836.5,
-          "output": 3678,
-          "cost": 0.28793460000000004,
+          "latency": 33400.5,
+          "output": 1645.5,
+          "cost": 0.2321668,
           "model": "claude-sonnet-5",
           "perTask": {
             "batch-checkout-flag": {
@@ -537,38 +545,38 @@
               "shipped": 0
             },
             "cache-retry": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 2,
+              "runs": 0,
               "implemented": 0,
               "shipped": 0
             },
             "tax-at-checkout": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "visibility-timeout": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             }
           }
@@ -576,20 +584,20 @@
         "generic": {
           "label": "generic care prompt",
           "runs": 2,
-          "records": 16,
+          "records": 2,
           "errors": 0,
-          "attempts": 16,
-          "implementedTotal": 14,
+          "attempts": 2,
+          "implementedTotal": 0,
           "shippedTotal": 0,
           "reviewedTotal": 0,
-          "implemented": 7,
+          "implemented": 0,
           "shipped": 0,
           "shippedMean": 0,
           "reviewed": 0,
           "approved": 0,
-          "latency": 85281.5,
-          "output": 6509,
-          "cost": 0.36234789999999995,
+          "latency": 35978.5,
+          "output": 2112,
+          "cost": 0.2301297,
           "model": "claude-sonnet-5",
           "perTask": {
             "batch-checkout-flag": {
@@ -598,63 +606,63 @@
               "shipped": 0
             },
             "cache-retry": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "tax-at-checkout": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "visibility-timeout": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             }
           }
         },
         "gate": {
           "label": "tenured + gate",
-          "runs": 0,
-          "records": 0,
-          "errors": 16,
-          "attempts": 0,
+          "runs": 2,
+          "records": 2,
+          "errors": 0,
+          "attempts": 2,
           "implementedTotal": 0,
           "shippedTotal": 0,
-          "reviewedTotal": 0,
-          "implemented": null,
-          "shipped": null,
-          "shippedMean": null,
-          "reviewed": null,
-          "approved": null,
-          "latency": null,
-          "output": null,
-          "cost": null,
-          "model": "",
+          "reviewedTotal": 1,
+          "implemented": 0,
+          "shipped": 0,
+          "shippedMean": 0,
+          "reviewed": 0.5,
+          "approved": 0,
+          "latency": 60212.5,
+          "output": 4517,
+          "cost": 0.3272377,
+          "model": "claude-sonnet-5",
           "perTask": {
             "batch-checkout-flag": {
-              "runs": 0,
+              "runs": 2,
               "implemented": 0,
               "shipped": 0
             },
@@ -698,20 +706,20 @@
         "grump": {
           "label": "tenured",
           "runs": 2,
-          "records": 16,
+          "records": 2,
           "errors": 0,
-          "attempts": 16,
-          "implementedTotal": 11,
+          "attempts": 2,
+          "implementedTotal": 0,
           "shippedTotal": 0,
-          "reviewedTotal": 12,
-          "implemented": 5.5,
+          "reviewedTotal": 0,
+          "implemented": 0,
           "shipped": 0,
           "shippedMean": 0,
-          "reviewed": 6,
-          "approved": 6,
-          "latency": 73837,
-          "output": 4542.5,
-          "cost": 0.33631259999999996,
+          "reviewed": 0,
+          "approved": 0,
+          "latency": 65839.5,
+          "output": 4236,
+          "cost": 0.3543488,
           "model": "claude-sonnet-5",
           "perTask": {
             "batch-checkout-flag": {
@@ -720,38 +728,38 @@
               "shipped": 0
             },
             "cache-retry": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 2,
+              "runs": 0,
               "implemented": 0,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "tax-at-checkout": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "visibility-timeout": {
-              "runs": 2,
-              "implemented": 1,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 2,
-              "implemented": 2,
+              "runs": 0,
+              "implemented": 0,
               "shipped": 0
             }
           }

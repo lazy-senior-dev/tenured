@@ -34,8 +34,6 @@ for (const f of files) {
   try { body = git("show", `HEAD:${f}`); } catch { continue; }   // not yet committed
   for (const [re, what] of RULES) {
     for (const m of body.matchAll(re)) {
-      // The scanner's own patterns are literals in this file; do not report them.
-      if (f.endsWith("check-secrets.mjs")) continue;
       const line = body.slice(0, m.index).split("\n").length;
       findings.push(`${f}:${line} ${what}: ${m[0].slice(0, 12)}…`);
     }

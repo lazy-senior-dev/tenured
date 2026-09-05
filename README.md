@@ -49,11 +49,8 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 | Antigravity CLI | `agy-default` (n=1) | generic care prompt | 6 of 8 | 0 of 8 (0%) | n/a | 207 s |
 | Antigravity CLI | `agy-default` (n=1) | tenured | 6 of 8 | 0 of 8 (0%) | 7 of 8 | 274 s |
 | Antigravity CLI | `agy-default` (n=1) | **tenured + gate** | **6 of 8** | **0 of 8 (0%)** | **6 of 8** | 223 s |
-| Claude Code | `claude-sonnet-5` (n=2) | no skill | 12 of 16 | 0 of 16 (0%) | n/a | 59 s |
-| Claude Code | `claude-sonnet-5` (n=2) | generic care prompt | 14 of 16 | 0 of 16 (0%) | n/a | 85 s |
-| Claude Code | `claude-sonnet-5` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 12 of 16 | 74 s |
 
-Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI. No arm shipped one of these defects on Antigravity CLI or Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them.
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Claude Code, Codex CLI. No arm shipped one of these defects on Antigravity CLI, the unaided agent included, so those rows show no difference and none is claimed from them.
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->
