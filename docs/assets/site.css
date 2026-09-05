@@ -201,3 +201,31 @@ footer .by strong { color: var(--text); }
 .compare thead th:last-child { color: var(--accent); }
 .compare td { vertical-align: top; color: var(--muted); }
 .compare td.yes { color: var(--text); font-weight: 600; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+/* ---------- animated hero art ----------
+   The SVG has an intrinsic 880px width, so without this it forces the page wider than a phone
+   and the right-hand panel is simply cut off. */
+.hero-art,.flow-art{display:block;width:100%;max-width:880px;height:auto;margin:clamp(18px,3vw,28px) auto}
+.hero-art img,.flow-art img{display:block;width:100%;height:auto;border-radius:16px}
+.flows{display:grid;gap:clamp(20px,3vw,34px)}
+.flow{text-align:center}
+.flow h3{margin:0 0 .15rem;font-size:1.05rem}
+.flow p{margin:0;color:var(--dim,#5a6b8c);font-size:.92rem}
+.flow a{text-decoration:none;color:inherit;display:block}
+.flow a:hover .flow-art img{transform:translateY(-3px);transition:transform .25s ease}
+@media (prefers-reduced-motion:reduce){.flow a:hover .flow-art img{transform:none}}
+
+/* On a narrow phone the back link, the wordmark and three controls do not fit on one 64px row, so
+   the header pushed the whole document about 30px wider than the viewport and every centred block
+   below it read as cut off. Shed the least useful parts first: the back link's label, then the
+   GitHub button, which the menu already links to. */
+@media (max-width: 560px) {
+  .top .wrap { gap: .55rem; }
+  .top .back span { display: none; }
+  .top .right { gap: .35rem; }
+  .ghbtn { padding: .5rem .62rem; }
+}
+@media (max-width: 430px) {
+  .ghbtn { display: none; }
+  .brand { font-size: .98rem; }
+}
