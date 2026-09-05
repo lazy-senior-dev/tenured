@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // Model Context Protocol server, spoken over stdio as newline-delimited JSON-RPC 2.0. It exposes
 // the same review the CLI and the hook use, so any MCP client (VS Code, Claude Desktop, Cursor,
 // Zed, Windsurf, and the rest) gets the persona without a host-specific adapter. No dependencies:

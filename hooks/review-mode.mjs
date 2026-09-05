@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // Set or report the mode.  node review-mode.mjs [nag|gate|off]
 
 import { resolveMode, setMode, MODES, configPath } from "./lib/config.mjs";

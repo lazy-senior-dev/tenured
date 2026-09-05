@@ -29,7 +29,11 @@ jobs:
             .devin-plugin .qoder-plugin .qoder .opencode .cursor .windsurf .clinerules .kiro .openclaw mcp examples \
             LICENSE NOTICE README.md
       - name: Software bill of materials
-        run: npm sbom --sbom-format cyclonedx --sbom-type application > "dist/${GITHUB_REF_NAME}-sbom.cdx.json"
+        # Both neutral formats: CycloneDX is ECMA-424, SPDX is the Linux Foundation's and an ISO
+        # standard. Consumers ask for one or the other, so the release carries each.
+        run: |
+          npm sbom --sbom-format cyclonedx --sbom-type application > "dist/${GITHUB_REF_NAME}-sbom.cdx.json"
+          npm sbom --sbom-format spdx --sbom-type application > "dist/${GITHUB_REF_NAME}-sbom.spdx.json"
       - name: Build provenance
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v4.2.2
         with:
@@ -41,6 +45,7 @@ jobs:
           files: |
             dist/*.zip
             dist/*-sbom.cdx.json
+            dist/*-sbom.spdx.json
           generate_release_notes: true
           body: |
             Install: see the README. Adapters for every supported host are attached as a zip for hosts that want a copy rather than a clone. The zip and the CycloneDX bill of materials carry GitHub build provenance: verify with `gh attestation verify <file> --repo lazy-senior-dev/tenured`.

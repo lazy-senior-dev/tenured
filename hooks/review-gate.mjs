@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // PreToolUse gate. Reads the host's hook event from stdin, finds the last verdict
 // the agent printed, and answers allow or deny in the host's dialect.
 //

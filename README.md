@@ -213,6 +213,24 @@ is an open catalogue built from the benchmark runs in these repositories: each e
 an agent shipped it, on which agents, the code one of them actually wrote, and the published standard
 it maps to. Nothing in it is written from memory.
 
+## Standards this implements
+
+Citing a standard is easy; implementing one is the part that can be checked. Everything below is
+running in this repository today, and every body listed governs its specification in the open.
+
+| Standard | Governed by | Where it runs here |
+|---|---|---|
+| [Model Context Protocol](https://modelcontextprotocol.io/) | Open specification, Anthropic-originated, community-governed | `mcp/server.mjs`, five tools over stdio, listed as `io.github.lazy-senior-dev/tenured` |
+| [SLSA build provenance](https://slsa.dev/spec/v1.2/) | OpenSSF, Linux Foundation | Attested on every release artefact; verify with `gh attestation verify` |
+| [Sigstore](https://www.sigstore.dev/) | OpenSSF, Linux Foundation | The container image is signed keyless; verify with `cosign verify` |
+| [CycloneDX](https://cyclonedx.org/) | OWASP, standardised as ECMA-424 | A bill of materials on every release |
+| [SPDX](https://spdx.dev/) | Linux Foundation, ISO/IEC 5962 | A second bill of materials in the format ISO recognises |
+| [OpenSSF Scorecard](https://scorecard.dev/) | OpenSSF, Linux Foundation | Scored weekly, badge above, results public |
+| [REUSE licence identifiers](https://reuse.software/spec/) | Free Software Foundation Europe | `SPDX-License-Identifier` on the files this project authors |
+| [AGENTS.md](https://agents.md/) | Agentic AI Foundation, Linux Foundation | Generated from the ruleset for any agent that reads it |
+| [Agent Skills](https://agentskills.io/) | Open specification | `skills/` and `.github/skills/` |
+| [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | Apache Software Foundation | `LICENSE` and `NOTICE` |
+
 ## Where to get it, and how it is vetted
 
 - **npm** — not published yet; the first tagged release will do it. Until then, `npx github:lazy-senior-dev/tenured review` works today and needs only git. The release workflow publishes through [OIDC trusted publishing](https://docs.npmjs.com/trusted-publishers), so no long-lived token is ever stored here, and npm records build provenance for the package.

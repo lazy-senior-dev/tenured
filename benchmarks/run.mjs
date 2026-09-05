@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // Run the benchmark: every case x every arm x n runs, per agent, resumable.
 //
 //   npm run bench -- [--agents claude,codex,agy,api] [--arms bare,generic,grump] [--n 3]

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // Author tier runner: the agent ships a change for a ticket, with and without the persona loaded,
 // and the shipped diff is scored by the task's fixed checks. Records go to
 // benchmarks/results/author/raw/<agent>.jsonl and a rerun resumes whatever is missing.

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // Try the Grump without installing anything:
 //   npx github:lazy-senior-dev/grumpy-reviewer review [--staged] [--agent claude|codex|agy|api] [--model ID]
 //   npx github:lazy-senior-dev/grumpy-reviewer pr <number|url> [--agent ...]

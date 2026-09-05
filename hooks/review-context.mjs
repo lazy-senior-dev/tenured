@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Sandeep Bazar
+// SPDX-License-Identifier: Apache-2.0
 // UserPromptSubmit (Claude Code, Codex), sessionStart (Copilot CLI), BeforeAgent (Gemini CLI).
 // Injects the reviewer card plus the current mode. Prints nothing when the mode is off.
 //
