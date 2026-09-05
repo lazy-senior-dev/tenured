@@ -59,18 +59,23 @@ const authorPath = join(ROOT, "benchmarks", "results", "author", "latest.json");
 function authorBlock() {
   if (!existsSync(authorPath)) return "";
   const d = JSON.parse(readFileSync(authorPath, "utf8"));
-  const complete = (a) => ["bare", "grump"].every((k) => a.arms?.[k]?.runs && a.arms[k].records === a.arms[k].runs * d.tasks);
+  // "With the plugin" is the gate arm when it has run: the plugin refuses the write and the agent
+  // fixes it, which is what a user installs. Without it, the persona card alone.
+  const whole = (s) => s && s.runs && s.attempts === s.runs * d.tasks;
+  const complete = (a) => whole(a.arms?.bare) && (whole(a.arms?.gate) || whole(a.arms?.grump));
   const rows = Object.entries(d.agents).filter(([, a]) => complete(a));
   if (!rows.length) return "";
   const [, first] = rows[0];
-  const b = first.arms.bare, g = first.arms.grump, ge = first.arms.generic;
+  const b = first.arms.bare, ge = first.arms.generic;
+  const g = whole(first.arms.gate) ? first.arms.gate : first.arms.grump;
+  const gated = g === first.arms.gate;
   const pct = (s) => Math.round((100 * s.shippedTotal) / (s.attempts || 1));
-  const lead = `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%)${ge && ge.attempts ? `, ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%)` : ""}, and ${g.shippedTotal} of ${g.attempts} with ${WHO} loaded (${pct(g)}%), reviewing its own change before finishing in ${g.reviewedTotal} of ${g.attempts} runs. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).`;
+  const lead = `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%)${ge && ge.attempts ? `, ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%)` : ""}, and ${g.shippedTotal} of ${g.attempts} with ${WHO} ${gated ? "installed, where he refuses the write until the findings are fixed" : "loaded"} (${pct(g)}%)${gated ? "" : `, reviewing its own change before finishing in ${g.reviewedTotal} of ${g.attempts} runs`}. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).`;
   let table = `| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time | Median cost |\n|---|---|---|---|---|---|---|---|\n`;
-  for (const [, a] of rows) for (const arm of ["bare", "generic", "grump"]) {
+  for (const [, a] of rows) for (const arm of ["bare", "generic", "grump", "gate"]) {
     const s = a.arms[arm]; if (!s || !s.runs) continue;
-    const w = (x) => (arm === "grump" ? `**${x}**` : x);
-    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(s.implementedTotal + " of " + s.attempts)} | ${w(s.shippedTotal + " of " + s.attempts + " (" + pct(s) + "%)")} | ${arm === "grump" ? w(s.reviewedTotal + " of " + s.attempts) : "n/a"} | ${secs(s.latency)} | ${s.cost == null ? "n/a" : "$" + n(s.cost, 2)} |\n`;
+    const w = (x) => (arm === (gated ? "gate" : "grump") ? `**${x}**` : x);
+    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(s.implementedTotal + " of " + s.attempts)} | ${w(s.shippedTotal + " of " + s.attempts + " (" + pct(s) + "%)")} | ${arm === "grump" || arm === "gate" ? w(s.reviewedTotal + " of " + s.attempts) : "n/a"} | ${secs(s.latency)} | ${s.cost == null ? "n/a" : "$" + n(s.cost, 2)} |\n`;
   }
   return `${lead}\n\n${table.trim()}`;
 }
