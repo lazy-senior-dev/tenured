@@ -5,9 +5,11 @@
 // and the shipped diff is scored by the task's fixed checks. Records go to
 // benchmarks/results/author/raw/<agent>.jsonl and a rerun resumes whatever is missing.
 //   node benchmarks/author.mjs [--agents claude,codex,bob] [--arms bare,generic,grump] [--n 2] [--concurrency 3] [--tasks a,b]
-import { mkdtempSync, cpSync, readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, realpathSync, cpSync, readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
+// realpath: on macOS tmpdir is /var/... symlinked to /private/var/..., and a sandboxed agent that
+// resolves the real path sees its own workspace as "outside the project" and rejects every write.
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { AUTHORS, ARMS, availableAuthors, loadTasks } from "./lib/authors.mjs";
@@ -30,7 +32,7 @@ const verdictRe = new RegExp(`${P.verdictPrefix}:\\s*(${P.verdicts.approve}|${P.
 
 async function job(agentName, t, arm, runIdx) {
   const agent = AUTHORS[agentName];
-  const repo = mkdtempSync(join(tmpdir(), "lsd-author-"));
+  const repo = mkdtempSync(join(realpathSync(tmpdir()), "lsd-author-"));
   git(repo, ["init", "-q"]);
   const commit = (msg) => { git(repo, ["add", "-A"]); git(repo, ["-c", "user.name=bench", "-c", "user.email=bench@example.com", "commit", "-q", "--allow-empty", "-m", msg]); };
   // Tasks with a history.json replay it first: each entry writes files and commits with the given
