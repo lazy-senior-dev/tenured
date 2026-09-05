@@ -172,6 +172,20 @@ One file, [`rules/tenured.md`](rules/tenured.md), is the whole ruleset. Every ad
 
 **What he reads.** Before each review the persona tells the agent to look at `git log --oneline -- <file>`, the changelog, `docs/postmortems*`, ADRs, and the comments around the changed lines. On hosts with tools the agent runs those commands; in the Action and the CLI the history in the diff and the repository's notes are what he sees. **Modes**: `nag` (default), `gate`, `off`, shared with every persona.
 
+## Why not just a rules file, or a pull-request bot?
+
+Those are the two things you already have, and they fail in opposite directions. One is advice the agent may ignore; the other arrives after the code exists.
+
+|  | A rules file<br>(`CLAUDE.md`, `.cursorrules`) | A pull-request reviewer | tenured |
+|---|---|---|---|
+| **When it runs** | Every turn, as context | After the code is written and pushed | Before the write is allowed to land |
+| **When it disagrees** | Nothing happens. The agent may ignore it | Leaves a comment for a human to read | Tenured denies the write until the finding is fixed |
+| **What you can gate on** | Nothing | Prose | `NEW` / `SEEN_BEFORE` / `DO_NOT_REPEAT`, parsed to JSON |
+| **Where it works** | One file format per host, maintained by hand | The forge you host on | 14 agents, any MCP client, and a GitHub Action, from one ruleset |
+| **How you know it helps** | You do not | Vendor's own blog post | Two benchmark tiers in this repository, every raw reply committed, rerun it yourself |
+
+The first column is not a strawman. Anthropic's own documentation says a rules file is *"context, not enforced configuration"* and that *"to block an action regardless of what Claude decides, use a PreToolUse hook instead."* That hook is what this repository is.
+
 ## Try him in 60 seconds, install nothing
 
 ```

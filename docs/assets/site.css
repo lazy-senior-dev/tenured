@@ -194,3 +194,10 @@ footer .by strong { color: var(--text); }
 .legend div { display: flex; gap: .5rem; align-items: baseline; }
 .legend dt { flex: 0 0 auto; font: 600 .72rem/1.5 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
 .legend dd { margin: 0; font-size: .88rem; color: var(--muted); }
+
+/* the comparison */
+.compare th:first-child { text-align: left; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.compare thead th { text-align: left; font-size: .82rem; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+.compare thead th:last-child { color: var(--accent); }
+.compare td { vertical-align: top; color: var(--muted); }
+.compare td.yes { color: var(--text); font-weight: 600; background: color-mix(in srgb, var(--accent) 8%, transparent); }

@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://lazy-senior-dev.github.io/assets/social-card.png">
 <meta name="theme-color" content="#fff6d6">
 <!-- Custom domain: create a CNAME file containing only the bare domain in this Pages folder, then set it under Settings > Pages. -->
-<link rel="stylesheet" href="assets/site.css?v=7445d8be">
+<link rel="stylesheet" href="assets/site.css?v=be39df91">
 </head>
 <body>
 <header class="top">
@@ -155,6 +155,23 @@
     <li><strong>Lessons recorded.</strong> If it is new, does it leave a note the next person will find?</li>
   </ol>
   <p class="sub" style="margin-top:1.4rem">Verdict block: <code>TENURED: NEW | SEEN_BEFORE | DO_NOT_REPEAT</code>. <code>DO_NOT_REPEAT</code> is reserved for changes that reproduce a recorded incident or resurrect a deliberate removal.</p>
+</section>
+
+<section class="wrap reveal" id="why">
+  <div class="eyebrow">Why this and not that</div>
+  <h2>You already have a rules file and a review bot</h2>
+  <p class="sub">They fail in opposite directions. One is advice the agent may ignore; the other arrives once the code already exists.</p>
+  <div class="table-wrap"><table class="compare">
+    <thead><tr><th></th><th>A rules file</th><th>A pull-request reviewer</th><th>tenured</th></tr></thead>
+    <tbody>
+      <tr><th>When it runs</th><td>Every turn, as context</td><td>After the code is written and pushed</td><td class="yes">Before the write is allowed to land</td></tr>
+      <tr><th>When it disagrees</th><td>Nothing happens</td><td>Leaves a comment to read</td><td class="yes">Tenured denies the write until it is fixed</td></tr>
+      <tr><th>What you can gate on</th><td>Nothing</td><td>Prose</td><td class="yes"><code>NEW</code> · <code>SEEN_BEFORE</code> · <code>DO_NOT_REPEAT</code>, as JSON</td></tr>
+      <tr><th>Where it works</th><td>One format per host, by hand</td><td>The forge you host on</td><td class="yes">14 agents, any MCP client, a GitHub Action</td></tr>
+      <tr><th>How you know it helps</th><td>You do not</td><td>The vendor's own blog</td><td class="yes">Two benchmarks here, raw replies committed</td></tr>
+    </tbody>
+  </table></div>
+  <p class="sub" style="margin-top:.9rem">The first column is not a strawman. Anthropic's documentation calls a rules file <em>&ldquo;context, not enforced configuration&rdquo;</em> and says that to block an action regardless of what the model decides, you need a <code>PreToolUse</code> hook. That hook is what this is.</p>
 </section>
 
 <section class="wrap reveal" id="author" hidden>
