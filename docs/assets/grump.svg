@@ -24,16 +24,16 @@
     <path d="M 120 78 C 112 80, 106 88, 104 100" stroke-width="2.5"/>
     <path d="M 200 78 C 208 80, 214 88, 216 100" stroke-width="2.5"/>
     <!-- brows: heavy, pinched inward -->
-    <path d="M 116 110 L 150 121" stroke-width="5.5"/>
-    <path d="M 204 110 L 170 121" stroke-width="5.5"/>
+    <path class="brow brow-l" d="M 116 110 L 150 121" stroke-width="5.5"/>
+    <path class="brow brow-r" d="M 204 110 L 170 121" stroke-width="5.5"/>
     <path d="M 156 112 L 158 120 M 164 112 L 162 120" stroke-width="2"/>
     <!-- half-lidded eyes -->
     <path d="M 124 134 C 130 126, 144 126, 150 134"/>
     <path d="M 126 135 C 132 140, 142 140, 148 135" stroke-width="2"/>
-    <circle cx="137" cy="134" r="2.5" fill="#000" stroke="none"/>
+    <circle class="eye-open" cx="137" cy="134" r="2.5" fill="#000" stroke="none"/>
     <path d="M 170 134 C 176 126, 190 126, 196 134"/>
     <path d="M 172 135 C 178 140, 188 140, 194 135" stroke-width="2"/>
-    <circle cx="183" cy="134" r="2.5" fill="#000" stroke="none"/>
+    <circle class="eye-open" cx="183" cy="134" r="2.5" fill="#000" stroke="none"/><path class="eye-closed" d="M 126 135 C 132 141, 142 141, 148 135 M 172 135 C 178 141, 188 141, 194 135" stroke-width="2.5"/>
     <!-- nose -->
     <path d="M 161 132 L 153 163 C 156 168, 166 168, 169 163"/>
     <!-- mouth: down at both corners -->
@@ -257,9 +257,9 @@
     <path d="M 290 258 C 308 256, 308 288, 290 288" stroke-width="3"/>
     <path d="M 226 246 C 240 252, 276 252, 290 246" stroke-width="2"/>
     <!-- steam -->
-    <path d="M 246 236 C 240 228, 252 222, 246 212" stroke-width="2"/>
+    <g class="steam"><path d="M 246 236 C 240 228, 252 222, 246 212" stroke-width="2"/>
     <path d="M 262 236 C 256 228, 268 222, 262 212" stroke-width="2"/>
-    <path d="M 278 236 C 272 228, 284 222, 278 212" stroke-width="2"/>
+    <path d="M 278 236 C 272 228, 284 222, 278 212" stroke-width="2"/></g>
   </g>
   <text x="258" y="286" font-family="Menlo, Consolas, monospace" font-size="8.5" font-weight="700" text-anchor="middle" fill="#000">NOT LGTM</text>
 </svg>

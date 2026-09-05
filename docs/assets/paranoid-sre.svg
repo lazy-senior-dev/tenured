@@ -22,7 +22,7 @@
     <path d="M 213 128 C 228 124, 230 152, 214 158"/>
     <!-- headset band and earpiece with mic -->
     <path d="M 104 118 C 96 84, 224 84, 216 118" stroke-width="3.5"/>
-    <rect x="86" y="126" width="18" height="28" rx="6"/>
+    <rect x="86" y="126" width="18" height="28" rx="6" class="beat"/>
     <path d="M 95 154 C 92 176, 112 190, 134 192" stroke-width="2.5"/>
     <circle cx="138" cy="192" r="4"/>
     <!-- brows: raised, alert -->

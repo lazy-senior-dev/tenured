@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://lazy-senior-dev.github.io/assets/social-card.png">
 <meta name="theme-color" content="#fff6d6">
 <!-- Custom domain: create a CNAME file containing only the bare domain in this Pages folder, then set it under Settings > Pages. -->
-<link rel="stylesheet" href="assets/site.css?v=8808f754">
+<link rel="stylesheet" href="assets/site.css?v=7445d8be">
 </head>
 <body>
 <header class="top">
@@ -102,7 +102,7 @@
     <path d="M 126 170 C 124 178, 126 186, 132 192" stroke-width="1.5"/>
     <path d="M 194 170 C 196 178, 194 186, 188 192" stroke-width="1.5"/>
   </g>
-  <text x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="currentColor">2017</text>
+  <text class="page" x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="currentColor">2017</text>
 </svg></span></div>
   <h1 class="display">Your agent has no memory.<br><span class="g">Tenured remembers 2017.</span></h1>
   <p class="lede">Your agent's change, reviewed by the engineer who has been here longer than the monorepo and remembers the postmortem for the thing you are about to reintroduce. Every objection comes with a commit hash the author can open. <strong>We tried that in 2017.</strong></p>
@@ -124,12 +124,18 @@
 <section class="wrap reveal" id="recordings">
   <div class="eyebrow">Recorded</div>
   <h2>Watch him work on every agent</h2>
-  <p class="sub">The same staged diff, one CLI, 4 agents. Real runs captured from the terminal transcript and rendered frame by frame, nothing typed by hand and nothing cut. Captions come from the recording itself. Captured 2026-09-04.</p>
+  <p class="sub">The same staged diff, one CLI, 4 agents. Real runs captured from the terminal transcript and rendered frame by frame, nothing typed by hand and nothing cut. Captured 2026-09-04.</p>
+  <dl class="legend">
+    <div><dt>Verdict</dt><dd>What Tenured concluded. <code>NEW</code> lets the change through, <code>SEEN_BEFORE</code> asks for fixes, <code>DO_NOT_REPEAT</code> stops it.</dd></div>
+    <div><dt>Findings</dt><dd>How many numbered problems were listed. Each one names a file, a line, what breaks, and the smallest fix.</dd></div>
+    <div><dt>Time</dt><dd>How long the review took, start to finish, on this machine.</dd></div>
+    <div><dt>Tokens</dt><dd>What the host reported reading and writing. Some hosts report nothing, and the card says so rather than guessing.</dd></div>
+  </dl>
   <div class="recs">
-    <figure class="rec"><img src="assets/recordings/claude.gif" loading="lazy" width="1000" height="346" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT"><figcaption><strong>Claude Code</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>2</dd></div><div><dt>Time</dt><dd>9 s</dd></div><div><dt>Tokens</dt><dd>7,737 in / 609 out</dd></div><div><dt>Cost</dt><dd>$0.0259</dd></div></dl></figcaption></figure>
-    <figure class="rec"><img src="assets/recordings/codex.gif" loading="lazy" width="1000" height="258" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT"><figcaption><strong>Codex CLI</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>1</dd></div><div><dt>Time</dt><dd>5 s</dd></div><div><dt>Tokens</dt><dd>15,488 in / 77 out</dd></div><div><dt>Cost</dt><dd>not reported</dd></div></dl></figcaption></figure>
-    <figure class="rec"><img src="assets/recordings/agy.gif" loading="lazy" width="1000" height="236" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT"><figcaption><strong>Antigravity CLI</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>1</dd></div><div><dt>Time</dt><dd>117 s</dd></div><div><dt>Tokens</dt><dd>20,981 in / 56,452 out</dd></div><div><dt>Cost</dt><dd>not reported</dd></div></dl></figcaption></figure>
-    <figure class="rec"><img src="assets/recordings/bob.gif" loading="lazy" width="1000" height="390" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT"><figcaption><strong>IBM Bob Shell</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>3</dd></div><div><dt>Time</dt><dd>6 s</dd></div><div><dt>Tokens</dt><dd>not reported</dd></div><div><dt>Cost</dt><dd>$0.0098</dd></div></dl></figcaption></figure>
+    <figure class="rec"><img src="assets/recordings/claude.gif" loading="lazy" width="1000" height="414" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT"><figcaption><strong>Claude Code</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>2</dd></div><div><dt>Time</dt><dd>9 s</dd></div><div><dt>Tokens</dt><dd>7,737 in / 609 out</dd></div></dl></figcaption></figure>
+    <figure class="rec"><img src="assets/recordings/codex.gif" loading="lazy" width="1000" height="310" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT"><figcaption><strong>Codex CLI</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>1</dd></div><div><dt>Time</dt><dd>5 s</dd></div><div><dt>Tokens</dt><dd>15,488 in / 77 out</dd></div></dl></figcaption></figure>
+    <figure class="rec"><img src="assets/recordings/agy.gif" loading="lazy" width="1000" height="284" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT"><figcaption><strong>Antigravity CLI</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>1</dd></div><div><dt>Time</dt><dd>117 s</dd></div><div><dt>Tokens</dt><dd>20,981 in / 56,452 out</dd></div></dl></figcaption></figure>
+    <figure class="rec"><img src="assets/recordings/bob.gif" loading="lazy" width="1000" height="466" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT"><figcaption><strong>IBM Bob Shell</strong><dl><div><dt>Verdict</dt><dd>TENURED: DO_NOT_REPEAT</dd></div><div><dt>Findings</dt><dd>3</dd></div><div><dt>Time</dt><dd>6 s</dd></div><div><dt>Tokens</dt><dd>not reported</dd></div></dl></figcaption></figure>
   </div>
 </section>
 
@@ -212,16 +218,16 @@
     <path d="M 120 78 C 112 80, 106 88, 104 100" stroke-width="2.5"/>
     <path d="M 200 78 C 208 80, 214 88, 216 100" stroke-width="2.5"/>
     <!-- brows: heavy, pinched inward -->
-    <path d="M 116 110 L 150 121" stroke-width="5.5"/>
-    <path d="M 204 110 L 170 121" stroke-width="5.5"/>
+    <path class="brow brow-l" d="M 116 110 L 150 121" stroke-width="5.5"/>
+    <path class="brow brow-r" d="M 204 110 L 170 121" stroke-width="5.5"/>
     <path d="M 156 112 L 158 120 M 164 112 L 162 120" stroke-width="2"/>
     <!-- half-lidded eyes -->
     <path d="M 124 134 C 130 126, 144 126, 150 134"/>
     <path d="M 126 135 C 132 140, 142 140, 148 135" stroke-width="2"/>
-    <circle cx="137" cy="134" r="2.5" fill="#000" stroke="none"/>
+    <circle class="eye-open" cx="137" cy="134" r="2.5" fill="#000" stroke="none"/>
     <path d="M 170 134 C 176 126, 190 126, 196 134"/>
     <path d="M 172 135 C 178 140, 188 140, 194 135" stroke-width="2"/>
-    <circle cx="183" cy="134" r="2.5" fill="#000" stroke="none"/>
+    <circle class="eye-open" cx="183" cy="134" r="2.5" fill="#000" stroke="none"/><path class="eye-closed" d="M 126 135 C 132 141, 142 141, 148 135 M 172 135 C 178 141, 188 141, 194 135" stroke-width="2.5"/>
     <!-- nose -->
     <path d="M 161 132 L 153 163 C 156 168, 166 168, 169 163"/>
     <!-- mouth: down at both corners -->
@@ -445,9 +451,9 @@
     <path d="M 290 258 C 308 256, 308 288, 290 288" stroke-width="3"/>
     <path d="M 226 246 C 240 252, 276 252, 290 246" stroke-width="2"/>
     <!-- steam -->
-    <path d="M 246 236 C 240 228, 252 222, 246 212" stroke-width="2"/>
+    <g class="steam"><path d="M 246 236 C 240 228, 252 222, 246 212" stroke-width="2"/>
     <path d="M 262 236 C 256 228, 268 222, 262 212" stroke-width="2"/>
-    <path d="M 278 236 C 272 228, 284 222, 278 212" stroke-width="2"/>
+    <path d="M 278 236 C 272 228, 284 222, 278 212" stroke-width="2"/></g>
   </g>
   <text x="258" y="286" font-family="Menlo, Consolas, monospace" font-size="8.5" font-weight="700" text-anchor="middle" fill="#000">NOT LGTM</text>
 </svg></span><h3>The Grump</h3><p><em>Show me where it breaks.</em> Reviews the diff before it reaches your branch.</p></a>
@@ -475,7 +481,7 @@
     <path d="M 213 128 C 228 124, 230 152, 214 158"/>
     <!-- headset band and earpiece with mic -->
     <path d="M 104 118 C 96 84, 224 84, 216 118" stroke-width="3.5"/>
-    <rect x="86" y="126" width="18" height="28" rx="6"/>
+    <rect x="86" y="126" width="18" height="28" rx="6" class="beat"/>
     <path d="M 95 154 C 92 176, 112 190, 134 192" stroke-width="2.5"/>
     <circle cx="138" cy="192" r="4"/>
     <!-- brows: raised, alert -->

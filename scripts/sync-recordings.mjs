@@ -47,7 +47,6 @@ export function fields(r) {
     ["Findings", String(r.findings)],
     ["Time", `${r.seconds} s`],
     ["Tokens", r.tokensIn != null ? `${n(r.tokensIn)} in / ${n(r.tokensOut)} out` : "not reported by the host"],
-    ["Cost", r.cost != null ? `$${r.cost.toFixed(4)}` : "not reported by the host"],
   ];
 }
 export function caption(r) { return fields(r).map(([k, v]) => `<b>${k}</b> ${v}`).join("<br>"); }
@@ -71,7 +70,7 @@ The same staged diff, one CLI, ${recs.length} agents. Each recording is a real r
 
 ${rows.join("\n")}
 
-Every card lists the same five things; a host that does not report tokens or cost says so rather than leaving a blank. Agents that narrate the whole checklist before the verdict are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with \`--agent claude|codex|agy|bob\`; Bob needs \`BOB_API_KEY\`.
+Each card reads the same way. **Verdict** is what ${P.name} concluded: ${P.verdicts.approve} lets the change through, ${P.verdicts.changes} asks for fixes, ${P.verdicts.block} stops it. **Findings** counts the numbered problems he listed, each naming a file, a line, and the smallest fix. **Time** is how long the whole review took, start to finish. **Tokens** is what the host reported it read and wrote, and says so plainly when a host reports nothing. Agents that narrate the whole checklist before the verdict are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with \`--agent claude|codex|agy|bob\`; Bob needs \`BOB_API_KEY\`.
 <!-- recordings:end -->`;
 }
 

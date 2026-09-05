@@ -57,5 +57,5 @@
     <path d="M 126 170 C 124 178, 126 186, 132 192" stroke-width="1.5"/>
     <path d="M 194 170 C 196 178, 194 186, 188 192" stroke-width="1.5"/>
   </g>
-  <text x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="currentColor">2017</text>
+  <text class="page" x="90" y="300" font-family="Menlo, Consolas, monospace" font-size="7" font-weight="700" text-anchor="middle" fill="currentColor">2017</text>
 </svg>

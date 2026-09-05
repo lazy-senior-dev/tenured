@@ -6,10 +6,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 src, out = sys.argv[1], sys.argv[2]
 t = json.load(open(src))
-W, PAD, LINE_H, MAXCOLS = 1000, 26, 22, 108
+W, PAD, LINE_H, MAXCOLS = 1000, 28, 26, 100
 BG, FG, DIM, BLOCK, OK, WARN, BAR = (11, 15, 28), (230, 233, 242), (138, 147, 173), (255, 138, 101), (127, 216, 143), (255, 209, 102), (58, 68, 102)
 
-def font(size=15, bold=False):
+def font(size=17, bold=False):
     for path in ["/System/Library/Fonts/Menlo.ttc", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"]:
         if os.path.exists(path):
             try: return ImageFont.truetype(path, size, index=1 if (bold and path.endswith(".ttc")) else 0)
@@ -36,13 +36,13 @@ flat = []
 for text, color, kind in lines:
     for i, w in enumerate(wrap(text)):
         flat.append((w, color, kind if i == 0 else "cont"))
-H = 60 + LINE_H * (len(flat) + 1)
+H = 76 + LINE_H * (len(flat) + 1)
 
 def frame(shown, cursor):
     im = Image.new("RGB", (W, H), BG); d = ImageDraw.Draw(im)
     for i in range(3): d.ellipse((PAD + i * 18, 16, PAD + i * 18 + 11, 27), fill=BAR)
     d.text((W - PAD - 260, 13), f"{t['persona']} · {t['agent']} · recorded {t['recordedAt'][:10]}", font=font(12), fill=DIM)
-    y = 46
+    y = 54
     for text, color, kind in shown:
         d.text((PAD, y), text, font=FB if kind == "bold" else F, fill=color); y += LINE_H
     if cursor and shown:
