@@ -177,25 +177,28 @@ One file, [`rules/tenured.md`](rules/tenured.md), is the whole ruleset. Every ad
 
 ## The standards behind the checklist
 
-Reviewing a change against a repository's own history has less published doctrine than security or
-operations, and it would be dishonest to pretend otherwise. What exists, this follows.
+Reviewing a change against a repository's own history has far less published doctrine than security
+or operations, and it would be dishonest to pretend otherwise. The one standard that classified
+software anomalies, IEEE 1044, has been inactive since 2020 with no successor. What exists, this
+follows; where nothing exists, the citation is the repository's own record.
 
 | Checklist question | What it maps to |
 |---|---|
-| Resurrection | [Chesterton's fence](https://en.wikipedia.org/wiki/G._K._Chesterton#Chesterton's_fence): do not remove a restriction until you know why it was put there |
-| Reverted before | [Google SRE, Postmortem Culture](https://sre.google/sre-book/postmortem-culture/), on acting from what an incident recorded |
-| Postmortem match | [Google SRE, Postmortem Culture](https://sre.google/sre-book/postmortem-culture/) |
-| Warnings in place | [CWE-1078, inappropriate source code style or formatting](https://cwe.mitre.org/data/definitions/1078.html), on comments that carry a constraint |
-| Deprecated paths | [Semantic Versioning](https://semver.org/) · [Kubernetes deprecation policy](https://kubernetes.io/docs/reference/using-api/deprecation-policy/) |
-| Copied config | [The Twelve-Factor App: Config](https://12factor.net/config), on configuration differing by environment |
-| Half-migration | [Architecture decision records](https://adr.github.io/), on recording where a migration is going |
-| Ownership | [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) |
+| Resurrection | [Chesterton's fence](https://en.wikipedia.org/wiki/G._K._Chesterton), cited by name in [Google's engineering practices](https://google.github.io/eng-practices/review/developer/cl-descriptions.html) and [Software Engineering at Google, ch. 3](https://abseil.io/resources/swe-book/html/ch03.html) |
+| Reverted before | [NIST SSDF RV.3.2](https://csrc.nist.gov/projects/ssdf), analyse root causes over time to identify patterns |
+| Postmortem match | [Google SRE, Postmortem Culture](https://sre.google/sre-book/postmortem-culture/) · [SRE Workbook, Postmortem Culture](https://sre.google/workbook/postmortem-culture/) · [NIST SSDF RV.3.3](https://csrc.nist.gov/projects/ssdf) |
+| Warnings in place | [CWE-1116, inaccurate source code comments](https://cwe.mitre.org/data/definitions/1116.html), on a comment that carries a constraint |
+| Deprecated paths | [Semantic Versioning clause 7](https://semver.org/spec/v2.0.0.html) · [Kubernetes deprecation policy](https://kubernetes.io/docs/reference/using-api/deprecation-policy/) · [PEP 387](https://peps.python.org/pep-0387/) |
+| Copied config | [Twelve-Factor: Config](https://12factor.net/config), on configuration differing by environment |
+| Half-migration | [Architecture decision records](https://adr.github.io/) · [MADR](https://adr.github.io/madr/) |
+| Ownership | [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) · [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) |
 | Naming collision | [Prometheus metric naming](https://prometheus.io/docs/practices/naming/), on reusing a name that already means something |
-| Lessons recorded | [Architecture decision records](https://adr.github.io/) |
+| Lessons recorded | [NIST SSDF RV.3.1](https://csrc.nist.gov/projects/ssdf), record what root-cause analysis found where developers can search it · [ADRs](https://adr.github.io/) |
 
-Where no standard exists, the citation is the repository's own record: a commit, a changelog entry,
-a postmortem, or the comment on the line. That is the point of this reviewer, and it is why every
-finding has to name one.
+Architecture decision records are a strong convention rather than a standard: no format, filename or
+status vocabulary is normative anywhere, and ISO/IEC/IEEE 42010
+requires that decisions and their rationale be recorded without saying how. Postmortem practice has
+no ISO or ITIL equivalent at all; it rests on published industry practice.
 
 ## What agents actually get wrong
 
