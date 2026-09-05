@@ -146,6 +146,20 @@ export const AGENTS = {
       };
     },
   },
+  // Any other agent: LSD_AGENT_CMD reads the prompt on stdin and prints the reply on stdout.
+  any: {
+    label: process.env.LSD_AGENT_LABEL || "custom agent",
+    available: () => !!process.env.LSD_AGENT_CMD,
+    defaultModel: "",
+    async run({ system, user }) {
+      const parts = (process.env.LSD_AGENT_CMD || "").split(" ").filter(Boolean).concat((process.env.LSD_AGENT_ARGS || "").split(" ").filter(Boolean));
+      if (!parts.length) throw new Error("set LSD_AGENT_CMD to the command that runs your agent");
+      const res = await exec(parts[0], parts.slice(1), { cwd: scratch(), input: system ? `${system}\n\n${user}` : user });
+      const text = (res.stdout || "").trim();
+      if (!text) throw new Error(`custom agent returned nothing (exit ${res.code}): ${(res.stderr || "").slice(0, 200)}`);
+      return { text, usage: { input: 0, output: 0 }, costUsd: undefined, durationMs: res.durationMs, model: process.env.LSD_AGENT_MODEL || "custom" };
+    },
+  },
   bob: {
     label: "IBM Bob Shell",
     available: async () => (process.env.BOB_API_KEY ? await which("bob") : null),

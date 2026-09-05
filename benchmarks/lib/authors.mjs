@@ -75,18 +75,32 @@ export const AUTHORS = {
   },
   agy: {
     label: "Antigravity CLI",
-    // Headless Antigravity aborts the whole run when a tool asks for a permission it cannot prompt
-    // for, and it asks for one on most tasks, so it is not run unless named with --agents.
-    experimental: true,
     available: () => which("agy"),
     async write({ prompt, cwd, model }) {
-      const args = ["-p", prompt, "--output-format", "json", "--mode", "accept-edits", "--disable-slash-commands", "--print-timeout", "15m"];
+      // Tools are pre-approved because headless mode cannot ask, and the working tree here is a
+      // scratch copy of the task scaffold in the system temp directory, not a real repository.
+      const args = ["-p", prompt, "--output-format", "json", "--mode", "accept-edits", "--dangerously-skip-permissions", "--disable-slash-commands", "--print-timeout", "15m"];
       if (model) args.push("--model", model);
       const res = await run("agy", args, { cwd, timeoutMs: 1_000_000 });
       let data = {};
       try { data = JSON.parse(res.stdout.trim().split("\n").filter((l) => l.startsWith("{")).pop() || "{}"); } catch { /* keep raw */ }
       const u = data.usage || {};
       return { text: data.response || res.stdout, usage: { input: u.input_tokens || 0, output: (u.output_tokens || 0) + (u.thinking_tokens || 0) }, costUsd: undefined, model: model || "agy-default", durationMs: res.durationMs, exit: res.code, stderr: res.stderr.slice(0, 500) };
+    },
+  },
+  // Any other agent. Set LSD_AGENT_CMD to a command that reads the prompt on stdin, edits files in
+  // the working directory, and writes whatever it likes to stdout, for example:
+  //   LSD_AGENT_CMD="my-agent --write --cwd ." npm run bench:author -- --agents any
+  // LSD_AGENT_LABEL names it in the tables and LSD_AGENT_ARGS adds arguments. Nothing else in the
+  // benchmark knows which agent it is talking to.
+  any: {
+    label: process.env.LSD_AGENT_LABEL || "custom agent",
+    available: () => !!process.env.LSD_AGENT_CMD,
+    async write({ prompt, cwd }) {
+      const parts = (process.env.LSD_AGENT_CMD || "").split(" ").filter(Boolean).concat((process.env.LSD_AGENT_ARGS || "").split(" ").filter(Boolean));
+      if (!parts.length) throw new Error("set LSD_AGENT_CMD to the command that runs your agent");
+      const res = await run(parts[0], parts.slice(1), { cwd, input: prompt });
+      return { text: res.stdout || res.stderr, usage: { input: 0, output: 0 }, costUsd: undefined, model: process.env.LSD_AGENT_MODEL || "custom", durationMs: res.durationMs, exit: res.code, stderr: res.stderr.slice(0, 500) };
     },
   },
   bob: {
@@ -110,7 +124,7 @@ export const AUTHORS = {
 
 export async function availableAuthors() {
   const out = [];
-  for (const [k, a] of Object.entries(AUTHORS)) if (!a.experimental && (await a.available())) out.push(k);
+  for (const [k, a] of Object.entries(AUTHORS)) if (await a.available()) out.push(k);
   return out;
 }
 
