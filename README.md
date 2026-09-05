@@ -53,7 +53,7 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 | Claude Code | `claude-sonnet-5` (n=2) | generic care prompt | 14 of 16 | 0 of 16 (0%) | n/a | 85 s |
 | Claude Code | `claude-sonnet-5` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 12 of 16 | 74 s |
 
-Every agent whose four arms have finished is in the table above. Still running, and added as each one finishes: Codex CLI.
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI.
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->

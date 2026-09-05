@@ -43,5 +43,6 @@
   },
   "context": {
     "history": true
-  }
+  },
+  "authorNote": "Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall."
 }

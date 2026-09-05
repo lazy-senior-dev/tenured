@@ -83,6 +83,7 @@ function authorBlock() {
   const pending = Object.entries(d.agents).filter(([, a]) => !whole(a.arms?.bare)).map(([, a]) => a.label);
   const thin = Object.entries(d.agents).filter(([, a]) => whole(a.arms?.bare) && !engaged(a)).map(([, a]) => a.label);
   const parts = [];
+  if (P.authorNote) parts.push(P.authorNote);
   if (pending.length) parts.push(`Still running, and added as each one finishes: ${pending.join(", ")}.`);
   if (thin.length) parts.push(`Left out because it completed the change on fewer than half the tickets, so its zeros would read as "wrote nothing" rather than "wrote nothing wrong": ${thin.join(", ")}.`);
   const note = parts.length ? `\n\nEvery agent whose four arms have finished is in the table above. ${parts.join(" ")}` : "";
