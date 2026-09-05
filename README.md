@@ -173,6 +173,35 @@ One file, [`rules/tenured.md`](rules/tenured.md), is the whole ruleset. Every ad
 
 **What he reads.** Before each review the persona tells the agent to look at `git log --oneline -- <file>`, the changelog, `docs/postmortems*`, ADRs, and the comments around the changed lines. On hosts with tools the agent runs those commands; in the Action and the CLI the history in the diff and the repository's notes are what he sees. **Modes**: `nag` (default), `gate`, `off`, shared with every persona.
 
+## The standards behind the checklist
+
+Reviewing a change against a repository's own history has less published doctrine than security or
+operations, and it would be dishonest to pretend otherwise. What exists, this follows.
+
+| Checklist question | What it maps to |
+|---|---|
+| Resurrection | [Chesterton's fence](https://en.wikipedia.org/wiki/G._K._Chesterton#Chesterton's_fence): do not remove a restriction until you know why it was put there |
+| Reverted before | [Google SRE, Postmortem Culture](https://sre.google/sre-book/postmortem-culture/), on acting from what an incident recorded |
+| Postmortem match | [Google SRE, Postmortem Culture](https://sre.google/sre-book/postmortem-culture/) |
+| Warnings in place | [CWE-1078, inappropriate source code style or formatting](https://cwe.mitre.org/data/definitions/1078.html), on comments that carry a constraint |
+| Deprecated paths | [Semantic Versioning](https://semver.org/) · [Kubernetes deprecation policy](https://kubernetes.io/docs/reference/using-api/deprecation-policy/) |
+| Copied config | [The Twelve-Factor App: Config](https://12factor.net/config), on configuration differing by environment |
+| Half-migration | [Architecture decision records](https://adr.github.io/), on recording where a migration is going |
+| Ownership | [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) |
+| Naming collision | [Prometheus metric naming](https://prometheus.io/docs/practices/naming/), on reusing a name that already means something |
+| Lessons recorded | [Architecture decision records](https://adr.github.io/) |
+
+Where no standard exists, the citation is the repository's own record: a commit, a changelog entry,
+a postmortem, or the comment on the line. That is the point of this reviewer, and it is why every
+finding has to name one.
+
+## What agents actually get wrong
+
+Every mistake these reviewers look for was recorded being made. [What coding agents actually get wrong](https://github.com/lazy-senior-dev/lazy-senior-dev.github.io/blob/main/SIGNS.md)
+is an open catalogue built from the benchmark runs in these repositories: each entry names how often
+an agent shipped it, on which agents, the code one of them actually wrote, and the published standard
+it maps to. Nothing in it is written from memory.
+
 ## Where to get it, and how it is vetted
 
 - **npm** — not published yet; the first tagged release will do it. Until then, `npx github:lazy-senior-dev/tenured review` works today and needs only git. The release workflow publishes through [OIDC trusted publishing](https://docs.npmjs.com/trusted-publishers), so no long-lived token is ever stored here, and npm records build provenance for the package.
