@@ -2,11 +2,17 @@
 
 All notable changes to tenured. The format follows Keep a Changelog; versions follow semver.
 
-## [0.1.0] - 2026-09-04
+## [0.1.0] - 2026-09-05
 
 First release. Licensed under Apache-2.0.
 
 ### Added
+
+- Model Context Protocol server (`mcp/server.mjs`, `tenured mcp`), with a tool that needs no API key because the calling client's own model does the review, and a verdict parser with a declared output schema.
+- House rules: a repository commits `.grumpy/policy.md` and every entry point reads it.
+- A blocking gate on Cursor, and a skill for GitHub Copilot code review.
+- Author tier in the benchmark: the agent writes the change itself, with and without Tenured, and with the gate refusing the write until the findings are fixed.
+- Supply chain: a signed container image with a bill of materials and provenance, and registry and npm publishing from CI through OIDC.
 
 - `rules/tenured.md`: the character, the ten-question checklist, the fixed verdict block (`TENURED: NEW | SEEN_BEFORE | DO_NOT_REPEAT`), the non-negotiables, and the three modes.
 - Claude Code plugin with a `UserPromptSubmit` hook that injects the reviewer and a `PreToolUse` gate that reads the agent's own verdict.

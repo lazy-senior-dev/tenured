@@ -59,6 +59,10 @@ jobs:
           ' server.json > server.json.tmp
           mv server.json.tmp server.json
       - name: Publish to the MCP Registry
+        # The registry validates the listing against the published npm package, so this can only
+        # succeed once that package exists. Re-run this workflow after the first npm publish.
+        continue-on-error: true
+        id: registry
         run: |
           set -euo pipefail
           ./mcp-publisher login github-oidc
@@ -68,3 +72,7 @@ jobs:
             sleep 30
           done
           exit 1
+      - name: Say what to do when the registry publish did not run
+        if: steps.registry.outcome == 'failure'
+        run: |
+          echo "::warning title=registry publish skipped::The MCP Registry validates the listing against the published npm package. Publish to npm first, then re-run this workflow."

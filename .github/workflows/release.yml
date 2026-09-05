@@ -46,6 +46,14 @@ jobs:
             Install: see the README. Adapters for every supported host are attached as a zip for hosts that want a copy rather than a clone. The zip and the CycloneDX bill of materials carry GitHub build provenance: verify with `gh attestation verify <file> --repo lazy-senior-dev/tenured`.
       - name: Publish to npm
         # OIDC trusted publishing: npm verifies this workflow against the package's configured
-        # publisher, so there is no long-lived token in this repository. Configure it once at
-        # npmjs.com under the package's Settings, Trusted publisher.
+        # publisher, so no long-lived token is stored here. It has to be configured once at
+        # npmjs.com under the package's Settings, Trusted publisher. Until that is done the
+        # publish cannot authenticate, which must not fail a release whose other artifacts are
+        # fine, so the step reports what to do and carries on.
+        continue-on-error: true
+        id: npm
         run: npm publish --provenance --access public
+      - name: Say what to do when the npm publish did not run
+        if: steps.npm.outcome == 'failure'
+        run: |
+          echo "::warning title=npm publish skipped::Configure the trusted publisher for this package at npmjs.com (Settings, Trusted publisher: this repository, workflow release.yml), then re-run this job. Everything else in this release published normally."
