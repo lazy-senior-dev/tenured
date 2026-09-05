@@ -4,6 +4,10 @@
 # neither, because the calling client's own model does the reading.
 FROM node:22-alpine
 
+# The base image lags its distribution on security fixes, and the scan that gates this image
+# refuses anything fixable, so the packages are brought up to date at build time.
+RUN apk -U upgrade --no-cache
+
 # npm ships inside the base image and pulls in dependencies of its own, none of which this
 # server ever runs: there is nothing to install at run time. Removing it keeps those CVEs out of
 # the published image and out of the scan that gates it.
