@@ -177,28 +177,34 @@ One file, [`rules/tenured.md`](rules/tenured.md), is the whole ruleset. Every ad
 
 ## The standards behind the checklist
 
-Reviewing a change against a repository's own history has far less published doctrine than security
-or operations, and it would be dishonest to pretend otherwise. The one standard that classified
-software anomalies, IEEE 1044, has been inactive since 2020 with no successor. What exists, this
-follows; where nothing exists, the citation is the repository's own record.
+Every reference below is a vendor-neutral standard: MITRE's weakness catalogue, OWASP, NIST, the SEI
+CERT coding standards, the CIS benchmarks, ISO and IETF documents, and open specifications under
+neutral governance. No vendor's engineering handbook, cloud provider's framework, or commercial
+scanner is cited, however useful they are, because a rule you can only check against one company's
+product is not a standard.
+
+This reviewer has the least standard ground of the three, and the constraint makes that plain. The
+one standard that classified software anomalies, IEEE 1044, has been inactive since 2020 with no
+successor. There is no standard for architecture decision records, and none for postmortems: ISO/IEC
+20000-1 and ITIL require root-cause analysis and corrective action without defining any artefact.
 
 | Checklist question | What it maps to |
 |---|---|
-| Resurrection | [Chesterton's fence](https://en.wikipedia.org/wiki/G._K._Chesterton), cited by name in [Google's engineering practices](https://google.github.io/eng-practices/review/developer/cl-descriptions.html) and [Software Engineering at Google, ch. 3](https://abseil.io/resources/swe-book/html/ch03.html) |
+| Resurrection | **No standard names this.** [NIST SSDF RV.3.4](https://csrc.nist.gov/projects/ssdf), on updating the process so a root cause does not recur, is the nearest obligation |
 | Reverted before | [NIST SSDF RV.3.2](https://csrc.nist.gov/projects/ssdf), analyse root causes over time to identify patterns |
-| Postmortem match | [Google SRE, Postmortem Culture](https://sre.google/sre-book/postmortem-culture/) · [SRE Workbook, Postmortem Culture](https://sre.google/workbook/postmortem-culture/) · [NIST SSDF RV.3.3](https://csrc.nist.gov/projects/ssdf) |
+| Postmortem match | [NIST SSDF RV.3.3](https://csrc.nist.gov/projects/ssdf), review the software for similar problems to eradicate a class rather than an instance |
 | Warnings in place | [CWE-1116, inaccurate source code comments](https://cwe.mitre.org/data/definitions/1116.html), on a comment that carries a constraint |
-| Deprecated paths | [Semantic Versioning clause 7](https://semver.org/spec/v2.0.0.html) · [Kubernetes deprecation policy](https://kubernetes.io/docs/reference/using-api/deprecation-policy/) · [PEP 387](https://peps.python.org/pep-0387/) |
+| Deprecated paths | [Semantic Versioning, clause 7](https://semver.org/spec/v2.0.0.html) · [Kubernetes deprecation policy](https://kubernetes.io/docs/reference/using-api/deprecation-policy/) · [PEP 387](https://peps.python.org/pep-0387/) |
 | Copied config | [Twelve-Factor: Config](https://12factor.net/config), on configuration differing by environment |
-| Half-migration | [Architecture decision records](https://adr.github.io/) · [MADR](https://adr.github.io/madr/) |
-| Ownership | [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners) · [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) |
-| Naming collision | [Prometheus metric naming](https://prometheus.io/docs/practices/naming/), on reusing a name that already means something |
-| Lessons recorded | [NIST SSDF RV.3.1](https://csrc.nist.gov/projects/ssdf), record what root-cause analysis found where developers can search it · [ADRs](https://adr.github.io/) |
+| Half-migration | **No standard names this.** [Architecture decision records](https://adr.github.io/) are a community convention with no normative format |
+| Ownership | **No standard names this.** Ownership files are a platform convention, not a specification |
+| Naming collision | [OpenTelemetry semantic conventions](https://opentelemetry.io/docs/specs/semconv/), on a name already carrying an agreed meaning |
+| Lessons recorded | [NIST SSDF RV.3.1](https://csrc.nist.gov/projects/ssdf), record what root-cause analysis found where developers can search it |
 
-Architecture decision records are a strong convention rather than a standard: no format, filename or
-status vocabulary is normative anywhere, and ISO/IEC/IEEE 42010
-requires that decisions and their rationale be recorded without saying how. Postmortem practice has
-no ISO or ITIL equivalent at all; it rests on published industry practice.
+Where no standard exists, the citation is the repository's own record: a commit, a changelog entry, a
+postmortem, or the comment on the line. That is the point of this reviewer, and it is why every
+finding has to name one.
+
 
 ## What agents actually get wrong
 
