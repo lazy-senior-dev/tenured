@@ -7,7 +7,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { resolveMode } from "./lib/config.mjs";
+import { resolveMode, withHousePolicy } from "./lib/config.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -27,7 +27,7 @@ function persona() {
 function main() {
   const host = hostArg();
   const { mode, source } = resolveMode();
-  const card = persona();
+  const card = withHousePolicy(persona());
   if (mode === "off" || !card) return;
   const gate = mode === "gate" ? "writes are denied until the verdict is APPROVE" : "writes proceed after the verdict; a BLOCK still stops them";
   const context = `${card}\n\nReview mode: ${mode} (${source}); ${gate}.`;

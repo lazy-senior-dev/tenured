@@ -193,6 +193,18 @@ Antigravity: `git clone https://github.com/lazy-senior-dev/tenured ~/.tenured &&
 
 One review per pull request, inline findings, updated in place. Runs beside the Grump's and the Paranoid SRE's Actions; each posts its own review.
 
+## House rules, without forking
+
+A team or an organisation adds its own checks by committing `.grumpy/policy.md` next to the code:
+
+```markdown
+- Every endpoint that writes carries an idempotency key.
+- No new runtime dependency without a named owner in CODEOWNERS.
+- Anything touching billing needs a second reviewer named in the pull request.
+```
+
+Tenured reads it every turn, in the hook, the CLI, the MCP server, and the Action alike. House rules are additional: they can add a finding or raise a verdict, and they can never lower one or waive a non-negotiable, which the card states so the reviewer knows the precedence. Point `policy` in `.grumpy.json` somewhere else if you keep yours elsewhere, or vendor one file into every repository from a template so a whole organisation reviews the same way.
+
 ## Any MCP client
 
 Every editor and desktop app that speaks the Model Context Protocol can use Tenured without an adapter in this repository. The server is stdio, has no dependencies, and exposes four tools: `tenured_review_diff`, `tenured_review_staged`, `tenured_review_pr`, and `tenured_parse_verdict`, which turns a verdict block into JSON so a script can gate a commit or a merge on the level rather than on prose.

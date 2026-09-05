@@ -152,3 +152,33 @@ export function latestScorecardSession() {
   }
   return best ? best.id : null;
 }
+
+// House rules: a repository, or a whole organisation through a checked-in file, adds its own
+// checks without forking the ruleset. The file is markdown and is appended to the card under its
+// own heading. It can add checks and raise a verdict; it can never weaken a non-negotiable, which
+// is stated in the card itself so the reviewer knows the precedence.
+export const POLICY_FILES = [".grumpy/policy.md", ".grumpy/house-rules.md", "docs/code-review-policy.md"];
+export const POLICY_LIMIT = 8000;
+
+export function housePolicy(cwd = process.cwd()) {
+  const project = projectConfig(cwd);
+  const named = project && typeof project.config.policy === "string" ? [project.config.policy] : [];
+  const base = project && project.path ? join(project.path, "..") : cwd;
+  for (const rel of [...named, ...POLICY_FILES]) {
+    const p = rel.startsWith("/") ? rel : join(base, rel);
+    try {
+      if (!existsSync(p)) continue;
+      const text = readFileSync(p, "utf8").trim();
+      if (!text) continue;
+      const truncated = text.length > POLICY_LIMIT;
+      return { path: p, text: truncated ? text.slice(0, POLICY_LIMIT) + "\n\n[house rules truncated]" : text, truncated };
+    } catch { /* unreadable house rules must never take the agent down */ }
+  }
+  return null;
+}
+
+export function withHousePolicy(card, cwd = process.cwd()) {
+  const house = housePolicy(cwd);
+  if (!house) return card;
+  return `${card}\n\n## House rules\n\nThe team that owns this repository added the rules below. They are additional checks, not replacements: they can add a finding or raise a verdict, and they can never lower one or waive a non-negotiable above. Source: \`${house.path}\`.\n\n${house.text}`;
+}

@@ -74,3 +74,37 @@ test("state round-trips", () => {
   assert.deepEqual(lib.readState("s"), { denials: { "a.py": 2 } });
   assert.deepEqual(lib.readState("missing"), {});
 });
+
+test("house rules are appended to the card, never replace it, and a missing or unreadable file is ignored", async () => {
+  const { withHousePolicy, housePolicy, POLICY_LIMIT } = await import("../hooks/lib/config.mjs");
+  const { mkdtempSync, mkdirSync, writeFileSync, chmodSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+
+  const empty = mkdtempSync(join(tmpdir(), "policy-none-"));
+  assert.equal(housePolicy(empty), null);
+  assert.equal(withHousePolicy("CARD", empty), "CARD", "no house rules means the card is untouched");
+
+  const repo = mkdtempSync(join(tmpdir(), "policy-"));
+  mkdirSync(join(repo, ".grumpy"), { recursive: true });
+  writeFileSync(join(repo, ".grumpy.json"), JSON.stringify({ mode: "gate" }));
+  writeFileSync(join(repo, ".grumpy", "policy.md"), "- Every endpoint carries a rate limit.");
+  const merged = withHousePolicy("CARD", repo);
+  assert.ok(merged.startsWith("CARD"), "the ruleset comes first");
+  assert.match(merged, /## House rules/);
+  assert.match(merged, /rate limit/);
+  assert.match(merged, /can never lower one or waive a non-negotiable/, "precedence has to be stated to the reviewer");
+
+  const big = mkdtempSync(join(tmpdir(), "policy-big-"));
+  mkdirSync(join(big, ".grumpy"), { recursive: true });
+  writeFileSync(join(big, ".grumpy", "policy.md"), "x".repeat(POLICY_LIMIT + 5000));
+  const cut = housePolicy(big);
+  assert.equal(cut.truncated, true);
+  assert.ok(cut.text.length < POLICY_LIMIT + 100, "a huge policy file cannot flood every turn");
+
+  const named = mkdtempSync(join(tmpdir(), "policy-named-"));
+  writeFileSync(join(named, ".grumpy.json"), JSON.stringify({ policy: "rules/house.md" }));
+  mkdirSync(join(named, "rules"), { recursive: true });
+  writeFileSync(join(named, "rules", "house.md"), "- No new dependencies without an owner.");
+  assert.match(withHousePolicy("CARD", named), /No new dependencies/);
+});

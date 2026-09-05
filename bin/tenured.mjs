@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { AGENTS, availableAgents } from "../benchmarks/lib/agents.mjs";
 import { lastVerdict } from "../hooks/lib/verdict.mjs";
+import { withHousePolicy } from "../hooks/lib/config.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const P = JSON.parse(readFileSync(join(HERE, "..", "persona.json"), "utf8"));
@@ -148,7 +149,7 @@ if (!agentName || (wanted && !available.includes(wanted))) {
 }
 const agent = AGENTS[agentName];
 const model = opt("--model", agent.defaultModel);
-const system = readFileSync(join(HERE, "..", "hooks", "persona.md"), "utf8") + "\n\nPrint the verdict block and nothing else.";
+const system = withHousePolicy(readFileSync(join(HERE, "..", "hooks", "persona.md"), "utf8")) + "\n\nPrint the verdict block and nothing else.";
 // Personas that judge a change against what the repository remembers get the log of every touched
 // file, plus changelog and postmortem notes, appended as repository history. Others get the diff alone.
 function repoHistory() {

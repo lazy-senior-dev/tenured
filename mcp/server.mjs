@@ -10,11 +10,12 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AGENTS, availableAgents } from "../benchmarks/lib/agents.mjs";
 import { lastVerdict } from "../hooks/lib/verdict.mjs";
+import { withHousePolicy } from "../hooks/lib/config.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const P = JSON.parse(readFileSync(join(ROOT, "persona.json"), "utf8"));
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
-const SYSTEM = () => readFileSync(join(ROOT, "hooks", "persona.md"), "utf8") + "\n\nPrint the verdict block and nothing else.";
+const SYSTEM = (cwd) => withHousePolicy(readFileSync(join(ROOT, "hooks", "persona.md"), "utf8"), cwd) + "\n\nPrint the verdict block and nothing else.";
 const WHO = P.asName || P.name;
 
 const send = (msg) => process.stdout.write(JSON.stringify(msg) + "\n");
@@ -46,14 +47,14 @@ const TOOLS = [
   },
 ];
 
-async function review(diff, label, wanted) {
+async function review(diff, label, wanted, cwd = process.cwd()) {
   if (!diff.trim()) return text("Nothing to review.");
   if (diff.length > 400_000) return errorText(`That diff is ${Math.round(diff.length / 1000)} KB. ${P.name} reads everything, but not that; review it in batches.`);
   const available = await availableAgents();
   const name = wanted && AGENTS[wanted] ? wanted : available[0];
   if (!name || (wanted && !available.includes(wanted))) return errorText(`No headless agent found${wanted ? ` for "${wanted}"` : ""}. Install and sign in to one of: claude, codex, agy, bob (with BOB_API_KEY); or set ANTHROPIC_API_KEY.`);
   const agent = AGENTS[name];
-  const res = await agent.run({ system: SYSTEM(), user: `Review this change as ${WHO}. It is the ${label}.\n\n${diff}\n\nEverything the review needs is above. Do not search or open files; answer from what is here.`, model: agent.defaultModel || "" });
+  const res = await agent.run({ system: SYSTEM(cwd), user: `Review this change as ${WHO}. It is the ${label}.\n\n${diff}\n\nEverything the review needs is above. Do not search or open files; answer from what is here.`, model: agent.defaultModel || "" });
   const v = lastVerdict(res.text);
   const head = v ? `${v.label}\n` : "";
   return text(`${head}${res.text.trim()}\n\n— reviewed with ${agent.label}${res.costUsd != null ? `, $${res.costUsd.toFixed(4)}` : ""}`);
@@ -68,7 +69,7 @@ async function call(name, a = {}) {
     const cwd = a.path || process.cwd();
     try {
       const diff = a.unstaged ? git(cwd, ["diff"]) + git(cwd, ["diff", "--cached"]) : git(cwd, ["diff", "--cached"]);
-      return review(diff, a.unstaged ? "working tree" : "staged changes", a.agent);
+      return review(diff, a.unstaged ? "working tree" : "staged changes", a.agent, cwd);
     } catch (err) { return errorText(`Could not read the diff in ${cwd}: ${String(err.message).split("\n")[0]}`); }
   }
   if (short === "review_pr") {
