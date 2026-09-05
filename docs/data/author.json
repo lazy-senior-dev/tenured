@@ -4,28 +4,26 @@
   "agents": {
     "agy": {
       "label": "Antigravity CLI",
-      "calls": 28,
+      "calls": 32,
       "errors": 0,
-      "skippedTasks": [
-        "xml-catalog-import"
-      ],
+      "skippedTasks": [],
       "arms": {
         "bare": {
           "label": "no skill",
           "runs": 1,
-          "records": 7,
+          "records": 8,
           "errors": 0,
-          "attempts": 7,
-          "implementedTotal": 6,
+          "attempts": 8,
+          "implementedTotal": 7,
           "shippedTotal": 0,
           "reviewedTotal": 1,
-          "implemented": 6,
+          "implemented": 7,
           "shipped": 0,
           "shippedMean": 0,
           "reviewed": 1,
           "approved": 1,
-          "latency": 196036,
-          "output": 21767,
+          "latency": 195330.5,
+          "output": 24160,
           "cost": null,
           "model": "agy-default",
           "perTask": {
@@ -65,8 +63,8 @@
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 1,
+              "implemented": 1,
               "shipped": 0
             }
           }
@@ -74,9 +72,9 @@
         "generic": {
           "label": "generic care prompt",
           "runs": 1,
-          "records": 7,
+          "records": 8,
           "errors": 0,
-          "attempts": 7,
+          "attempts": 8,
           "implementedTotal": 6,
           "shippedTotal": 0,
           "reviewedTotal": 0,
@@ -85,8 +83,8 @@
           "shippedMean": 0,
           "reviewed": 0,
           "approved": 0,
-          "latency": 213897,
-          "output": 23896,
+          "latency": 207287,
+          "output": 22021.5,
           "cost": null,
           "model": "agy-default",
           "perTask": {
@@ -126,7 +124,7 @@
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
+              "runs": 1,
               "implemented": 0,
               "shipped": 0
             }
@@ -135,9 +133,9 @@
         "gate": {
           "label": "tenured + gate",
           "runs": 1,
-          "records": 7,
+          "records": 8,
           "errors": 0,
-          "attempts": 7,
+          "attempts": 8,
           "implementedTotal": 6,
           "shippedTotal": 0,
           "reviewedTotal": 6,
@@ -146,8 +144,8 @@
           "shippedMean": 0,
           "reviewed": 6,
           "approved": 5,
-          "latency": 228506,
-          "output": 41438,
+          "latency": 222977,
+          "output": 41076,
           "cost": 0,
           "model": "agy-default",
           "perTask": {
@@ -187,7 +185,7 @@
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
+              "runs": 1,
               "implemented": 0,
               "shipped": 0
             }
@@ -196,9 +194,9 @@
         "grump": {
           "label": "tenured",
           "runs": 1,
-          "records": 7,
+          "records": 8,
           "errors": 0,
-          "attempts": 7,
+          "attempts": 8,
           "implementedTotal": 6,
           "shippedTotal": 0,
           "reviewedTotal": 7,
@@ -207,8 +205,8 @@
           "shippedMean": 0,
           "reviewed": 7,
           "approved": 6,
-          "latency": 274892,
-          "output": 44393,
+          "latency": 274385,
+          "output": 43683.5,
           "cost": null,
           "model": "agy-default",
           "perTask": {
@@ -248,7 +246,7 @@
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
+              "runs": 1,
               "implemented": 0,
               "shipped": 0
             }
@@ -510,8 +508,8 @@
     },
     "claude": {
       "label": "Claude Code",
-      "calls": 80,
-      "errors": 32,
+      "calls": 160,
+      "errors": 112,
       "skippedTasks": [],
       "arms": {
         "bare": {
@@ -640,7 +638,7 @@
           "label": "tenured + gate",
           "runs": 0,
           "records": 0,
-          "errors": 32,
+          "errors": 112,
           "attempts": 0,
           "implementedTotal": 0,
           "shippedTotal": 0,
@@ -762,8 +760,8 @@
     },
     "codex": {
       "label": "Codex CLI",
-      "calls": 48,
-      "errors": 36,
+      "calls": 120,
+      "errors": 108,
       "skippedTasks": [
         "prod-kafka-config",
         "sessions-cleanup-cron",
@@ -898,7 +896,7 @@
           "label": "tenured + gate",
           "runs": 0,
           "records": 0,
-          "errors": 12,
+          "errors": 48,
           "attempts": 0,
           "implementedTotal": 0,
           "shippedTotal": 0,
@@ -959,7 +957,7 @@
           "label": "tenured",
           "runs": 0,
           "records": 0,
-          "errors": 24,
+          "errors": 60,
           "attempts": 0,
           "implementedTotal": 0,
           "shippedTotal": 0,

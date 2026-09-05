@@ -62,7 +62,10 @@ function authorBlock() {
   // "With the plugin" is the gate arm when it has run: the plugin refuses the write and the agent
   // fixes it, which is what a user installs. Without it, the persona card alone.
   const whole = (s) => s && s.runs && s.attempts === s.runs * d.tasks;
-  const complete = (a) => whole(a.arms?.bare) && (whole(a.arms?.gate) || whole(a.arms?.grump));
+  // A host that barely finished any task cannot be compared: its zeros mean "did not write the
+  // code", not "wrote nothing wrong". It has to have made the change on at least half the tickets.
+  const engaged = (a) => (a.arms?.bare?.implementedTotal || 0) >= (a.arms?.bare?.attempts || 0) / 2;
+  const complete = (a) => whole(a.arms?.bare) && (whole(a.arms?.gate) || whole(a.arms?.grump)) && engaged(a);
   const rows = Object.entries(d.agents).filter(([, a]) => complete(a));
   if (!rows.length) return "";
   const [, first] = rows[0];
@@ -71,13 +74,19 @@ function authorBlock() {
   const gated = g === first.arms.gate;
   const pct = (s) => Math.round((100 * s.shippedTotal) / (s.attempts || 1));
   const lead = `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%)${ge && ge.attempts ? `, ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%)` : ""}, and ${g.shippedTotal} of ${g.attempts} with ${WHO} ${gated ? "installed, where he refuses the write until the findings are fixed" : "loaded"} (${pct(g)}%)${gated ? "" : `, reviewing its own change before finishing in ${g.reviewedTotal} of ${g.attempts} runs`}. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).`;
-  let table = `| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time | Median cost |\n|---|---|---|---|---|---|---|---|\n`;
+  let table = `| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |\n|---|---|---|---|---|---|---|\n`;
   for (const [, a] of rows) for (const arm of ["bare", "generic", "grump", "gate"]) {
     const s = a.arms[arm]; if (!s || !s.runs) continue;
     const w = (x) => (arm === (gated ? "gate" : "grump") ? `**${x}**` : x);
-    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(s.implementedTotal + " of " + s.attempts)} | ${w(s.shippedTotal + " of " + s.attempts + " (" + pct(s) + "%)")} | ${arm === "grump" || arm === "gate" ? w(s.reviewedTotal + " of " + s.attempts) : "n/a"} | ${secs(s.latency)} | ${s.cost == null ? "n/a" : "$" + n(s.cost, 2)} |\n`;
+    table += `| ${a.label} | \`${s.model}\` (n=${s.runs}) | ${w(s.label)} | ${w(s.implementedTotal + " of " + s.attempts)} | ${w(s.shippedTotal + " of " + s.attempts + " (" + pct(s) + "%)")} | ${arm === "grump" || arm === "gate" ? w(s.reviewedTotal + " of " + s.attempts) : "n/a"} | ${secs(s.latency)} |\n`;
   }
-  return `${lead}\n\n${table.trim()}`;
+  const pending = Object.entries(d.agents).filter(([, a]) => !whole(a.arms?.bare)).map(([, a]) => a.label);
+  const thin = Object.entries(d.agents).filter(([, a]) => whole(a.arms?.bare) && !engaged(a)).map(([, a]) => a.label);
+  const parts = [];
+  if (pending.length) parts.push(`Still running, and added as each one finishes: ${pending.join(", ")}.`);
+  if (thin.length) parts.push(`Left out because it completed the change on fewer than half the tickets, so its zeros would read as "wrote nothing" rather than "wrote nothing wrong": ${thin.join(", ")}.`);
+  const note = parts.length ? `\n\nEvery agent whose four arms have finished is in the table above. ${parts.join(" ")}` : "";
+  return `${lead}\n\n${table.trim()}${note}`;
 }
 const author = authorBlock();
 if (author) {
