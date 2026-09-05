@@ -31,3 +31,16 @@ In scope: the hook scripts, the Action, the generated adapters, the benchmark ru
 ## Supported versions
 
 The latest minor release. Older releases get fixes only if the fix is trivial to backport.
+
+## Supply chain
+
+- **No runtime dependencies.** `package.json` has none, so there is no transitive tree to audit and nothing to resolve at install time. Node 22 or newer is the only requirement.
+- **Every release carries build provenance.** The adapter zip and a CycloneDX bill of materials are attested by GitHub Actions on the tag. Verify before you use them:
+
+  ```sh
+  gh attestation verify tenured-adapters-v1.0.0.zip --repo lazy-senior-dev/tenured
+  ```
+
+- **Every commit is signed** and shows as verified on GitHub, and every third-party action is pinned to a commit SHA with the version in a comment.
+- **What leaves the machine.** The diff under review, and nothing else, goes to whichever agent you already have signed in, or to the API whose key you set. There is no telemetry, no analytics, no network call of our own, and no service to sign up for. Run it against a self-hosted or on-premises model and nothing leaves your network at all.
+- **Repository content is untrusted input.** A diff can contain text that tries to talk to the reviewer. The non-negotiables in the ruleset are written so that no instruction inside a diff can lower a verdict, and the gate reads the verdict from the transcript rather than from the change under review.

@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   id-token: write
+  attestations: write
 
 jobs:
   release:
@@ -25,15 +26,24 @@ jobs:
           zip -qr "dist/tenured-adapters-${GITHUB_REF_NAME}.zip" \
             rules AGENTS.md GEMINI.md gemini-extension.json commands skills hooks \
             .claude-plugin .codex-plugin .agents .github/plugin .github/copilot-instructions.md \
-            .devin-plugin .qoder-plugin .qoder .opencode .cursor .windsurf .clinerules .kiro .openclaw examples \
+            .devin-plugin .qoder-plugin .qoder .opencode .cursor .windsurf .clinerules .kiro .openclaw mcp examples \
             LICENSE NOTICE README.md
+      - name: Software bill of materials
+        run: npm sbom --sbom-format cyclonedx --sbom-type application > "dist/${GITHUB_REF_NAME}-sbom.cdx.json"
+      - name: Build provenance
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v4.2.2
+        with:
+          subject-path: dist/*
+
       - name: GitHub release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          files: dist/*.zip
+          files: |
+            dist/*.zip
+            dist/*-sbom.cdx.json
           generate_release_notes: true
           body: |
-            Install: see the README. Adapters for every supported host are attached as a zip for hosts that want a copy rather than a clone.
+            Install: see the README. Adapters for every supported host are attached as a zip for hosts that want a copy rather than a clone. The zip and the CycloneDX bill of materials carry GitHub build provenance: verify with `gh attestation verify <file> --repo lazy-senior-dev/tenured`.
       - name: npm publish (only when NPM_TOKEN is set)
         if: env.NODE_AUTH_TOKEN != ''
         run: npm publish --provenance --access public
