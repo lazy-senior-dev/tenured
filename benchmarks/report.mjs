@@ -25,7 +25,14 @@ const ORDER = ["claude", "codex", "bob", "api", "agy"];
 const byOrder = (a, b) => (ORDER.indexOf(a.replace(/\.jsonl$/, "")) + 100) % 100 - (ORDER.indexOf(b.replace(/\.jsonl$/, "")) + 100) % 100 || a.localeCompare(b);
 for (const file of readdirSync(RAW).filter((f) => f.endsWith(".jsonl")).sort(byOrder)) {
   const agent = file.replace(/\.jsonl$/, "");
-  const records = readFileSync(join(RAW, file), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  // One record per case, arm and run: a rerun appends rather than replacing, so the last write for
+  // a key is the live one and any older row for it is history.
+  const byKey = new Map();
+  for (const line of readFileSync(join(RAW, file), "utf8").split("\n").filter(Boolean)) {
+    const rec = JSON.parse(line);
+    byKey.set(`${rec.case}|${rec.arm}|${rec.run}`, rec);
+  }
+  const records = [...byKey.values()];
   const errors = records.filter((r) => r.error).length;
   perAgent[agent] = { label: AGENTS[agent]?.label || agent, errors, calls: records.length, arms: aggregate(records, baseCases), needle: aggregate(records, needle) };
 }

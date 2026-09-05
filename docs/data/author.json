@@ -508,8 +508,8 @@
     },
     "claude": {
       "label": "Claude Code",
-      "calls": 160,
-      "errors": 112,
+      "calls": 64,
+      "errors": 16,
       "skippedTasks": [],
       "arms": {
         "bare": {
@@ -638,7 +638,7 @@
           "label": "tenured + gate",
           "runs": 0,
           "records": 0,
-          "errors": 112,
+          "errors": 16,
           "attempts": 0,
           "implementedTotal": 0,
           "shippedTotal": 0,
@@ -760,8 +760,8 @@
     },
     "codex": {
       "label": "Codex CLI",
-      "calls": 120,
-      "errors": 108,
+      "calls": 24,
+      "errors": 12,
       "skippedTasks": [
         "prod-kafka-config",
         "sessions-cleanup-cron",
@@ -896,7 +896,7 @@
           "label": "tenured + gate",
           "runs": 0,
           "records": 0,
-          "errors": 48,
+          "errors": 6,
           "attempts": 0,
           "implementedTotal": 0,
           "shippedTotal": 0,
@@ -957,7 +957,7 @@
           "label": "tenured",
           "runs": 0,
           "records": 0,
-          "errors": 60,
+          "errors": 6,
           "attempts": 0,
           "implementedTotal": 0,
           "shippedTotal": 0,

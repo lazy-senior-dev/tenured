@@ -75,7 +75,14 @@ function commonTasks(rows) {
 const agents = {};
 for (const f of existsSync(RAW) ? readdirSync(RAW).filter((f) => f.endsWith(".jsonl")) : []) {
   const agent = f.replace(".jsonl", "");
-  let rows = readFileSync(join(RAW, f), "utf8").trim().split("\n").filter(Boolean).map((l) => rescore(JSON.parse(l)));
+  // One record per task, arm and run. A rerun appends rather than replacing, so an arm that was
+  // dropped and remade can leave an older row behind; the last write for a key is the live one.
+  const seen = new Map();
+  for (const line of readFileSync(join(RAW, f), "utf8").trim().split("\n").filter(Boolean)) {
+    const rec = JSON.parse(line);
+    seen.set(`${rec.task}|${rec.arm}|${rec.run}`, rec);
+  }
+  let rows = [...seen.values()].map(rescore);
   const common = commonTasks(rows);
   const skipped = tasks.map((t) => t.id).filter((id) => !common.has(id));
   rows = rows.filter((r) => common.has(r.task));
