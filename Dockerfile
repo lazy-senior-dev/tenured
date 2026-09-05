@@ -4,6 +4,11 @@
 # neither, because the calling client's own model does the reading.
 FROM node:22-alpine
 
+# npm ships inside the base image and pulls in dependencies of its own, none of which this
+# server ever runs: there is nothing to install at run time. Removing it keeps those CVEs out of
+# the published image and out of the scan that gates it.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+
 WORKDIR /app
 # No dependencies to install: package.json declares none, so there is nothing to resolve at build
 # time and nothing to audit at run time.
