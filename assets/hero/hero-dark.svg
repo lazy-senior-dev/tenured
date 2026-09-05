@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 284" role="img" aria-label="Tenured: an agent's change flows through the persona, which refuses the write until the findings are fixed, so the branch stays clean.">
+  <style>
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .sans{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    .b{font-size:12px;font-weight:700}.xs{font-size:9.5px;letter-spacing:.08em}
+    .num{font-size:22px;font-weight:700}
+    .cap{font-size:10px;font-weight:700;letter-spacing:.18em}
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    @keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+    @keyframes steam{0%{opacity:0;transform:translateY(4px) scale(.9)}35%{opacity:.9}100%{opacity:0;transform:translateY(-16px) scale(1.15)}}
+    @keyframes sweep{to{transform:rotate(360deg)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes rspin{to{transform:rotate(-360deg)}}
+    @keyframes ping{0%,100%{opacity:.25;r:3}50%{opacity:1;r:5}}
+    @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+    @keyframes settle{0%,55%{fill:var(--w)}70%,100%{fill:var(--o)}}
+    @keyframes glow{0%,100%{opacity:.20}50%{opacity:.42}}
+    @keyframes dash{to{stroke-dashoffset:-40}}
+    .bob{animation:bob 3.4s ease-in-out infinite}
+    .eye{animation:blink 4.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+    .st{animation:steam 2.6s ease-in-out infinite}
+    .s2{animation-delay:.5s}.s3{animation-delay:1s}
+    .sweep{animation:sweep 3.6s linear infinite;transform-origin:0 0}
+    .sp-s{animation:spin 16s linear infinite;transform-origin:0 0}
+    .sp-r{animation:rspin 11s linear infinite;transform-origin:0 0}
+    .ping{animation:ping 1.9s ease-in-out infinite}
+    .wire{animation:dash 1.6s linear infinite}
+    .glow{animation:glow 4s ease-in-out infinite}
+    .dot{--w:#fb923c;--o:#22c55e;animation:settle 4.4s ease-in-out infinite}
+    .r1 .dot{animation-delay:.35s}.r2 .dot{animation-delay:.7s}.r3 .dot{animation-delay:1.05s}
+    .vrow{animation:pulse 4.4s ease-in-out infinite}
+    .v1{animation-delay:1.45s}.v2{animation-delay:2.9s}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <defs>
+    <radialGradient id="g-dark">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity=".38"/>
+      <stop offset="55%" stop-color="#a78bfa" stop-opacity=".12"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="880" height="284" rx="18" fill="#0b1020"/>
+  <circle class="glow" cx="452" cy="142" r="128" fill="url(#g-dark)"/>
+  <text x="24"  y="34" class="mono cap" fill="#fb923c">TICKET · ASKS</text>
+  <text x="386" y="34" class="mono cap" fill="#a78bfa">REVIEWED · GATED</text>
+  <text x="596" y="34" class="mono cap" fill="#22c55e">MEMORY · ANSWERS</text>
+  
+    <g class="row r0">
+      <rect x="24" y="62" width="252" height="34" rx="9" fill="#121a30" stroke="#243154"/>
+      <rect x="24" y="62" width="3.5" height="34" rx="2" fill="#a78bfa" opacity=".9"/>
+      <text x="38" y="76" class="mono b" fill="#e8ecf8">git log</text>
+      <text x="38" y="89" class="mono xs" fill="#fb923c">reverted in 2024</text>
+      <circle class="dot" cx="262" cy="79" r="4" fill="#fb923c"/>
+    </g>
+    <g class="row r1">
+      <rect x="24" y="106" width="252" height="34" rx="9" fill="#121a30" stroke="#243154"/>
+      <rect x="24" y="106" width="3.5" height="34" rx="2" fill="#a78bfa" opacity=".9"/>
+      <text x="38" y="120" class="mono b" fill="#e8ecf8">postmortem.md</text>
+      <text x="38" y="133" class="mono xs" fill="#fb923c">caused the outage</text>
+      <circle class="dot" cx="262" cy="123" r="4" fill="#fb923c"/>
+    </g>
+    <g class="row r2">
+      <rect x="24" y="150" width="252" height="34" rx="9" fill="#121a30" stroke="#243154"/>
+      <rect x="24" y="150" width="3.5" height="34" rx="2" fill="#a78bfa" opacity=".9"/>
+      <text x="38" y="164" class="mono b" fill="#e8ecf8">adr-014.md</text>
+      <text x="38" y="177" class="mono xs" fill="#fb923c">decided against</text>
+      <circle class="dot" cx="262" cy="167" r="4" fill="#fb923c"/>
+    </g>
+    <g class="row r3">
+      <rect x="24" y="194" width="252" height="34" rx="9" fill="#121a30" stroke="#243154"/>
+      <rect x="24" y="194" width="3.5" height="34" rx="2" fill="#a78bfa" opacity=".9"/>
+      <text x="38" y="208" class="mono b" fill="#e8ecf8">// NOTE:</text>
+      <text x="38" y="221" class="mono xs" fill="#fb923c">do not re-add</text>
+      <circle class="dot" cx="262" cy="211" r="4" fill="#fb923c"/>
+    </g>
+  <path id="f0-dark" class="wire" d="M280 79 C 336 79, 368 142, 414 142" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity=".45" stroke-dasharray="4 6"/>
+    <circle r="3.2" fill="#a78bfa"><animateMotion dur="2.4s" repeatCount="indefinite" path="M280 79 C 336 79, 368 142, 414 142"/></circle><path id="f1-dark" class="wire" d="M280 123 C 336 123, 368 142, 414 142" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity=".45" stroke-dasharray="4 6"/>
+    <circle r="3.2" fill="#a78bfa"><animateMotion dur="2.75s" repeatCount="indefinite" path="M280 123 C 336 123, 368 142, 414 142"/></circle><path id="f2-dark" class="wire" d="M280 167 C 336 167, 368 142, 414 142" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity=".45" stroke-dasharray="4 6"/>
+    <circle r="3.2" fill="#a78bfa"><animateMotion dur="3.0999999999999996s" repeatCount="indefinite" path="M280 167 C 336 167, 368 142, 414 142"/></circle><path id="f3-dark" class="wire" d="M280 211 C 336 211, 368 142, 414 142" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity=".45" stroke-dasharray="4 6"/>
+    <circle r="3.2" fill="#a78bfa"><animateMotion dur="3.4499999999999997s" repeatCount="indefinite" path="M280 211 C 336 211, 368 142, 414 142"/></circle>
+  <g transform="translate(452 142)">
+    <g class="bob">
+      <circle r="34" fill="#a78bfa" opacity=".12"/>
+      <g class="sp-s"><circle r="34" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="7 9"/></g>
+      <g class="sp-r"><circle r="24" fill="none" stroke="#a78bfa" stroke-width="1.8" opacity=".6" stroke-dasharray="5 8"/></g>
+      <circle r="14" fill="none" stroke="#a78bfa" stroke-width="1.6" opacity=".45"/>
+      <path d="M-7 -2 h14 M-7 5 h10" stroke="#e8ecf8" stroke-width="2.2" stroke-linecap="round" opacity=".7"/>
+      <circle class="ping" r="3" cy="-24" fill="#fb923c"/>
+    </g></g>
+  <text x="452" y="206" text-anchor="middle" class="sans" font-size="15" font-weight="700" fill="#e8ecf8">Tenured</text>
+  <text x="452" y="222" text-anchor="middle" class="mono xs" fill="#93a4c8">REMEMBERS THE POSTMORTEM · ALWAYS ON</text>
+  <rect x="584" y="80" width="272" height="132" rx="12" fill="none" stroke="#243154" opacity=".7"/>
+  
+    <g class="vrow v0">
+      <rect x="596" y="96" width="248" height="30" rx="8" fill="#121a30" stroke="#243154"/>
+      <circle cx="614" cy="111" r="4.5" fill="#22c55e"/>
+      <text x="628" y="115" class="mono b" fill="#22c55e">NEW</text>
+    </g>
+    <g class="vrow v1">
+      <rect x="596" y="136" width="248" height="30" rx="8" fill="#121a30" stroke="#243154"/>
+      <circle cx="614" cy="151" r="4.5" fill="#a78bfa"/>
+      <text x="628" y="155" class="mono b" fill="#a78bfa">SEEN_BEFORE</text>
+    </g>
+    <g class="vrow v2">
+      <rect x="596" y="176" width="248" height="30" rx="8" fill="#121a30" stroke="#243154"/>
+      <circle cx="614" cy="191" r="4.5" fill="#fb923c"/>
+      <text x="628" y="195" class="mono b" fill="#fb923c">DO_NOT_REPEAT</text>
+    </g>
+  <text x="596" y="242" class="mono xs" fill="#93a4c8">DEFECTS REACHING THE BRANCH</text>
+       <text x="596" y="264" class="mono num" fill="#fb923c">19%</text>
+       <text x="648" y="264" class="mono num" fill="#93a4c8">→</text>
+       <text x="674" y="264" class="mono num" fill="#22c55e">0%</text>
+       <text x="715" y="264" class="mono xs" fill="#93a4c8">measured, IBM Bob Shell</text>
+</svg>

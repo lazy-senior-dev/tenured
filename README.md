@@ -1,10 +1,22 @@
 <p align="center">
-  <img src="assets/tenured.svg" alt="Tenured: bald on top, thick round glasses, a calm half-smile, a cardigan, a notebook marked 2017 in the pocket" width="220">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://lazy-senior-dev.github.io/assets/hero/tenured-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://lazy-senior-dev.github.io/assets/hero/tenured-light.svg">
+    <img src="https://lazy-senior-dev.github.io/assets/hero/tenured-light.svg" alt="A ticket flows through Tenured, who reads the git log and the postmortems and refuses to let the repository repeat itself." width="880">
+  </picture>
 </p>
 
 <h1 align="center">tenured</h1>
 
 <p align="center"><em>We tried that in 2017.</em></p>
+
+<p align="center">
+  <strong>Star us&nbsp;❤️&nbsp;→</strong>&nbsp;<a href="https://github.com/lazy-senior-dev/tenured" title="Star tenured on GitHub"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://lazy-senior-dev.github.io/assets/hero/star-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://lazy-senior-dev.github.io/assets/hero/star-light.svg">
+    <img src="https://lazy-senior-dev.github.io/assets/hero/star-light.svg" alt="Star this repository on GitHub" width="132" height="34" align="middle">
+  </picture></a>
+</p>
 
 <p align="center"><strong>Site:</strong> <a href="https://lazy-senior-dev.github.io/tenured/">lazy-senior-dev.github.io/tenured</a> · <strong>The cast:</strong> <a href="https://lazy-senior-dev.github.io/">lazy-senior-dev.github.io</a></p>
 
