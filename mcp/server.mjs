@@ -18,6 +18,9 @@ const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 const SYSTEM = (cwd) => withHousePolicy(readFileSync(join(ROOT, "hooks", "persona.md"), "utf8"), cwd) + "\n\nPrint the verdict block and nothing else.";
 const WHO = P.asName || P.name;
 
+// Protocol revisions this server implements, newest first.
+const SUPPORTED = ["2026-07-28", "2025-06-18", "2025-03-26", "2024-11-05"];
+
 const send = (msg) => process.stdout.write(JSON.stringify(msg) + "\n");
 const ok = (id, result) => send({ jsonrpc: "2.0", id, result });
 const fail = (id, code, message) => send({ jsonrpc: "2.0", id, error: { code, message } });
@@ -28,21 +31,25 @@ const TOOLS = [
   {
     name: `${P.command}_review_diff`,
     description: `Review a unified diff as ${WHO}. Returns the verdict block: ${P.verdictPrefix} followed by ${P.verdicts.approve}, ${P.verdicts.changes}, or ${P.verdicts.block}, then one numbered finding per line as file:line — what breaks — the smallest fix. Use this before writing or committing a change.`,
+    annotations: { title: "Review a diff", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: { type: "object", properties: { diff: { type: "string", description: "The unified diff to review." }, agent: { type: "string", description: "Headless agent to review with: claude, codex, agy, bob, or api. Defaults to the first one installed." } }, required: ["diff"] },
   },
   {
     name: `${P.command}_review_staged`,
     description: `Review the staged changes of a git repository as ${WHO}. Returns the same verdict block.`,
+    annotations: { title: "Review the staged changes", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: { type: "object", properties: { path: { type: "string", description: "Path to the repository. Defaults to the current directory." }, unstaged: { type: "boolean", description: "Include unstaged changes as well." }, agent: { type: "string" } } },
   },
   {
     name: `${P.command}_review_pr`,
     description: `Review a pull request as ${WHO}, fetched with the GitHub CLI. Returns the same verdict block.`,
+    annotations: { title: "Review a pull request", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: { type: "object", properties: { pr: { type: "string", description: "Pull request number or URL." }, path: { type: "string", description: "Repository the gh command runs in." }, agent: { type: "string" } }, required: ["pr"] },
   },
   {
     name: `${P.command}_parse_verdict`,
     description: `Turn a verdict block into JSON: the level (${P.verdicts.approve}, ${P.verdicts.changes}, ${P.verdicts.block}), the files it covers, and each finding. Use it to gate a commit or a merge on the verdict rather than on prose.`,
+    annotations: { title: "Parse a verdict block", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     inputSchema: { type: "object", properties: { text: { type: "string", description: "Text containing a verdict block." } }, required: ["text"] },
   },
 ];
@@ -97,7 +104,12 @@ process.stdin.on("data", async (chunk) => {
     try { msg = JSON.parse(line); } catch { continue; }
     const { id, method, params } = msg;
     try {
-      if (method === "initialize") ok(id, { protocolVersion: params?.protocolVersion || "2024-11-05", capabilities: { tools: {} }, serverInfo: { name: P.slug, version: pkg.version } });
+      if (method === "initialize") {
+        // Answer with the revision the client asked for when we implement it, otherwise with ours.
+        const asked = params?.protocolVersion;
+        const version = SUPPORTED.includes(asked) ? asked : SUPPORTED[0];
+        ok(id, { protocolVersion: version, capabilities: { tools: { listChanged: false } }, serverInfo: { name: P.slug, title: `${P.name}, ${P.tagline}`, version: pkg.version }, instructions: `Call ${P.command}_review_diff or ${P.command}_review_staged before writing or committing a change, and ${P.command}_parse_verdict to turn the answer into JSON you can gate on. ${P.name} reviews; he never edits.` });
+      }
       else if (method === "notifications/initialized" || method === "notifications/cancelled") { /* no reply */ }
       else if (method === "ping") ok(id, {});
       else if (method === "tools/list") ok(id, { tools: TOOLS });

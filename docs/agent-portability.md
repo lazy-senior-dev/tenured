@@ -17,7 +17,7 @@ Hosts fall into three tiers:
 | GitHub Copilot CLI | gate | `.github/plugin/plugin.json`, `.github/plugin/marketplace.json` (Copilot also reads `.claude-plugin/marketplace.json`), `skills/`, `hooks/copilot-hooks.json` | skills | [marketplace](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-marketplace), [hooks reference](https://docs.github.com/en/copilot/reference/hooks-configuration) | 2026-09-04; plugin `hooks` path resolution unverified (see notes) |
 | Gemini CLI format (served by Antigravity CLI) | instruction + commands | `gemini-extension.json`, `GEMINI.md`, `commands/*.toml` | `/tenured-review`, `/tenured-pr`, `/tenured-fix`, `/tenured`, `/tenured-scorecard`, `/tenured-help` | [extensions reference](https://geminicli.com/docs/extensions/reference/), [custom commands](https://geminicli.com/docs/cli/custom-commands/), [hooks](https://geminicli.com/docs/hooks/); exercised through Antigravity, which imports this exact format | 2026-09-04; hooks optional via `examples/gemini-settings-hooks.json` |
 | OpenCode | gate (two-phase) | `.opencode/plugins/grumpy.mjs`, `.opencode/command/*.md`, `AGENTS.md` | `/tenured-review` and friends | [plugins](https://opencode.ai/docs/plugins/), [plugin types](https://github.com/sst/opencode/blob/dev/packages/plugin/src/index.ts) | 2026-09-04; command frontmatter beyond `description` unverified |
-| Cursor | instruction | `.cursor/rules/grumpy.mdc` (`alwaysApply: true`), `AGENTS.md` | none | [rules](https://cursor.com/docs/context/rules), [hooks](https://cursor.com/docs/agent/hooks) | 2026-09-04; Cursor has a `preToolUse` hook, not shipped in this release |
+| Cursor | gate | `.cursor/rules/grumpy.mdc`, `examples/cursor-hooks.json` (`alwaysApply: true`), `AGENTS.md` | none | [rules](https://cursor.com/docs/context/rules), [hooks](https://cursor.com/docs/agent/hooks) | 2026-09-04; Cursor has a `preToolUse` hook, not shipped in this release |
 | Windsurf / Devin Desktop | instruction | `.windsurf/rules/grumpy.md` (`trigger: always_on`, 12,000 char limit), `AGENTS.md` | none | [rules](https://docs.devin.ai/desktop/cascade/memories) | 2026-09-04 |
 | Cline | instruction | `.clinerules/grumpy.md` | none | [rules](https://docs.cline.bot/customization/cline-rules) | 2026-09-04; Cline hooks are documented only for the SDK, not shipped |
 | Kiro | instruction | `.kiro/steering/grumpy.md` (`inclusion: always`), `AGENTS.md` | none | [steering](https://kiro.dev/docs/steering/), [hooks](https://kiro.dev/docs/hooks/) | 2026-09-04; Kiro `PreToolUse` hooks can block but the stdin schema is undocumented, so not shipped |
@@ -37,7 +37,8 @@ Hosts fall into three tiers:
 | GitHub Copilot CLI | `copilot plugin marketplace add lazy-senior-dev/tenured` then `copilot plugin install tenured@lazy-senior-dev` |
 | Gemini CLI | `gemini extensions install https://github.com/lazy-senior-dev/tenured` |
 | OpenCode | Copy `.opencode/plugins/grumpy.mjs` into your project's `.opencode/plugins/` (or `~/.config/opencode/plugins/`), and `AGENTS.md` into the project root |
-| Cursor | Copy `.cursor/rules/grumpy.mdc` into your project |
+| Cursor | Copy `.cursor/rules/grumpy.mdc` into your project, and `examples/cursor-hooks.json` to `.cursor/hooks.json` for the write gate |
+| GitHub Copilot code review | Copy `.github/skills/tenured/SKILL.md` into your repository |
 | Windsurf / Devin Desktop | Copy `.windsurf/rules/grumpy.md` into your project |
 | Cline | Copy `.clinerules/grumpy.md` into your project's `.clinerules/` |
 | Kiro | Copy `.kiro/steering/grumpy.md` into your project |
@@ -57,7 +58,7 @@ Hosts fall into three tiers:
 | GitHub Copilot CLI | `copilot plugin uninstall tenured` |
 | Gemini CLI | `gemini extensions uninstall tenured` |
 | OpenCode | Delete `.opencode/plugins/grumpy.mjs` and the `.opencode/command/grumpy-*.md` files |
-| Cursor | Delete `.cursor/rules/grumpy.mdc` |
+| Cursor | Delete `.cursor/rules/grumpy.mdc` and the hooks entries from `.cursor/hooks.json` |
 | Windsurf / Devin Desktop | Delete `.windsurf/rules/grumpy.md` |
 | Cline | Delete `.clinerules/grumpy.md` |
 | Kiro | Delete `.kiro/steering/grumpy.md` |
@@ -69,6 +70,7 @@ Hosts fall into three tiers:
 | Any AGENTS.md host | Delete `AGENTS.md` (or Tenured section of it) |
 | Everywhere | `rm -rf ~/.config/tenured` removes the mode setting and scorecards |
 | Any MCP client | mcp | none; the client runs `npx -y github:lazy-senior-dev/tenured mcp` | tools `tenured_review_diff`, `tenured_review_staged`, `tenured_review_pr`, `tenured_parse_verdict` | protocol test in `tests/adapters.test.mjs` | `npm test` |
+| GitHub Copilot code review | instruction | `.github/skills/tenured/SKILL.md` | none; the reviewer runs on the pull request | Agent Skills frontmatter, read-only | `npm run check` |
 
 ## Notes on what is and is not verified
 

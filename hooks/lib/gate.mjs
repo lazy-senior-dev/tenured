@@ -16,8 +16,11 @@ const MAX_GATE_DENIALS = 2;
 // Normalise the different stdin shapes hosts send into one record.
 export function normaliseInput(raw, host = "claude") {
   const input = raw && typeof raw === "object" ? raw : {};
-  const toolName = input.tool_name ?? input.toolName ?? input.tool ?? "";
-  const toolInput = input.tool_input ?? input.toolArgs ?? input.args ?? input.input ?? {};
+  // Cursor sends {tool_name, tool_input} for preToolUse and a bare {command, cwd} for
+  // beforeShellExecution, which carries no tool name at all.
+  const bareCommand = typeof input.command === "string" && input.tool_name === undefined && input.toolName === undefined;
+  const toolName = bareCommand ? "Shell" : (input.tool_name ?? input.toolName ?? input.tool ?? "");
+  const toolInput = bareCommand ? { command: input.command } : (input.tool_input ?? input.toolArgs ?? input.args ?? input.input ?? {});
   return {
     host,
     toolName: String(toolName),
@@ -158,6 +161,12 @@ export function render(decision, host, eventName = "PreToolUse") {
       return deny
         ? { stdout: "", stderr: decision.reason, exitCode: 2 }
         : { stdout: decision.context || "", stderr: "", exitCode: 0 };
+    case "cursor":
+      // Cursor reads {permission, user_message, agent_message}; exit 2 also blocks. Allow is
+      // explicit so the agent is told why a write went through with findings against it.
+      return deny
+        ? { stdout: JSON.stringify({ permission: "deny", user_message: decision.reason, agent_message: decision.reason }), stderr: "", exitCode: 0 }
+        : { stdout: JSON.stringify(decision.context ? { permission: "allow", agent_message: decision.context } : { permission: "allow" }), stderr: "", exitCode: 0 };
     case "bob":
       // Bob Shell: exit 2 blocks the tool; stdout of a PreToolUse hook is not fed to the model.
       return deny ? { stdout: "", stderr: decision.reason, exitCode: 2 } : { stdout: "", stderr: "", exitCode: 0 };

@@ -320,6 +320,7 @@ export function claudeMarketplace(rs, p) {
         category: "productivity",
         tags: ["code-review", "quality", "security", "hooks"],
       },
+      ...(P.marketplace || []).map((m) => ({ name: m.name, displayName: m.displayName, description: m.description, source: { source: "github", repo: `lazy-senior-dev/${m.name}` }, category: "productivity", tags: m.tags || [] })),
     ],
   };
 }
@@ -580,6 +581,39 @@ function rulesFile(rs, header, opts = {}) {
   return (header ? header + "\n\n" : "") + body;
 }
 
+// Cursor reads hooks.json from the project or the user home and calls the command for each event.
+// preToolUse covers edits and writes; beforeShellExecution covers the commit itself.
+// GitHub Copilot code review loads a skill from .github/skills/<name>/SKILL.md and calls its tools
+// read-only, which suits a reviewer that never edits code.
+export function copilotReviewSkill(rs, p) {
+  return [
+    "---",
+    `name: ${P.slug}`,
+    `description: "${P.name} reviews ${P.reviews}. Use on a pull request or a diff. Answers with the verdict block: ${P.verdictPrefix} followed by ${P.verdicts.approve}, ${P.verdicts.changes}, or ${P.verdicts.block}, then one numbered finding per line as file:line, what breaks, the smallest fix."`,
+    "license: Apache-2.0",
+    `compatibility: "Read-only review. Never edits files, never runs commands."`,
+    "metadata:",
+    `  homepage: "${P.homepage}"`,
+    `  verdicts: "${P.verdicts.approve}, ${P.verdicts.changes}, ${P.verdicts.block}"`,
+    "---",
+    "",
+    personaCard(rs),
+    "",
+  ].join("\n");
+}
+
+export function cursorHooks() {
+  const gate = `node hooks/review-gate.mjs --host cursor`;
+  return {
+    version: 1,
+    hooks: {
+      beforeSubmitPrompt: [{ command: "node hooks/review-context.mjs --host cursor" }],
+      preToolUse: [{ command: gate }],
+      beforeShellExecution: [{ command: gate }],
+    },
+  };
+}
+
 export function cursorRule(rs) {
   return rulesFile(rs, frontmatter({ description: `${P.name} reviews every change before it is written: a ten-question checklist and a verdict.`, alwaysApply: true }));
 }
@@ -679,6 +713,8 @@ export function renderAll(rs, p = pkg()) {
   files.set(".qoder-plugin/plugin.json", json(qoderPlugin(rs, p)));
   files.set(`.opencode/plugins/${CMD}.mjs`, opencodePlugin(rs));
   files.set(`.cursor/rules/${CMD}.mdc`, cursorRule(rs));
+  files.set("examples/cursor-hooks.json", json(cursorHooks()));
+  files.set(`.github/skills/${P.slug}/SKILL.md`, copilotReviewSkill(rs, p));
   files.set(`.windsurf/rules/${CMD}.md`, windsurfRule(rs));
   files.set(`.clinerules/${CMD}.md`, clineRule(rs));
   files.set(`.kiro/steering/${CMD}.md`, kiroRule(rs));

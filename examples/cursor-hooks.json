@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "node hooks/review-context.mjs --host cursor"
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "node hooks/review-gate.mjs --host cursor"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node hooks/review-gate.mjs --host cursor"
+      }
+    ]
+  }
+}
