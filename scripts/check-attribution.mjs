@@ -26,6 +26,7 @@ const ASSISTANT_PATHS = [
   /^AGENTS\.md$/, /^GEMINI\.md$/, /^gemini-extension\.json$/, /^commands\//, /^skills\//, /^hooks\//,
   /^\.(claude-plugin|codex-plugin|agents|github\/plugin|devin-plugin|qoder-plugin|qoder|opencode|cursor|windsurf|clinerules|kiro|openclaw|bob)\//,
   /^\.github\/copilot-instructions\.md$/,
+  /^mcp\//, // the MCP server names the clients it is configured in, like any other adapter
   /^README(\.[a-z]{2})?\.md$/, /^docs\//, /^action\.yml$/, /^action\//, /^examples\//,
   /^benchmarks\//, /^scripts\//, /^tests\//, /^bin\//, /^package\.json$/, /^CHANGELOG\.md$/, /^CONTRIBUTING\.md$/,
   /^\.github\/workflows\//, /^\.github\/ISSUE_TEMPLATE\//, /^\.github\/PULL_REQUEST_TEMPLATE\.md$/, /^assets\//,
