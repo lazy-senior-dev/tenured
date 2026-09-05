@@ -1,0 +1,70 @@
+# Publish the MCP Registry listing from main's server.json. Runs on a tag and on demand: if a
+# publish fails for a reason fixed later on main, the listing can be republished without moving a
+# released tag. Authentication is GitHub OIDC, so there is no token to store or rotate.
+name: publish-registry
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to stamp (default: the version in package.json)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  mcp-registry:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # GitHub OIDC login to the MCP registry
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Resolve and validate the version
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            v="$INPUT_VERSION"
+            [ -n "$v" ] || v="$(node -p "require('./package.json').version")"
+          else
+            v="${REF_NAME#v}"
+          fi
+          echo "$v" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { echo "refusing to publish an invalid version: '$v'"; exit 1; }
+          echo "VERSION=$v" >> "$GITHUB_ENV"
+      - name: Install mcp-publisher
+        run: |
+          set -euo pipefail
+          arch=$(uname -m); case "$arch" in x86_64) arch=amd64 ;; aarch64) arch=arm64 ;; esac
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_${arch}.tar.gz" \
+            | tar xz mcp-publisher
+      - name: Stamp the version into server.json
+        run: |
+          set -euo pipefail
+          # An OCI package carries its version in the identifier tag and must not have a version field.
+          jq --arg v "$VERSION" '
+            .version = $v
+            | (.packages[] | select(.registryType != "oci") | .version) = $v
+            | (.packages[] | select(.registryType == "oci")) |=
+                (del(.version) | .identifier |= ((split(":")[0]) + ":" + $v))
+          ' server.json > server.json.tmp
+          mv server.json.tmp server.json
+      - name: Publish to the MCP Registry
+        run: |
+          set -euo pipefail
+          ./mcp-publisher login github-oidc
+          for attempt in 1 2 3 4 5; do
+            ./mcp-publisher publish && exit 0
+            echo "publish attempt ${attempt} failed; retrying in 30s"
+            sleep 30
+          done
+          exit 1

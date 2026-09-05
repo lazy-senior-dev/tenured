@@ -24,6 +24,14 @@
           "isRequired": true
         }
       ]
+    },
+    {
+      "registryType": "oci",
+      "registryBaseUrl": "https://ghcr.io",
+      "identifier": "ghcr.io/lazy-senior-dev/tenured:0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
     }
   ]
 }

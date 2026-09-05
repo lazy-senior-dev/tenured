@@ -44,8 +44,8 @@ jobs:
           generate_release_notes: true
           body: |
             Install: see the README. Adapters for every supported host are attached as a zip for hosts that want a copy rather than a clone. The zip and the CycloneDX bill of materials carry GitHub build provenance: verify with `gh attestation verify <file> --repo lazy-senior-dev/tenured`.
-      - name: npm publish (only when NPM_TOKEN is set)
-        if: env.NODE_AUTH_TOKEN != ''
+      - name: Publish to npm
+        # OIDC trusted publishing: npm verifies this workflow against the package's configured
+        # publisher, so there is no long-lived token in this repository. Configure it once at
+        # npmjs.com under the package's Settings, Trusted publisher.
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
