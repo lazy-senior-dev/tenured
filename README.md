@@ -396,7 +396,7 @@ No runtime dependencies, no network calls from the hooks, every third-party acti
 
 **Isn't a long git log too much context?** He is told to look at the log for the files being touched, not the repository, and to cite lines, not paste them. The benchmark cases carry ten to twenty lines of history each.
 
-**Who wrote this?** [Sandeep Bazar](https://www.linkedin.com/in/sandeepbazar/) ([@sandeepbazar](https://github.com/sandeepbazar)): fourteen years of platform infrastructure at IBM, long enough to have been the person who says "we tried that".
+**Who wrote this?** [Sandeep Bazar](https://github.com/sandeepbazar) ([@sandeepbazar](https://github.com/sandeepbazar)): fourteen years of platform infrastructure at IBM, long enough to have been the person who says "we tried that".
 
 ## Contributing
 
@@ -404,6 +404,6 @@ The most valuable contribution is a repeat: a bug or outage that happened twice 
 
 ## License
 
-[Apache-2.0](LICENSE) · by [Sandeep Bazar](https://www.linkedin.com/in/sandeepbazar/). Keep the [NOTICE](NOTICE) file with any redistribution.
+[Apache-2.0](LICENSE) · by [Sandeep Bazar](https://github.com/sandeepbazar). Keep the [NOTICE](NOTICE) file with any redistribution.
 
-Built and maintained by [Sandeep Bazar](https://www.linkedin.com/in/sandeepbazar/), part of [lazy-senior-dev](https://github.com/lazy-senior-dev).
+Built and maintained by [Sandeep Bazar](https://github.com/sandeepbazar), part of [lazy-senior-dev](https://github.com/lazy-senior-dev).
