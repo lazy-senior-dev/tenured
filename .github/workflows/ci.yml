@@ -27,6 +27,7 @@ jobs:
       - run: node scripts/check-adapters.mjs
       - run: node scripts/check-manifests.mjs
       - run: node scripts/check-attribution.mjs
+      - run: node scripts/check-secrets.mjs
 
   lint:
     name: actionlint and links

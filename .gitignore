@@ -23,3 +23,9 @@ benchmarks/results/raw/
 benchmarks/.cache/
 dist/
 *.tgz
+
+# credentials: never, in any form
+env.sh
+*.key
+*.pem
+credentials*
