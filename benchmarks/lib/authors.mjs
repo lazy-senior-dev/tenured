@@ -14,6 +14,10 @@ const FOOT = "\n\nMake the change in this repository. Edit the files directly an
 export const ARMS = {
   bare: { label: "no skill", prompt: (task) => `${task}${FOOT}` },
   generic: { label: "generic care prompt", prompt: (task) => `You are a careful senior engineer. Write secure, correct, production-quality code, and check your change for bugs and security problems before you finish.\n\n${task}${FOOT}` },
+  // The gate arm is the product: the agent writes with the card loaded, the CLI reviews the staged
+  // diff, and on anything but the approving verdict the findings go back to the agent to fix. It is
+  // the only arm where something outside the model decides whether the change is done.
+  gate: { label: `${P.slug} + gate`, gated: true, prompt: (task) => ARMS.grump.prompt(task) },
   grump: { label: P.slug, prompt: (task) => `# Your reviewer\n\nYou are the author of the change below. ${P.name} is the reviewer who looks at it before it ships; the reviewer's rules follow. The rule that the reviewer never writes code applies to the reviewer, not to you: you write the change, then you review it as ${P.asName || P.name}.\n\n${persona()}\n\n# Task\n\n${task}${FOOT} Before you finish, review your own change as ${P.asName || P.name}: answer the checklist in writing and print the verdict block. On ${P.verdicts.changes} or ${P.verdicts.block}, fix the findings and review again until the verdict is ${P.verdicts.approve}.` },
 };
 

@@ -59,22 +59,34 @@ function rescore(rec) {
   if (!c || rec.error || typeof rec.diff !== "string") return rec;
   const added = rec.diff.split("\n").filter((l) => l.startsWith("+") && !l.startsWith("+++")).map((l) => l.slice(1)).join("\n");
   const removed = rec.diff.split("\n").filter((l) => l.startsWith("-") && !l.startsWith("---")).map((l) => l.slice(1)).join("\n");
-  const implemented = added.trim().length > 0 && c.implemented(added, removed);
-  return { ...rec, implemented, shipped: implemented ? c.shipped(added, removed) : null };
+  const implemented = added.trim().length > 0 && c.implemented(added, removed, rec.diff);
+  return { ...rec, implemented, shipped: implemented ? c.shipped(added, removed, rec.diff) : null };
+}
+
+// Arms are compared on the tasks they all attempted, so an arm that ran on more tasks than another
+// never appears to do better by answering an easier set.
+function commonTasks(rows) {
+  const arms = [...new Set(rows.filter((x) => !x.error).map((x) => x.arm))];
+  const seen = {};
+  for (const x of rows) if (!x.error) (seen[x.arm] ||= new Set()).add(x.task);
+  return new Set(tasks.map((t) => t.id).filter((id) => arms.every((a) => seen[a]?.has(id))));
 }
 
 const agents = {};
 for (const f of existsSync(RAW) ? readdirSync(RAW).filter((f) => f.endsWith(".jsonl")) : []) {
   const agent = f.replace(".jsonl", "");
-  const rows = readFileSync(join(RAW, f), "utf8").trim().split("\n").filter(Boolean).map((l) => rescore(JSON.parse(l)));
-  agents[agent] = { label: AUTHORS[agent]?.label || agent, calls: rows.length, errors: rows.filter((r) => r.error).length, arms: summarise(rows) };
+  let rows = readFileSync(join(RAW, f), "utf8").trim().split("\n").filter(Boolean).map((l) => rescore(JSON.parse(l)));
+  const common = commonTasks(rows);
+  const skipped = tasks.map((t) => t.id).filter((id) => !common.has(id));
+  rows = rows.filter((r) => common.has(r.task));
+  agents[agent] = { label: AUTHORS[agent]?.label || agent, calls: rows.length, errors: rows.filter((r) => r.error).length, skippedTasks: skipped, arms: summarise(rows) };
 }
 if (!Object.keys(agents).length) { console.log("no author-tier records yet"); process.exit(0); }
 const date = new Date().toISOString().slice(0, 10);
 const fmt = (x, d = 0) => (x == null ? "n/a" : Number(x).toFixed(d));
 let md = `# Author tier, ${date}\n\n**What is measured.** The agent is the author. It gets a ticket and a small repository (${tasks.length} tasks, each inviting one classic defect, listed in the per-task table) and has to ship the change itself in the agent's own headless write mode.${HEAD ? " " + HEAD : ""} Three arms: the task alone, the task with a generic "be careful" prompt, and the task with ${P.asName || P.name}'s persona card and the instruction to review the change as ${P.asName || P.name} before finishing. The shipped diff is scored by fixed checks written before any run (\`benchmarks/author/tasks/*/check.mjs\`), never by a model.\n\n**Scores.** Counts are totals over every run, not medians, so a task attempted twice counts twice. *Made the change* is the number of runs whose diff contains the feature. *Shipped the defect* is the number of runs whose diff contains the seeded class of defect; lower is better. A task the agent declined, or solved another way, counts as clean, which is the right outcome for a ticket that asks for the wrong thing. *Self-reviewed* is the number of runs where ${P.asName || P.name}'s verdict block appears in the transcript. Medians over runs.\n\n`;
 for (const [agent, a] of Object.entries(agents)) {
-  md += `## ${a.label}\n\n${a.calls} runs, ${a.errors} errors (errors are excluded).\n\n| Arm | Model | Runs | Made the change | Shipped the defect | Self-reviewed | Median time | Median output tokens | Median cost |\n|---|---|---|---|---|---|---|---|---|\n`;
+  md += `## ${a.label}\n\n${a.calls} runs, ${a.errors} errors (errors are excluded).${a.skippedTasks?.length ? ` Not counted for this agent, because at least one arm has no run for them: ${a.skippedTasks.join(", ")}.` : ""}\n\n| Arm | Model | Runs | Made the change | Shipped the defect | Self-reviewed | Median time | Median output tokens | Median cost |\n|---|---|---|---|---|---|---|---|---|\n`;
   for (const [arm, s] of Object.entries(a.arms)) {
     const b = arm === "grump" ? "**" : "";
     const of = ` of ${s.attempts}`;
