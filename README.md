@@ -37,23 +37,23 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 <!-- bench:author:start -->
 ## The number that matters: what ships
 
-**When the agent is the author, Tenured changes what ships.** On Antigravity CLI (`agy-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 0 of 8 runs (0%), 0 of 8 with a generic "be careful" prompt (0%), and 0 of 8 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 1 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
+**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 3 of 16 runs (19%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
 
 | Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |
 |---|---|---|---|---|---|---|
-| Antigravity CLI | `agy-default` (n=1) | no skill | 7 of 8 | 0 of 8 (0%) | n/a | 195 s |
-| Antigravity CLI | `agy-default` (n=1) | generic care prompt | 6 of 8 | 0 of 8 (0%) | n/a | 207 s |
-| Antigravity CLI | `agy-default` (n=1) | tenured | 6 of 8 | 0 of 8 (0%) | 7 of 8 | 274 s |
-| Antigravity CLI | `agy-default` (n=1) | **tenured + gate** | **6 of 8** | **0 of 8 (0%)** | **6 of 8** | 223 s |
 | IBM Bob Shell | `bob-default` (n=2) | no skill | 12 of 16 | 3 of 16 (19%) | n/a | 14 s |
 | IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 12 of 16 | 0 of 16 (0%) | n/a | 21 s |
 | IBM Bob Shell | `bob-default` (n=2) | tenured | 9 of 16 | 0 of 16 (0%) | 16 of 16 | 36 s |
 | IBM Bob Shell | `bob-default` (n=2) | **tenured + gate** | **9 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s |
+| Antigravity CLI | `agy-default` (n=1) | no skill | 7 of 8 | 0 of 8 (0%) | n/a | 195 s |
+| Antigravity CLI | `agy-default` (n=1) | generic care prompt | 6 of 8 | 0 of 8 (0%) | n/a | 207 s |
+| Antigravity CLI | `agy-default` (n=1) | tenured | 6 of 8 | 0 of 8 (0%) | 7 of 8 | 274 s |
+| Antigravity CLI | `agy-default` (n=1) | **tenured + gate** | **6 of 8** | **0 of 8 (0%)** | **6 of 8** | 223 s |
 | Claude Code | `claude-sonnet-5` (n=2) | no skill | 12 of 16 | 0 of 16 (0%) | n/a | 59 s |
 | Claude Code | `claude-sonnet-5` (n=2) | generic care prompt | 14 of 16 | 0 of 16 (0%) | n/a | 85 s |
 | Claude Code | `claude-sonnet-5` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 12 of 16 | 74 s |
 
-Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI.
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI. No arm shipped one of these defects on Antigravity CLI or Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them.
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->

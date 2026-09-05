@@ -543,8 +543,16 @@
     if (!data || !data.agents) return;
     var sec = document.getElementById("author"); if (!sec) return;
     var tbody = document.querySelector("#author-table tbody"); tbody.innerHTML = "";
-    var first = null;
+    var first = null, flat = [];
     var secs = function (ms) { return ms == null ? "n/a" : (ms / 1000).toFixed(0) + " s"; };
+    // Headline the host that actually shows an effect: a baseline that shipped the defect at least
+    // once, then the largest drop. Leading with a host whose unaided runs shipped nothing would
+    // claim an improvement that its own "0 without, 0 with" numbers deny.
+    var rate = function (s) { return s.shippedTotal / (s.attempts || 1); };
+    var better = function (x, y) {
+      if ((x.b.shippedTotal > 0) !== (y.b.shippedTotal > 0)) return x.b.shippedTotal > 0;
+      return rate(x.b) - rate(x.g) > rate(y.b) - rate(y.g);
+    };
     var money = function (c) { return c == null ? "n/a" : "$" + Number(c).toFixed(2); };
     Object.keys(data.agents).forEach(function (key) {
       var a = data.agents[key], arms = a.arms || {};
@@ -554,8 +562,9 @@
       // not "wrote nothing wrong". It has to have made the change on at least half the tickets.
       var engaged = function (a) { return a.arms.bare && a.arms.bare.implementedTotal >= a.arms.bare.attempts / 2; };
       if (!whole(arms.grump) || !whole(arms.bare) || !engaged(a)) return;
-      // Headline the host with the most recorded runs, not whichever sorts first.
-      if (!first || arms.bare.attempts > first.b.attempts) first = { a: a, b: arms.bare, g: whole(arms.gate) ? arms.gate : arms.grump, ge: arms.generic };
+      var cand = { a: a, b: arms.bare, g: whole(arms.gate) ? arms.gate : arms.grump, ge: arms.generic };
+      if (arms.bare.shippedTotal === 0) flat.push(a.label);
+      if (!first || better(cand, first)) first = cand;
       ["bare", "generic", "grump"].forEach(function (k) {
         var s = arms[k]; if (!whole(s)) return;
         var strong = k === "grump", w = function (x) { return strong ? "<strong>" + x + "</strong>" : x; };
@@ -570,7 +579,7 @@
       document.getElementById("a-generic").textContent = first.ge && first.ge.attempts ? first.ge.shippedTotal + " of " + first.ge.attempts : "n/a";
       document.getElementById("a-with").textContent = first.g.shippedTotal + " of " + first.g.attempts;
       document.getElementById("a-reviewed").textContent = first.g.reviewedTotal + " of " + first.g.attempts;
-      document.getElementById("author-note").insertAdjacentHTML("afterbegin", "Headline figures are " + esc(first.a.label) + " (" + esc(first.g.model) + "), the host with the most recorded runs; the table has every host whose arms all finished. Measured " + esc(data.date) + ". ");
+      document.getElementById("author-note").insertAdjacentHTML("afterbegin", "Headline figures are " + esc(first.a.label) + " (" + esc(first.g.model) + "), the host with the largest measured difference; the table has every host whose arms all finished. Measured " + esc(data.date) + ". " + (flat.length && first.b.shippedTotal > 0 ? "No arm shipped one of these defects on " + flat.map(esc).join(" or ") + ", the unaided agent included, so those rows show no difference and none is claimed from them. " : ""));
     }
   }).catch(function () {});
 })();
