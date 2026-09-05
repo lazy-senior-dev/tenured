@@ -550,8 +550,12 @@
       var a = data.agents[key], arms = a.arms || {};
       // A partial run is not shown: every arm must carry one record per task per run.
       var whole = function (s) { return s && s.runs && s.attempts === s.runs * data.tasks; };
-      if (!whole(arms.grump) || !whole(arms.bare)) return;
-      if (!first) first = { a: a, b: arms.bare, g: arms.grump, ge: arms.generic };
+      // A host that barely completed any task cannot be compared: its zeros mean "wrote nothing",
+      // not "wrote nothing wrong". It has to have made the change on at least half the tickets.
+      var engaged = function (a) { return a.arms.bare && a.arms.bare.implementedTotal >= a.arms.bare.attempts / 2; };
+      if (!whole(arms.grump) || !whole(arms.bare) || !engaged(a)) return;
+      // Headline the host with the most recorded runs, not whichever sorts first.
+      if (!first || arms.bare.attempts > first.b.attempts) first = { a: a, b: arms.bare, g: whole(arms.gate) ? arms.gate : arms.grump, ge: arms.generic };
       ["bare", "generic", "grump"].forEach(function (k) {
         var s = arms[k]; if (!whole(s)) return;
         var strong = k === "grump", w = function (x) { return strong ? "<strong>" + x + "</strong>" : x; };
@@ -566,7 +570,7 @@
       document.getElementById("a-generic").textContent = first.ge && first.ge.attempts ? first.ge.shippedTotal + " of " + first.ge.attempts : "n/a";
       document.getElementById("a-with").textContent = first.g.shippedTotal + " of " + first.g.attempts;
       document.getElementById("a-reviewed").textContent = first.g.reviewedTotal + " of " + first.g.attempts;
-      document.getElementById("author-note").insertAdjacentHTML("afterbegin", "Measured " + esc(data.date) + " on " + esc(first.a.label) + " (" + esc(first.g.model) + "); medians over runs. ");
+      document.getElementById("author-note").insertAdjacentHTML("afterbegin", "Headline figures are " + esc(first.a.label) + " (" + esc(first.g.model) + "), the host with the most recorded runs; the table has every host whose arms all finished. Measured " + esc(data.date) + ". ");
     }
   }).catch(function () {});
 })();
