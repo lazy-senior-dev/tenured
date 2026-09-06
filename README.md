@@ -10,6 +10,37 @@
 
 <p align="center"><em>We tried that in 2017.</em></p>
 
+<!-- refusals:start -->
+## What it actually stops
+
+Every one of these is a recorded run, not an illustration. The agent wrote the code; the gate refused
+it before it reached the branch. Regenerate with `npm run bench:report` and this list changes with
+the runs.
+
+<table>
+<tr><td>
+
+**Q-58 "Messages sit too long when a worker dies"**
+
+Your agent wrote:
+
+```diff
+// Q-58: a dead worker's message should reappear quickly, not after the full maximum
+// processing time (240 s for large batches). So the lease we actually take out
+// (LEASE_WINDOW_S) is much shorter than that, and a live worker renews it every
+// HEARTBEAT_INTERVAL_S while still processing. A worker that crashes stops renewing, so the
+// message becomes visible again within one missed heartbeat instead of after the full
+// processing time.
+```
+
+**It was refused:** src/queue/consumer.ts:26 — `queue.receive(LEASE_WINDOW_S)` sets the actual visibility window to 30s, the value 5c71e7a deliberately raised to 300 after "duplicate deliveries at 30s" — pass a window that can't expire before renewal covers it, or otherwise show the 30s regression can't reproduce that incident
+
+<sub>Recorded run, Claude Code. Task `visibility-timeout`.</sub>
+
+</td></tr>
+</table>
+<!-- refusals:end -->
+
 <p align="center">
   <strong>Star us&nbsp;❤️&nbsp;→</strong>&nbsp;<a href="https://github.com/lazy-senior-dev/tenured" title="Star tenured on GitHub"><picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://lazy-senior-dev.github.io/assets/hero/star-dark.svg">
@@ -49,28 +80,28 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 <!-- bench:author:start -->
 ## The number that matters: what ships
 
-**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 3 of 16 runs (19%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
+**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 4 of 16 runs (25%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
 
 | Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |
 |---|---|---|---|---|---|---|
-| IBM Bob Shell | `bob-default` (n=2) | no skill | 12 of 16 | 3 of 16 (19%) | n/a | 14 s |
-| IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 12 of 16 | 0 of 16 (0%) | n/a | 21 s |
-| IBM Bob Shell | `bob-default` (n=2) | tenured | 9 of 16 | 0 of 16 (0%) | 16 of 16 | 36 s |
-| IBM Bob Shell | `bob-default` (n=2) | **tenured + gate** | **9 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s |
-| Antigravity CLI | `agy-default` (n=1) | no skill | 7 of 8 | 0 of 8 (0%) | n/a | 195 s |
-| Antigravity CLI | `agy-default` (n=1) | generic care prompt | 6 of 8 | 0 of 8 (0%) | n/a | 207 s |
-| Antigravity CLI | `agy-default` (n=1) | tenured | 6 of 8 | 0 of 8 (0%) | 7 of 8 | 274 s |
-| Antigravity CLI | `agy-default` (n=1) | **tenured + gate** | **6 of 8** | **0 of 8 (0%)** | **6 of 8** | 223 s |
+| IBM Bob Shell | `bob-default` (n=2) | no skill | 13 of 16 | 4 of 16 (25%) | n/a | 14 s |
+| IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 9 of 16 | 0 of 16 (0%) | n/a | 19 s |
+| IBM Bob Shell | `bob-default` (n=2) | tenured | 9 of 16 | 0 of 16 (0%) | 16 of 16 | 29 s |
+| IBM Bob Shell | `bob-default` (n=2) | **tenured + gate** | **10 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s |
+| Codex CLI | `codex-default` (n=2) | no skill | 15 of 16 | 1 of 16 (6%) | n/a | 52 s |
+| Codex CLI | `codex-default` (n=2) | generic care prompt | 13 of 16 | 0 of 16 (0%) | n/a | 80 s |
+| Codex CLI | `codex-default` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 14 of 16 | 73 s |
+| Codex CLI | `codex-default` (n=2) | **tenured + gate** | **12 of 16** | **0 of 16 (0%)** | **14 of 16** | 66 s |
 | Claude Code | `claude-sonnet-5` (n=2) | no skill | 12 of 16 | 0 of 16 (0%) | n/a | 59 s |
 | Claude Code | `claude-sonnet-5` (n=2) | generic care prompt | 14 of 16 | 0 of 16 (0%) | n/a | 85 s |
 | Claude Code | `claude-sonnet-5` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 12 of 16 | 74 s |
 | Claude Code | `claude-sonnet-5` (n=2) | **tenured + gate** | **12 of 16** | **0 of 16 (0%)** | **15 of 16** | 78 s |
 
-Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI. No arm shipped one of these defects on Antigravity CLI or Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them.
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Antigravity CLI. No arm shipped one of these defects on Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them.
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->
-**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-05; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
+**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-06; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
 <!-- bench:hero:end -->
 
 <!-- recordings:start -->

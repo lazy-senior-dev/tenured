@@ -78,6 +78,10 @@
     <circle r="3.2" fill="#a78bfa"><animateMotion dur="2.75s" repeatCount="indefinite" path="M280 123 C 336 123, 368 142, 414 142"/></circle><path id="f2-light" class="wire" d="M280 167 C 336 167, 368 142, 414 142" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity=".45" stroke-dasharray="4 6"/>
     <circle r="3.2" fill="#a78bfa"><animateMotion dur="3.0999999999999996s" repeatCount="indefinite" path="M280 167 C 336 167, 368 142, 414 142"/></circle><path id="f3-light" class="wire" d="M280 211 C 336 211, 368 142, 414 142" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity=".45" stroke-dasharray="4 6"/>
     <circle r="3.2" fill="#a78bfa"><animateMotion dur="3.4499999999999997s" repeatCount="indefinite" path="M280 211 C 336 211, 368 142, 414 142"/></circle>
+  
+    <path class="wire" d="M490 142 H 584" fill="none" stroke="#22c55e" stroke-width="1.8" opacity=".55" stroke-dasharray="5 6"/>
+    <circle r="3.4" fill="#22c55e"><animateMotion dur="1.8s" repeatCount="indefinite" path="M490 142 H 584"/></circle>
+    <path d="M578 137 l7 5 -7 5" fill="none" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
   <g transform="translate(452 142)">
     <g class="bob">
       <circle r="34" fill="#a78bfa" opacity=".12"/>
@@ -107,7 +111,7 @@
       <text x="628" y="195" class="mono b" fill="#fb923c">DO_NOT_REPEAT</text>
     </g>
   <text x="596" y="242" class="mono xs" fill="#5a6b8c">DEFECTS REACHING THE BRANCH</text>
-       <text x="596" y="264" class="mono num" fill="#fb923c">19%</text>
+       <text x="596" y="264" class="mono num" fill="#fb923c">25%</text>
        <text x="648" y="264" class="mono num" fill="#5a6b8c">→</text>
        <text x="674" y="264" class="mono num" fill="#22c55e">0%</text>
        <text x="715" y="264" class="mono xs" fill="#5a6b8c">measured, IBM Bob Shell</text>
