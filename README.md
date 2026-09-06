@@ -10,6 +10,12 @@
 
 <p align="center"><em>We tried that in 2017.</em></p>
 
+<!-- headline:start -->
+**On this corpus a careful prompt does as well as the gate.** When the agent writes the code itself, 10% of unaided runs shipped the defect, 0% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on IBM Bob Shell (`bob-default`), 5 runs per arm; [method and raw diffs](benchmarks/results/author).
+
+**It is quiet on code that is fine.** Across the agents tested, the median run objects to 3.5 of 4 clean changes unaided and 0 with Tenured loaded; the worst agent goes from 4 to 0. That happens on every review, not only the ones with a bug in them, which is why it is the first thing worth knowing; [per-diff table](benchmarks/results).
+<!-- headline:end -->
+
 <!-- refusals:start -->
 ## What it actually stops
 
@@ -76,29 +82,6 @@ npx github:lazy-senior-dev/tenured review          # any repository, any agent y
 
 Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Action. Apache-2.0, no dependencies, no service, no account. The diff goes to the agent you already trust and nowhere else.
 <!-- hero:end -->
-
-<!-- bench:author:start -->
-## The number that matters: what ships
-
-**When the agent is the author, Tenured changes what ships.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 4 of 16 runs (25%), 0 of 16 with a generic "be careful" prompt (0%), and 0 of 16 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
-
-| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |
-|---|---|---|---|---|---|---|
-| IBM Bob Shell | `bob-default` (n=2) | no skill | 13 of 16 | 4 of 16 (25%) | n/a | 14 s |
-| IBM Bob Shell | `bob-default` (n=2) | generic care prompt | 9 of 16 | 0 of 16 (0%) | n/a | 19 s |
-| IBM Bob Shell | `bob-default` (n=2) | tenured | 9 of 16 | 0 of 16 (0%) | 16 of 16 | 29 s |
-| IBM Bob Shell | `bob-default` (n=2) | **tenured + gate** | **10 of 16** | **0 of 16 (0%)** | **16 of 16** | 36 s |
-| Codex CLI | `codex-default` (n=2) | no skill | 15 of 16 | 1 of 16 (6%) | n/a | 52 s |
-| Codex CLI | `codex-default` (n=2) | generic care prompt | 13 of 16 | 0 of 16 (0%) | n/a | 80 s |
-| Codex CLI | `codex-default` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 14 of 16 | 73 s |
-| Codex CLI | `codex-default` (n=2) | **tenured + gate** | **12 of 16** | **0 of 16 (0%)** | **14 of 16** | 66 s |
-| Claude Code | `claude-sonnet-5` (n=2) | no skill | 12 of 16 | 0 of 16 (0%) | n/a | 59 s |
-| Claude Code | `claude-sonnet-5` (n=2) | generic care prompt | 14 of 16 | 0 of 16 (0%) | n/a | 85 s |
-| Claude Code | `claude-sonnet-5` (n=2) | tenured | 11 of 16 | 0 of 16 (0%) | 12 of 16 | 74 s |
-| Claude Code | `claude-sonnet-5` (n=2) | **tenured + gate** | **12 of 16** | **0 of 16 (0%)** | **15 of 16** | 78 s |
-
-Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Antigravity CLI. No arm shipped one of these defects on Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them.
-<!-- bench:author:end -->
 
 <!-- bench:hero:start -->
 **On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-06; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
