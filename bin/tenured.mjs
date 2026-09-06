@@ -134,6 +134,17 @@ try {
   process.exit(2);
 }
 if (!diff.trim()) {
+  // An empty diff means one of two very different things. Run with no task in mind, it means there
+  // was nothing to look at, which is not a finding. Run with --task, it means the work that was
+  // asked for was not done, and an agent that reports success having written nothing is a failure
+  // this reviewer should catch. Staying silent there is how "done!" reaches a user unchallenged.
+  const task = opt("--task", "");
+  if (task && P.incompleteVerdict) {
+    console.log(`1. (no diff) — the task was "${task}" and the ${label} show no change — do the work, or say plainly that it was not done and why`);
+    console.log("");
+    console.log(`${P.verdictPrefix}: ${P.incompleteVerdict}`);
+    process.exit(1);
+  }
   console.log("Nothing to review.");
   process.exit(0);
 }

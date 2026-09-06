@@ -49,7 +49,10 @@ async function job(agentName, t, arm, runIdx) {
   commit("current state");
   const prompt = ARMS[arm].prompt(t.task);
   let res = await agent.write({ prompt, cwd: repo, model: agent.defaultModel || "" });
-  const USAGE_LIMIT = /hit your (session|usage) limit|usage limit|rate limit|turn\.failed/i;
+  // A limit reply is an error, never a result: a run that was refused before it could write
+  // records the same zeros as a run that wrote nothing wrong, and only one of those is good
+  // news. Each vendor words it differently, so match the phrasings rather than one product.
+  const USAGE_LIMIT = /hit your (session|usage) limit|usage limit|rate limit|turn\.failed|quota (reached|exceeded)|upgrade your subscription|too many requests|\b429\b/i;
   if (USAGE_LIMIT.test(res.text || "") || USAGE_LIMIT.test(res.stderr || "")) { rmSync(repo, { recursive: true, force: true }); throw new Error(`usage limit: ${(res.text || res.stderr).replace(/\s+/g, " ").slice(0, 160)}`); }
   git(repo, ["add", "-A"]);
   // The gate arm runs the plugin's own review over the staged diff and hands the findings back,
@@ -87,12 +90,18 @@ for (const agentName of agents) {
   for (const t of tasks) for (const arm of arms) for (let r = 1; r <= n; r++) if (!done.has(`${t.id}|${arm}|${r}`)) jobs.push({ t, arm, r });
   console.log(`[${agentName}] ${jobs.length} runs to make (${done.size} already done), concurrency=${concurrency}`);
   let i = 0, finished = 0;
+  // One quota refusal means every remaining job in this pass will be refused too. Attempting them
+  // anyway costs an hour and writes hundreds of error stubs that say nothing except "the window was
+  // shut". Stop the pass on the first one and let the worker wait for the window to reopen; the
+  // records already on disk are kept, so the next pass resumes rather than restarts.
+  let quotaHit = null;
   const started = Date.now();
   await Promise.all(Array.from({ length: Math.min(concurrency, jobs.length) }, async () => {
-    while (i < jobs.length) {
+    while (i < jobs.length && !quotaHit) {
       const { t, arm, r } = jobs[i++];
       let rec;
       try { rec = await job(agentName, t, arm, r); } catch (err) { rec = { agent: agentName, task: t.id, arm, run: r, error: err.message, at: new Date().toISOString() }; }
+      if (rec.error && /usage limit|quota/i.test(rec.error)) { quotaHit = rec.error; break; }
       appendFileSync(file, JSON.stringify(rec) + "\n");
       finished++;
       const eta = Math.round(((Date.now() - started) / finished) * (jobs.length - finished) / 1000);
@@ -100,5 +109,8 @@ for (const agentName of agents) {
       console.log(`[${agentName}] ${finished}/${jobs.length} ${arm.padEnd(7)} ${t.id.padEnd(26)} run${r} ${status}${rec.rounds?.length ? ` (gate: ${rec.rounds.map((x) => x.level || "none").join(" then ")})` : rec.reviewed ? ` (reviewed: ${rec.lastVerdict})` : ""} ${Math.round((rec.durationMs || 0) / 1000)}s (eta ${eta}s)`);
     }
   }));
+  // Print the refusal verbatim. The worker reads its reset time out of this line so it can
+  // sleep until the window actually reopens instead of guessing at a fixed interval.
+  if (quotaHit) console.log(`[${agentName}] QUOTA ${quotaHit.replace(/\s+/g, " ").slice(0, 300)}`);
 }
 console.log("Next: node benchmarks/author-report.mjs");

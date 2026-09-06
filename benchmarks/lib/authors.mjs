@@ -75,6 +75,16 @@ export const AUTHORS = {
   },
   agy: {
     label: "Antigravity CLI",
+    // Pinned rather than left to whatever the CLI defaults to, for two reasons: the default is
+    // reported back only as "agy-default", which names nothing a reader could reproduce, and the
+    // top tier exhausts this account's quota partway through a sweep, which the runner then has to
+    // discard. One named model for every record keeps the row homogeneous.
+    //
+    // Medium rather than low reasoning, which was tried and measured: low was 2.4x faster and
+    // bought 123 records in a window against 52, but finished the ticket in 19% of runs against
+    // 65%. Records that wrote nothing are not cheaper records, they are unusable ones, and a run
+    // that never writes still spends the quota.
+    defaultModel: "gemini-3.8-flash-medium",
     available: () => which("agy"),
     async write({ prompt, cwd, model }) {
       // Tools are pre-approved because headless mode cannot ask, and the working tree here is a
