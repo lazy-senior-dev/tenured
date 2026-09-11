@@ -29,3 +29,6 @@ env.sh
 *.key
 *.pem
 credentials*
+
+# benchmark scratch: comparison copies kept while a ruleset change is being measured
+benchmarks/results/**/*.jsonl.*
