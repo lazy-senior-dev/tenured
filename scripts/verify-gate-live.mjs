@@ -17,6 +17,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { readDecisions } from "./lib/live.mjs";
+import { isRefusal } from "../benchmarks/lib/limits.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TASKS = join(ROOT, "benchmarks", "author", "tasks");
@@ -39,7 +40,7 @@ function taskIds() {
 
 // A usage limit is an error, not a result: a session refused before it could write records the same
 // "no deny seen" as a session the gate ignored, and only one of those is a bug worth failing on.
-const USAGE_LIMIT = /hit your (session|usage) limit|usage limit|rate limit|quota (reached|exceeded)|upgrade your subscription|too many requests|\b429\b/i;
+
 
 function claude(prompt, cwd) {
   return new Promise((resolve) => {
@@ -83,8 +84,9 @@ async function one(taskId, runIdx) {
     cpSync(join(dir, "scaffold"), repo, { recursive: true });
     commit("current state");
     const res = await claude(readFileSync(join(dir, "TASK.md"), "utf8"), repo);
-    const limit = (USAGE_LIMIT.exec(res.out) || USAGE_LIMIT.exec(res.err));
-    if (limit) throw new Error(`usage limit: ${(res.err || res.out).replace(/\s+/g, " ").slice(0, 200)}`);
+    if (isRefusal({ text: res.out, stderr: res.err, exit: res.code })) {
+      throw new Error(`usage limit: ${(res.err || res.out).replace(/\s+/g, " ").slice(0, 200)}`);
+    }
     const { denials, hookCalls, personaInjected } = readDecisions(res.out, { personaName: P.short });
     const added = git(repo, ["diff", "-U0"]).split("\n").filter((l) => l.startsWith("+") && !l.startsWith("+++")).join("\n");
     const check = await import(pathToFileURL(join(dir, "check.mjs")).href);

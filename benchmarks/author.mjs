@@ -14,6 +14,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { AUTHORS, ARMS, availableAuthors, loadTasks } from "./lib/authors.mjs";
 import { BENCH_ROOT } from "./lib/cases.mjs";
+import { isRefusal } from "./lib/limits.mjs";
 
 const P = JSON.parse(readFileSync(join(BENCH_ROOT, "..", "persona.json"), "utf8"));
 const args = process.argv.slice(2);
@@ -52,8 +53,7 @@ async function job(agentName, t, arm, runIdx) {
   // A limit reply is an error, never a result: a run that was refused before it could write
   // records the same zeros as a run that wrote nothing wrong, and only one of those is good
   // news. Each vendor words it differently, so match the phrasings rather than one product.
-  const USAGE_LIMIT = /hit your (session|usage) limit|usage limit|rate limit|turn\.failed|quota (reached|exceeded)|upgrade your subscription|too many requests|\b429\b/i;
-  if (USAGE_LIMIT.test(res.text || "") || USAGE_LIMIT.test(res.stderr || "")) { rmSync(repo, { recursive: true, force: true }); throw new Error(`usage limit: ${(res.text || res.stderr).replace(/\s+/g, " ").slice(0, 160)}`); }
+  if (isRefusal(res)) { rmSync(repo, { recursive: true, force: true }); throw new Error(`usage limit: ${(res.stderr || res.text).replace(/\s+/g, " ").slice(0, 160)}`); }
   git(repo, ["add", "-A"]);
   // The gate arm runs the plugin's own review over the staged diff and hands the findings back,
   // up to two rounds, which is what the PreToolUse hook does inside a host.
