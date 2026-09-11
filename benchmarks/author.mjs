@@ -60,7 +60,7 @@ async function job(agentName, t, arm, runIdx) {
     // turn.failed event on stdout. Preferring stderr meant the worker saw a banner with no time in
     // it and fell back to blind 45 minute retries instead of sleeping until the window returns.
     const detail = [res.stderr, res.text].find((s) => s && LIMIT_CLI.test(s)) || res.stderr || res.text || "";
-    throw new Error(`usage limit: ${detail.replace(/\s+/g, " ").slice(0, 300)}`);
+    throw new Error(`usage limit: ${detail.replace(/\s+/g, " ").slice(0, 600)}`);
   }
   git(repo, ["add", "-A"]);
   // The gate arm runs the plugin's own review over the staged diff and hands the findings back,
