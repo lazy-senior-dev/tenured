@@ -256,6 +256,7 @@ running in this repository today, and every body listed governs its specificatio
 | [REUSE licence identifiers](https://reuse.software/spec/) | Free Software Foundation Europe | `SPDX-License-Identifier` on the files this project authors |
 | [AGENTS.md](https://agents.md/) | Agentic AI Foundation, Linux Foundation | Generated from the ruleset for any agent that reads it |
 | [Agent Skills](https://agentskills.io/) | Open specification | `skills/` and `.github/skills/` |
+| [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html) | OASIS | The Action writes findings to `sarif_file` for any SARIF consumer |
 | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | Apache Software Foundation | `LICENSE` and `NOTICE` |
 
 ## Where to get it, and how it is vetted
@@ -328,6 +329,29 @@ Antigravity: `git clone https://github.com/lazy-senior-dev/tenured ~/.tenured &&
 ```
 
 One review per pull request, inline findings, updated in place. Runs beside the Grump's and the Paranoid SRE's Actions; each posts its own review.
+
+### Findings as SARIF, not only as comments
+
+A review posted as pull-request comments exists inside one vendor. Point `sarif_file` at a path and
+the same findings are also written as [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html),
+the OASIS standard that GitHub code scanning, GitLab, Azure DevOps and every SARIF viewer already
+read:
+
+```yaml
+      - uses: lazy-senior-dev/tenured@v1
+        with:
+          sarif_file: tenured.sarif
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: tenured.sarif
+```
+
+`DO_NOT_REPEAT` findings arrive as errors, `SEEN_BEFORE` as warnings, and a finding the verdict parser
+could not read is reported as a note rather than dropped, because a lost finding looks like a clean
+review. The file is written before the review is posted, so the findings survive a run that lacks
+permission to comment.
 
 ## House rules, without forking
 

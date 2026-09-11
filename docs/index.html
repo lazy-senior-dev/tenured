@@ -590,6 +590,28 @@
 })();
 </script>
 
+<section class="wrap reveal" id="standards">
+  <div class="eyebrow">Open standards</div>
+  <h2>Standards this implements</h2>
+  <p class="sub">Citing a standard is easy; implementing one is the part that can be checked. Everything below is running in this repository today, and every body listed governs its specification in the open.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Standard</th><th>Governed by</th><th>Where it runs here</th></tr></thead>
+    <tbody>
+      <tr><th><a href="https://modelcontextprotocol.io/">Model Context Protocol</a></th><td>Open specification, Anthropic-originated, community-governed</td><td><code>mcp/server.mjs</code>, five tools over stdio, listed as <code>io.github.lazy-senior-dev/tenured</code></td></tr>
+      <tr><th><a href="https://slsa.dev/spec/v1.2/">SLSA build provenance</a></th><td>OpenSSF, Linux Foundation</td><td>Attested on every release artefact; verify with <code>gh attestation verify</code></td></tr>
+      <tr><th><a href="https://www.sigstore.dev/">Sigstore</a></th><td>OpenSSF, Linux Foundation</td><td>The container image is signed keyless; verify with <code>cosign verify</code></td></tr>
+      <tr><th><a href="https://cyclonedx.org/">CycloneDX</a></th><td>OWASP, standardised as ECMA-424</td><td>A bill of materials on every release</td></tr>
+      <tr><th><a href="https://spdx.dev/">SPDX</a></th><td>Linux Foundation, ISO/IEC 5962</td><td>A second bill of materials in the format ISO recognises</td></tr>
+      <tr><th><a href="https://scorecard.dev/">OpenSSF Scorecard</a></th><td>OpenSSF, Linux Foundation</td><td>Scored weekly, badge above, results public</td></tr>
+      <tr><th><a href="https://reuse.software/spec/">REUSE licence identifiers</a></th><td>Free Software Foundation Europe</td><td><code>SPDX-License-Identifier</code> on the files this project authors</td></tr>
+      <tr><th><a href="https://agents.md/">AGENTS.md</a></th><td>Agentic AI Foundation, Linux Foundation</td><td>Generated from the ruleset for any agent that reads it</td></tr>
+      <tr><th><a href="https://agentskills.io/">Agent Skills</a></th><td>Open specification</td><td><code>skills/</code> and <code>.github/skills/</code></td></tr>
+      <tr><th><a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html">SARIF 2.1.0</a></th><td>OASIS</td><td>The Action writes findings to <code>sarif_file</code> for any SARIF consumer</td></tr>
+      <tr><th><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a></th><td>Apache Software Foundation</td><td><code>LICENSE</code> and <code>NOTICE</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
 <footer>
   <div class="wrap">
     <div class="cols">

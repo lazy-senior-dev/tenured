@@ -25,6 +25,10 @@ inputs:
     description: "Newline- or comma-separated globs to skip, in addition to lockfiles, minified assets, and vendor directories."
     required: false
     default: ""
+  sarif_file:
+    description: "Write the findings to this path as SARIF 2.1.0, in addition to posting the review. Upload it with github/codeql-action/upload-sarif to have them appear as code scanning alerts."
+    required: false
+    default: ""
   github_token:
     description: "Token used to read the diff and post the review."
     required: false
@@ -54,4 +58,5 @@ runs:
         INPUT_MODEL: ${{ inputs.model }}
         INPUT_MAX_FILES: ${{ inputs.max_files }}
         INPUT_IGNORE: ${{ inputs.ignore }}
+        INPUT_SARIF_FILE: ${{ inputs.sarif_file }}
         INPUT_GITHUB_TOKEN: ${{ inputs.github_token }}

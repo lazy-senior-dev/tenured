@@ -15,10 +15,15 @@ import { lastVerdict, severityRank } from "../hooks/lib/verdict.mjs";
 import { anchorLine, numberedPatch } from "./lib/diff.mjs";
 import { parseGlobs, isIgnored } from "./lib/glob.mjs";
 import { makeProvider } from "./lib/providers.mjs";
+import { toSarif } from "./lib/sarif.mjs";
 import { GitHub } from "./lib/github.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const P = JSON.parse(readFileSync(join(HERE, "..", "persona.json"), "utf8"));
+// Reported in the SARIF tool driver, so a stored result says which version produced it.
+const VERSION = (() => {
+  try { return JSON.parse(readFileSync(join(HERE, "..", "package.json"), "utf8")).version || ""; } catch { return ""; }
+})();
 const V = P.verdicts;
 export const MARKER = `<!-- ${P.slug} -->`;
 const FORK_MARKER = `<!-- ${P.slug}:fork -->`;
@@ -181,6 +186,7 @@ export function readInputs(env = process.env) {
     model: env.INPUT_MODEL || "",
     maxFiles: Math.max(1, Number(env.INPUT_MAX_FILES || 25) || 25),
     ignore: parseGlobs(env.INPUT_IGNORE),
+    sarifFile: env.INPUT_SARIF_FILE || "",
     apiKey,
     token: env.INPUT_GITHUB_TOKEN || env.GITHUB_TOKEN,
     repo: env.GITHUB_REPOSITORY,
@@ -224,6 +230,16 @@ export async function run({ inputs, event, fetchImpl = fetch, sleep, log = conso
   const { results, usage } = await reviewFiles(reviewed, provider, { log });
   const verdict = overallVerdict(results);
   const review = composeReview({ results, skipped, verdict, mode: inputs.mode, usage, model: provider.model, runUrl: inputs.runUrl });
+  // Written before the review is posted. Posting can fail on permissions, and the findings are
+  // worth keeping even then; a SARIF file is readable without the vendor that produced it.
+  if (inputs.sarifFile) {
+    const { writeFileSync, mkdirSync } = await import("node:fs");
+    const { dirname } = await import("node:path");
+    const sarif = toSarif({ results, verdict, tool: { name: P.slug, informationUri: P.homepage, version: VERSION, model: provider.model } });
+    mkdirSync(dirname(inputs.sarifFile), { recursive: true });
+    writeFileSync(inputs.sarifFile, JSON.stringify(sarif, null, 2) + "\n");
+    log(`wrote ${sarif.runs[0].results.length} finding(s) to ${inputs.sarifFile} as SARIF 2.1.0`);
+  }
   const word = { APPROVE: V.approve, REQUEST_CHANGES: V.changes, BLOCK: V.block }[verdict];
   const posted = await publish(gh, number, pr.head.sha, review, { log });
 
