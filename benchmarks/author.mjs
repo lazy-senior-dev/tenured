@@ -90,7 +90,12 @@ for (const agentName of agents) {
   const file = join(RAW, `${agentName}.jsonl`);
   const done = new Set(existsSync(file) ? readFileSync(file, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((r) => !r.error).map((r) => `${r.task}|${r.arm}|${r.run}`) : []);
   const jobs = [];
-  for (const t of tasks) for (const arm of arms) for (let r = 1; r <= n; r++) if (!done.has(`${t.id}|${arm}|${r}`)) jobs.push({ t, arm, r });
+  // Run-major, deliberately. The report will only publish an agent whose arms are whole --
+  // attempts === runs * tasks -- so the order decides what a half-finished sweep is worth. Finishing
+  // task by task leaves some tickets at five runs and the rest at none, which is never whole and is
+  // therefore worth nothing to a reader. Finishing round by round leaves every ticket and every arm
+  // at the same lower n, which is a complete, publishable result the moment the round lands.
+  for (let r = 1; r <= n; r++) for (const t of tasks) for (const arm of arms) if (!done.has(`${t.id}|${arm}|${r}`)) jobs.push({ t, arm, r });
   console.log(`[${agentName}] ${jobs.length} runs to make (${done.size} already done), concurrency=${concurrency}`);
   let i = 0, finished = 0;
   // One quota refusal means every remaining job in this pass will be refused too. Attempting them
