@@ -63,8 +63,13 @@ function authorBlock() {
   // fixes it, which is what a user installs. Without it, the persona card alone.
   const whole = (s) => s && s.runs && s.attempts === s.runs * d.tasks;
   // A host that barely finished any task cannot be compared: its zeros mean "did not write the
-  // code", not "wrote nothing wrong". It has to have made the change on at least half the tickets.
-  const engaged = (a) => (a.arms?.bare?.implementedTotal || 0) >= (a.arms?.bare?.attempts || 0) / 2;
+  // code", not "wrote nothing wrong". Half the tickets is the bar. A host below it still counts if
+  // its unaided arm shipped defects, because then the corpus demonstrably bit and the other arms'
+  // zeros are answers rather than silence. The "made the change" column carries the rate either
+  // way, so a reader is never shown a percentage without the denominator behind it.
+  const engaged = (a) =>
+    (a.arms?.bare?.implementedTotal || 0) >= (a.arms?.bare?.attempts || 0) / 2 ||
+    (a.arms?.bare?.shippedTotal || 0) > 0;
   const complete = (a) => whole(a.arms?.bare) && (whole(a.arms?.gate) || whole(a.arms?.grump)) && engaged(a);
   const rows = Object.entries(d.agents).filter(([, a]) => complete(a));
   if (!rows.length) return "";
@@ -79,7 +84,11 @@ function authorBlock() {
   const b = first.arms.bare, ge = first.arms.generic;
   const g = finalArm(first);
   const gated = g === first.arms.gate;
-  const lead = b.shippedTotal === 0 ? `**When the agent is the author, these tickets did not separate the arms on any finished host.** On ${first.label} (\`${g.model}\`), the agent shipped one of these defects in ${b.shippedTotal} of ${b.attempts} runs unaided and ${g.shippedTotal} of ${g.attempts} with ${WHO}: there was nothing here for him to prevent, and no improvement is claimed from it. His measured effect is in the review tier below. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).` : `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%)${ge && ge.attempts ? `, ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%)` : ""}, and ${g.shippedTotal} of ${g.attempts} with ${WHO} ${gated ? "installed, where he refuses the write until the findings are fixed" : "loaded"} (${pct(g)}%)${gated ? "" : `, reviewing its own change before finishing in ${g.reviewedTotal} of ${g.attempts} runs`}. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).`;
+  // Three findings, and the lead has to be the one that happened. Where a generic prompt reached the
+  // same floor, saying this persona "changes what ships" takes credit for a result any careful
+  // sentence would have produced, which is the overclaim this benchmark exists to avoid.
+  const tiedWithPrompt = Boolean(ge && ge.attempts && pct(ge) <= pct(g));
+  const lead = b.shippedTotal === 0 ? `**When the agent is the author, these tickets did not separate the arms on any finished host.** On ${first.label} (\`${g.model}\`), the agent shipped one of these defects in ${b.shippedTotal} of ${b.attempts} runs unaided and ${g.shippedTotal} of ${g.attempts} with ${WHO}: there was nothing here for him to prevent, and no improvement is claimed from it. His measured effect is in the review tier below. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).` : tiedWithPrompt ? `**On this corpus a careful prompt reaches the same floor as ${WHO}.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%), ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%), and ${g.shippedTotal} of ${g.attempts} with ${WHO} ${gated ? "installed, where he refuses the write until the findings are fixed" : "loaded"} (${pct(g)}%). The prompt got there too, so no improvement over it is claimed here; what ${WHO} adds on this corpus is in the review tier above. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).` : `**When the agent is the author, ${WHO} changes what ships.** On ${first.label} (\`${g.model}\`), given ${d.tasks} tickets that each invite a classic defect, the agent alone shipped the defect in ${b.shippedTotal} of ${b.attempts} runs (${pct(b)}%)${ge && ge.attempts ? `, ${ge.shippedTotal} of ${ge.attempts} with a generic "be careful" prompt (${pct(ge)}%)` : ""}, and ${g.shippedTotal} of ${g.attempts} with ${WHO} ${gated ? "installed, where he refuses the write until the findings are fixed" : "loaded"} (${pct(g)}%)${gated ? "" : `, reviewing its own change before finishing in ${g.reviewedTotal} of ${g.attempts} runs`}. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run ${g.runs} times per arm; [method, per-task table, raw diffs](benchmarks/results/author).`;
   let table = `| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |\n|---|---|---|---|---|---|---|\n`;
   for (const [, a] of ranked) for (const arm of ["bare", "generic", "grump", "gate"]) {
     const s = a.arms[arm]; if (!s || !s.runs) continue;
@@ -88,10 +97,14 @@ function authorBlock() {
   }
   const pending = Object.entries(d.agents).filter(([, a]) => !whole(a.arms?.bare)).map(([, a]) => a.label);
   const thin = Object.entries(d.agents).filter(([, a]) => whole(a.arms?.bare) && !engaged(a)).map(([, a]) => a.label);
+  // Shown, but with the caveat attached: a low implementation rate changes how every row reads.
+  const sparse = ranked.filter(([, a]) => (a.arms.bare.implementedTotal || 0) < a.arms.bare.attempts / 2)
+    .map(([, a]) => `${a.label} (${a.arms.bare.implementedTotal} of ${a.arms.bare.attempts})`);
   const parts = [];
   if (P.authorNote) parts.push(P.authorNote);
   if (pending.length) parts.push(`Still running, and added as each one finishes: ${pending.join(", ")}.`);
-  if (thin.length) parts.push(`Left out because it completed the change on fewer than half the tickets, so its zeros would read as "wrote nothing" rather than "wrote nothing wrong": ${thin.join(", ")}.`);
+  if (thin.length) parts.push(`Left out because it completed the change on fewer than half the tickets and never shipped one of these defects unaided, so its zeros would read as "wrote nothing" rather than "wrote nothing wrong": ${thin.join(", ")}.`);
+  if (sparse.length) parts.push(`Completed the change on fewer than half the tickets, so read every row there against that denominator rather than against the run count: ${sparse.join(", ")}. Its unaided arm did ship these defects, which is why it is shown at all.`);
   // Naming the hosts that never shipped the defect unaided keeps a reader from reading their four
   // identical rows as an effect. They are evidence about the host, not about the persona.
   const flat = ranked.filter(([, a]) => a.arms.bare.shippedTotal === 0).map(([, a]) => a.label);

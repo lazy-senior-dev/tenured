@@ -83,6 +83,21 @@ npx github:lazy-senior-dev/tenured review          # any repository, any agent y
 Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Action. Apache-2.0, no dependencies, no service, no account. The diff goes to the agent you already trust and nowhere else.
 <!-- hero:end -->
 
+<!-- bench:author:start -->
+## The number that matters: what ships
+
+**On this corpus a careful prompt reaches the same floor as Tenured.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 4 of 40 runs (10%), 0 of 40 with a generic "be careful" prompt (0%), and 0 of 40 with Tenured installed, where he refuses the write until the findings are fixed (0%). The prompt got there too, so no improvement over it is claimed here; what Tenured adds on this corpus is in the review tier above. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 5 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
+
+| Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |
+|---|---|---|---|---|---|---|
+| IBM Bob Shell | `bob-default` (n=5) | no skill | 13 of 40 | 4 of 40 (10%) | n/a | 3 s |
+| IBM Bob Shell | `bob-default` (n=5) | generic care prompt | 9 of 40 | 0 of 40 (0%) | n/a | 2 s |
+| IBM Bob Shell | `bob-default` (n=5) | tenured | 9 of 40 | 0 of 40 (0%) | 16 of 40 | 2 s |
+| IBM Bob Shell | `bob-default` (n=5) | **tenured + gate** | **10 of 40** | **0 of 40 (0%)** | **16 of 40** | 3 s |
+
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Antigravity CLI, Claude Code, Codex CLI. Completed the change on fewer than half the tickets, so read every row there against that denominator rather than against the run count: IBM Bob Shell (13 of 40). Its unaided arm did ship these defects, which is why it is shown at all.
+<!-- bench:author:end -->
+
 <!-- bench:hero:start -->
 **On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-06; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
 <!-- bench:hero:end -->
