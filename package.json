@@ -39,7 +39,8 @@
     "chart": "node scripts/render-chart.mjs",
     "gif": "vhs docs/demo.tape",
     "recordings": "node scripts/sync-recordings.mjs",
-    "bench:author": "node benchmarks/author.mjs"
+    "bench:author": "node benchmarks/author.mjs",
+    "verify:live": "node scripts/verify-gate-live.mjs"
   },
   "keywords": [
     "code-review",

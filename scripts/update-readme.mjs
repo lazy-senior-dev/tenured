@@ -99,6 +99,31 @@ function authorBlock() {
   const note = parts.length ? `\n\nEvery agent whose four arms have finished is in the table above. ${parts.join(" ")}` : "";
   return `${lead}\n\n${table.trim()}${note}`;
 }
+// Live tier: the shipped plugin, loaded into a real host, refusing real writes. The author tier
+// re-runs the review over a staged diff, which models the gate; this is the gate. One session per
+// ticket is a proof that the mechanism fires, not a rate, and the wording below says so.
+const livePath = join(ROOT, "benchmarks", "results", "live", "claude-code.json");
+function liveBlock() {
+  if (!existsSync(livePath)) return "";
+  const d = JSON.parse(readFileSync(livePath, "utf8"));
+  const ok = (d.records || []).filter((r) => !r.error);
+  if (!ok.length) return "";
+  const denied = ok.filter((r) => r.denied).length;
+  const injected = ok.filter((r) => r.personaInjected).length;
+  const shipped = ok.filter((r) => r.shippedDefect).length;
+  const implemented = ok.filter((r) => r.implemented).length;
+  const stops = ok.reduce((a, r) => a + (r.denials?.length || 0), 0);
+  const when = (d.recordedAt || "").slice(0, 10);
+  // Quote a refusal the host actually returned, so the reader sees the hook's own words rather
+  // than a paraphrase of them.
+  const sample = ok.find((r) => r.denials && r.denials.length)?.denials[0];
+  // The refusal names the file by its absolute path in a throwaway workspace. That path is noise
+  // to a reader and changes every run, so it is reduced to the file the gate actually stopped.
+  const tidy = (t) => String(t).replace(/\s+/g, " ").replace(/\/\S*\/([^/\s]+\.[A-Za-z]+)/g, "$1");
+  const upTo = (t, max) => (t.length <= max ? t : t.slice(0, t.lastIndexOf(" ", max)) + " ...");
+  const quote = sample ? `\n\nThe host's own words, from the recorded stream:\n\n> ${upTo(tidy(sample.reason), 260)}\n` : "";
+  return `**The thing you install is the thing that was measured.** The table above scores the ruleset by re-running the review over a staged diff. This runs the shipped plugin inside a real ${d.host === "claude-code" ? "Claude Code" : d.host} session (\`${d.model}\`, gate mode), gives it the same ${ok.length} ticket${ok.length === 1 ? "" : "s"}, and records what the host itself decided: the persona arrived on ${injected} of ${ok.length} sessions, and the gate refused ${stops} write${stops === 1 ? "" : "s"} across ${denied} of them. The agent still finished the ticket in ${implemented} of ${ok.length}, and shipped the seeded defect in ${shipped}. One session per ticket: this shows the gate fires and what it costs, not a rate to compare with the table above. Measured ${when}; reproduce with \`npm run verify:live\`, which exits non-zero if no write is ever refused.${quote}`;
+}
 const author = authorBlock();
 if (author) {
   const wrapped = `<!-- bench:author:start -->\n## The number that matters: what ships\n\n${author}\n<!-- bench:author:end -->`;
@@ -107,6 +132,13 @@ if (author) {
 } else {
   // no complete author run yet: the block is removed rather than shown half-filled
   readme = readme.replace(/<!-- bench:author:start -->[\s\S]*?<!-- bench:author:end -->\n\n?/, () => "");
+}
+
+const live = liveBlock();
+if (live) {
+  const wrapped = `<!-- live:start -->\n## Verified in the host, not only in the harness\n\n${live}\n<!-- live:end -->`;
+  if (readme.includes("<!-- live:start -->")) readme = readme.replace(/<!-- live:start -->[\s\S]*?<!-- live:end -->/, () => wrapped);
+  else if (readme.includes("<!-- bench:author:end -->")) readme = readme.replace("<!-- bench:author:end -->", () => "<!-- bench:author:end -->\n\n" + wrapped);
 }
 
 const { hero, table } = block();
