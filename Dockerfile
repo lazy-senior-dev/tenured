@@ -2,7 +2,9 @@
 #   docker run --rm -i -v "$PWD:/work" -w /work ghcr.io/lazy-senior-dev/tenured
 # Reviewing needs a headless agent or an API key in the environment; the review_brief tool needs
 # neither, because the calling client's own model does the reading.
-FROM node:22-alpine
+# Pinned by digest, not by tag: node:22-alpine moves, so an image built from it is not the image
+# that was scanned and attested. The tag stays in the comment to say what the digest is.
+FROM node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
 
 # The base image lags its distribution on security fixes, and the scan that gates this image
 # refuses anything fixable, so the packages are brought up to date at build time.

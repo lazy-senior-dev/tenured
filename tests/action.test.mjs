@@ -11,7 +11,12 @@ const TF_ = P_.test || {};
 const F = (p) => (TF_.ext ? p.replace(/\.(py|ts|go)$/, TF_.ext).replace(/^(?!\/)(?!src\/)/, TF_.dir + "/").replace(/^src\//, TF_.dir + "/").replace(/^\/repo\/src\//, "/repo/" + TF_.dir + "/") : p);
 const T = (s) => {
   const pairs = [["GRUMP:", P_.verdictPrefix + ":"], ["REQUEST_CHANGES", P_.verdicts.changes], ["APPROVE", P_.verdicts.approve], ["BLOCK", P_.verdicts.block], ["Fine.", P_.approveWord]];
-  for (const [a, b] of pairs) s = s.replace(new RegExp(a.replace(/[.]/g, "\\.") + (/[A-Z_]+$/.test(a) ? "\\b" : ""), "gi"), (m) => (m === m.toLowerCase() && a !== "Fine." ? b.toLowerCase() : b));
+  // Escape every metacharacter, not only the dot. These strings come from persona.json, so a
+  // persona whose approve word contained a "(" or a "+" would either build a pattern that means
+  // something else or throw, and the escape being incomplete is the same defect the ruleset
+  // objects to in other people's code.
+  const rx = (t) => t.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
+  for (const [a, b] of pairs) s = s.replace(new RegExp(rx(a) + (/[A-Z_]+$/.test(a) ? "\\b" : ""), "gi"), (m) => (m === m.toLowerCase() && a !== "Fine." ? b.toLowerCase() : b));
   return s.replace(/(\/?(?:repo\/)?(?:src\/)?[ab]\.(?:py|ts|go))(?=[:\s,]|$)/g, (m) => F(m));
 };
 

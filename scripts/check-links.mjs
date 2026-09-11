@@ -24,7 +24,11 @@ const links = new Map(); // url -> [file]
 const MD = /\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
 const HTML = /(?:href|src)="([^"]+)"/g;
 for (const f of files) {
-  const text = readFileSync(f, "utf8").replace(/<!--[\s\S]*?-->/g, "");
+  // Strip comments until the text stops changing. One pass leaves "<!-- <!-- x --> -->" with an
+  // opening marker still in it, so a commented-out link could come back and be checked, or a live
+  // one be hidden.
+  let text = readFileSync(f, "utf8");
+  for (let before = null; before !== text; ) { before = text; text = text.replace(/<!--[\s\S]*?-->/g, ""); }
   for (const re of [MD, HTML]) for (const m of text.matchAll(re)) {
     const u = m[1].trim();
     if (!u || u.startsWith("#") || u.startsWith("mailto:") || u.startsWith("data:") || u.startsWith("${")) continue;
