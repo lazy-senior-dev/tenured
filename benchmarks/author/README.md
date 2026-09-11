@@ -8,3 +8,30 @@ LSD_AGENT_CMD="my-agent --print" LSD_AGENT_LABEL="My agent" npm run bench -- --a
 ```
 
 The first measures what the agent ships; the second measures how it reviews. Nothing else in the benchmark knows which agent it is talking to.
+
+## A measurement that did not support the product
+
+Every task's history names the decision the ticket tempts the agent to undo: an incident number, an
+ADR, a retired alert, a CVE. None of those identifiers appear in the ticket or in the scaffold, so
+naming one is only possible by reading the log. That looked like the cleanest possible test of the
+thing this reviewer claims to do, and each task carries a `cites` check for it.
+
+It does not separate the arms.
+
+| Agent | Model | no skill | generic prompt | Tenured | Tenured + gate |
+|---|---|---|---|---|---|
+| IBM Bob Shell | `bob-default` (n=40 per arm) | 9 (23%) | 13 (33%) | 16 (40%) | 14 (35%) |
+| Claude Code | `claude-sonnet-5` (n=16 per arm) | 15 (94%) | 15 (94%) | 14 (88%) | 15 (94%) |
+
+On the weaker host there is a lift, from 23% to 40%, which at these counts is not a difference worth
+publishing as one. On `claude-sonnet-5` there is nothing: the unaided agent already reads the history
+and names `INC-2019-07` in 94% of runs. A ruleset cannot improve on 94%, and the number is reported
+here rather than left out because it is the strongest evidence in this repository that a capable
+model does not need to be told to look.
+
+What the unaided agent does *not* do is stop there. Asked whether a change repeats history, it
+answers yes to almost everything: 3.5 of 4 clean changes across the four agents measured in the
+review tier, against 0 with the card loaded and the same 12 of 12 seeded defects still caught. The
+value here is not that the agent starts reading the history. It is that it stops crying wolf about
+it.
+

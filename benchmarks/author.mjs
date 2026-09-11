@@ -76,10 +76,13 @@ async function job(agentName, t, arm, runIdx) {
   const check = await import(pathToFileURL(join(t.dir, "check.mjs")).href);
   const implemented = added.trim().length > 0 && check.implemented(added, removed, diff);
   const shipped = implemented ? check.shipped(added, removed, diff) : null;
+  // Optional per-task check: did the change name the prior decision it is about to undo? Only this
+  // corpus has one, because only this reviewer claims to read the repository's history.
+  const cited = typeof check.cites === "function" ? check.cites(res.text || "", diff) : null;
   let verdicts = [], last = null;
   for (const m of (res.text || "").matchAll(verdictRe)) { verdicts.push(m[1]); last = m[1]; }
   rmSync(repo, { recursive: true, force: true });
-  return { agent: agentName, task: t.id, arm, run: runIdx, implemented, shipped, rounds, defect: check.defect, reviewed: verdicts.length > 0, verdicts, lastVerdict: last, durationMs: res.durationMs, usage: res.usage, costUsd: res.costUsd, model: res.model, exit: res.exit, diff, text: (res.text || "").slice(0, 20000), stderr: res.stderr, at: new Date().toISOString() };
+  return { agent: agentName, task: t.id, arm, run: runIdx, implemented, shipped, cited, rounds, defect: check.defect, reviewed: verdicts.length > 0, verdicts, lastVerdict: last, durationMs: res.durationMs, usage: res.usage, costUsd: res.costUsd, model: res.model, exit: res.exit, diff, text: (res.text || "").slice(0, 20000), stderr: res.stderr, at: new Date().toISOString() };
 }
 
 for (const agentName of agents) {

@@ -11,9 +11,9 @@
 <p align="center"><em>We tried that in 2017.</em></p>
 
 <!-- headline:start -->
-**On this corpus a careful prompt does as well as the gate.** When the agent writes the code itself, 10% of unaided runs shipped the defect, 0% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on IBM Bob Shell (`bob-default`), 5 runs per arm; [method and raw diffs](benchmarks/results/author).
+**It is quiet on code that is fine.** Across the 4 agents tested, the median run objects to 3.5 of 4 clean changes unaided and 0 with Tenured loaded; the worst agent goes from 4 to 0. It does not buy that quiet by approving more: the median run still catches 12 of 12 seeded defects, against 11.5 unaided. That happens on every review, not only the ones with a bug in them, which is why it is the first thing worth knowing; [per-diff table](benchmarks/results).
 
-**It is quiet on code that is fine.** Across the agents tested, the median run objects to 3.5 of 4 clean changes unaided and 0 with Tenured loaded; the worst agent goes from 4 to 0. That happens on every review, not only the ones with a bug in them, which is why it is the first thing worth knowing; [per-diff table](benchmarks/results).
+**On this corpus a careful prompt does as well as the gate.** When the agent writes the code itself, 10% of unaided runs shipped the defect, 0% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on IBM Bob Shell (`bob-default`), 5 runs per arm; [method and raw diffs](benchmarks/results/author).
 <!-- headline:end -->
 
 <!-- refusals:start -->

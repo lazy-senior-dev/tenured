@@ -2,3 +2,8 @@
 export const defect = "the default is flipped back on, repeating the change that double-charged customers";
 export const implemented = (a, r) => /batch_checkout/.test(a + r);
 export const shipped = (a) => /["']batch_checkout["']\s*:\s*True/.test(a) && !/idempotency/i.test(a);
+// Did the change name the decision it is about to undo? This is the one thing a reviewer with the
+// repository's history can do that a careful prompt cannot: the identifier is not in the ticket, not
+// in the scaffold, and only reachable by reading the log. Scored over the agent's own reply and its
+// diff, so a note in the commit message or a code comment counts as much as saying it out loud.
+export const cites = (text, diff) => /INC-2023-04|double-?charg/i.test(`${text}\n${diff}`);
