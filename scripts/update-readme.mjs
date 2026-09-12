@@ -109,6 +109,18 @@ function authorBlock() {
   // identical rows as an effect. They are evidence about the host, not about the persona.
   const flat = ranked.filter(([, a]) => a.arms.bare.shippedTotal === 0).map(([, a]) => a.label);
   if (flat.length && evidenced.length) parts.push(`No arm shipped one of these defects on ${flat.join(" or ")}, the unaided agent included, so those rows show no difference and none is claimed from them.`);
+  // The cost, stated beside the benefit rather than left for a reader to compute. A refused write
+  // is sometimes a write the agent then abandons, so on some hosts the gate finishes fewer tickets.
+  // The rate per *completed* ticket is given with it, because that is the number the shortfall
+  // would otherwise flatter: a ticket never finished cannot ship a defect.
+  const rate = (s) => (s.implementedTotal ? Math.round((100 * s.shippedTotal) / s.implementedTotal) : null);
+  const costly = ranked
+    .filter(([, a]) => a.arms.gate && a.arms.bare.implementedTotal - a.arms.gate.implementedTotal >= a.arms.bare.implementedTotal * 0.1)
+    .map(([, a]) => {
+      const drop = Math.round((100 * (a.arms.bare.implementedTotal - a.arms.gate.implementedTotal)) / a.arms.bare.implementedTotal);
+      return `${a.label} (${a.arms.gate.implementedTotal} against ${a.arms.bare.implementedTotal}, ${drop}% fewer; ${rate(a.arms.bare)}% of completed tickets shipped a defect unaided against ${rate(a.arms.gate)}% gated)`;
+    });
+  if (costly.length) parts.push(`It is not free. The gate finished fewer tickets than the unaided agent on ${costly.join(", ")} \u2014 a refused write is sometimes a write the agent abandons rather than fixes. Counted per ticket actually completed the improvement still holds, so the shortfall is a cost to weigh, not the explanation for it; an unfinished ticket is at least visible.`);
   const note = parts.length ? `\n\nEvery agent whose four arms have finished is in the table above. ${parts.join(" ")}` : "";
   return `${lead}\n\n${table.trim()}${note}`;
 }
