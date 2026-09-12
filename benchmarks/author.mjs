@@ -60,7 +60,13 @@ async function job(agentName, t, arm, runIdx) {
     // turn.failed event on stdout. Preferring stderr meant the worker saw a banner with no time in
     // it and fell back to blind 45 minute retries instead of sleeping until the window returns.
     const detail = [res.stderr, res.text].find((s) => s && LIMIT_CLI.test(s)) || res.stderr || res.text || "";
-    throw new Error(`usage limit: ${detail.replace(/\s+/g, " ").slice(0, 600)}`);
+    // Slice around the phrase, not from the start. Codex answers with its whole JSON event stream,
+    // and the sentence that names the hour sits at the end of it, so taking the first n characters
+    // returns thread ids and a truncated apology while the one fact the worker needs -- when the
+    // window reopens -- falls off the end.
+    const at = (LIMIT_CLI.exec(detail) || { index: 0 }).index;
+    const window = detail.slice(Math.max(0, at - 60), at + 400).replace(/\s+/g, " ").trim();
+    throw new Error(`usage limit: ${window}`);
   }
   git(repo, ["add", "-A"]);
   // The gate arm runs the plugin's own review over the staged diff and hands the findings back,
