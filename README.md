@@ -147,7 +147,7 @@ Every agent whose four arms have finished is in the table above. Read the shippe
 <!-- recordings:start -->
 ## Watch him work on every agent
 
-The same staged diff, one CLI, 4 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-04.
+The same staged diff, one CLI, 4 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-12.
 
 | Claude Code | Codex CLI |
 |---|---|
@@ -157,7 +157,7 @@ The same staged diff, one CLI, 4 agents. Each recording is a real run captured w
 | Antigravity CLI | IBM Bob Shell |
 |---|---|
 | <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> | <img src="assets/recordings/bob.gif" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT with 3 numbered findings" width="440"> |
-| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 117 s<br><b>Tokens</b> 20,981 in / 56,452 out | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 3<br><b>Time</b> 6 s<br><b>Tokens</b> not reported by the host |
+| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 117 s<br><b>Tokens</b> 20,981 in / 56,452 out | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 3<br><b>Time</b> 9 s<br><b>Tokens</b> not reported by the host |
 
 Each card reads the same way. **Verdict** is what Tenured concluded: NEW lets the change through, SEEN_BEFORE asks for fixes, DO_NOT_REPEAT stops it. **Findings** counts the numbered problems he listed, each naming a file, a line, and the smallest fix. **Time** is how long the whole review took, start to finish. **Tokens** is what the host reported it read and wrote, and says so plainly when a host reports nothing. Agents that narrate the whole checklist before the verdict are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with `--agent claude|codex|agy|bob`; Bob needs `BOB_API_KEY`.
 <!-- recordings:end -->

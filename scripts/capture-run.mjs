@@ -109,6 +109,20 @@ const transcript = {
   stdout: (res.stdout || "").trim().split("\n"),
   recordedAt: new Date().toISOString(),
 };
+// A failed run is not a recording. Run unattended, this script replaced a good panel with an error
+// message the first time an agent was unreachable, so the transcript is written only when the CLI
+// actually reached a verdict, and the exit status tells the caller which happened.
+//
+// The test is the verdict, not the exit code: a review that finds something exits non-zero on
+// purpose, which is the *successful* case and the one worth recording. Verdicts are read from
+// persona.json so this stays right for every persona rather than for the one it was written in.
+const verdicts = Object.values(P.verdicts || {});
+const said = transcript.stdout.some((l) => verdicts.some((v) => l.includes(v)));
+if (!said) {
+  console.error(`${agent}: no verdict (exit ${res.status}) -- ${transcript.stderr[0] || "no output"}`);
+  console.error(`${agent}: ${out.replace(ROOT + "/", "")} left as it was`);
+  process.exit(1);
+}
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, JSON.stringify(transcript, null, 2) + "\n");
 console.log(`${agent}: exit ${res.status}, ${Math.round(durationMs / 1000)} s, ${transcript.stdout.length} lines -> ${out.replace(ROOT + "/", "")}`);
