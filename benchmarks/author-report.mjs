@@ -16,6 +16,20 @@ const HEAD = existsSync(join(BENCH_ROOT, "author", "README.md")) ? readFileSync(
 const median = (xs) => { const s = xs.filter((x) => x != null).sort((a, b) => a - b); return s.length ? (s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) : null; };
 
 export function summarise(rows) {
+  // Publish whole runs only, but do not throw away the runs that finished. A sweep interrupted by a
+  // usage limit leaves the last run short on some arms; counting it would compare arms measured over
+  // different amounts of work, which is the whole reason the completeness guard exists. Truncating to
+  // the largest run index where *every* arm covers *every* task keeps that guarantee and still
+  // publishes the complete runs behind it. If no such index exists the rows are left alone, so an
+  // agent that legitimately skipped a task reads exactly as it did before.
+  const armKeys = Object.keys(ARMS);
+  const live = rows.filter((r) => !r.error);
+  const maxRun = live.length ? Math.max(...live.map((r) => r.run || 0)) : 0;
+  let whole = 0;
+  for (let n = 1; n <= maxRun; n++) {
+    if (armKeys.every((arm) => live.filter((r) => r.arm === arm && (r.run || 0) <= n).length === n * tasks.length)) whole = n;
+  }
+  if (whole && whole < maxRun) rows = rows.filter((r) => (r.run || 0) <= whole);
   const out = {};
   for (const arm of Object.keys(ARMS)) {
     const rs = rows.filter((r) => r.arm === arm && !r.error);
