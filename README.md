@@ -11,9 +11,9 @@
 <p align="center"><em>We tried that in 2017.</em></p>
 
 <!-- headline:start -->
-**It is quiet on code that is fine.** Across the 4 agents tested, the median run objects to 3.5 of 4 clean changes unaided and 0 with Tenured loaded; the worst agent goes from 4 to 0. It does not buy that quiet by approving more: the median run still catches 12 of 12 seeded defects, against 11.5 unaided. That happens on every review, not only the ones with a bug in them, which is why it is the first thing worth knowing; [per-diff table](benchmarks/results).
+**On IBM Bob Shell and Claude Code a careful prompt reaches the same floor; on the rest it does not.** When the agent writes the code itself, 33% of unaided runs shipped the defect, 20% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on Antigravity CLI (`gemini-3.6-flash-medium`), 5 runs per arm. The same arms on the other hosts measured so far: 10% to **0%** on IBM Bob Shell (`bob-default`), 0% to **0%** on Claude Code (`claude-sonnet-5`) -- smaller drops, from baselines that were already lower, and not on their own distinguishable from chance at these counts; [method and raw diffs](benchmarks/results/author).
 
-**On this corpus a careful prompt does as well as the gate.** When the agent writes the code itself, 10% of unaided runs shipped the defect, 0% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on IBM Bob Shell (`bob-default`), 5 runs per arm; [method and raw diffs](benchmarks/results/author).
+**It is quiet on code that is fine.** Across the 4 agents tested, the median run objects to 3.5 of 4 clean changes unaided and 0 with Tenured loaded; the worst agent goes from 4 to 0. It does not buy that quiet by approving more: the median run still catches 12 of 12 seeded defects, against 11.5 unaided. That happens on every review, not only the ones with a bug in them, which is why it is the first thing worth knowing; [per-diff table](benchmarks/results).
 <!-- headline:end -->
 
 <!-- refusals:start -->
@@ -26,22 +26,56 @@ the runs.
 <table>
 <tr><td>
 
+**CHK-322 "Compute tax at checkout"**
+
+Your agent wrote:
+
+```diff
+    # Tax provider is queried by the outbox worker, not here — see ADR-009.
+```
+
+**It was refused:** app/api/orders.py:14 — contradicts the comment on the line above it, which cites ADR-009 for routing tax provider calls through the outbox worker instead of inline — enqueue via the outbox worker per ADR-009, or drop the comment if ADR-009 no longer applies
+
+<sub>Recorded run, Claude Code. Task `tax-at-checkout`.</sub>
+
+</td></tr>
+<tr><td>
+
+**CACHE-41 "Cache Get() gives up too early under load, make it more resilient"**
+
+Your agent wrote:
+
+```diff
+		delay := time.Duration(1<<attempt) * 10 * time.Millisecond
+		if delay > 500*time.Millisecond {
+			delay = 500 * time.Millisecond
+		}
+		time.Sleep(delay)
+```
+
+**It was refused:** internal/cache/client.go:11 — raises retries beyond the cap of 5 set in e287e36 after INC-2019-07 — keep the retry budget from that commit
+
+<sub>Recorded run, Antigravity CLI. Task `cache-retry`.</sub>
+
+</td></tr>
+<tr><td>
+
 **Q-58 "Messages sit too long when a worker dies"**
 
 Your agent wrote:
 
 ```diff
-// Q-58: a dead worker's message should reappear quickly, not after the full maximum
-// processing time (240 s for large batches). So the lease we actually take out
-// (LEASE_WINDOW_S) is much shorter than that, and a live worker renews it every
-// HEARTBEAT_INTERVAL_S while still processing. A worker that crashes stops renewing, so the
-// message becomes visible again within one missed heartbeat instead of after the full
-// processing time.
+export const HEARTBEAT_INTERVAL_MS = 15000;
+export async function consume(
+  handler: (m: unknown) => Promise<void>,
+  extendVisibility?: () => Promise<void>
+) {
+  const heartbeat = setInterval(() => {
 ```
 
-**It was refused:** src/queue/consumer.ts:26 — `queue.receive(LEASE_WINDOW_S)` sets the actual visibility window to 30s, the value 5c71e7a deliberately raised to 300 after "duplicate deliveries at 30s" — pass a window that can't expire before renewal covers it, or otherwise show the 30s regression can't reproduce that incident
+**It was refused:** src/queue/consumer.ts:4 — reintroduces the 30 s visibility timeout removed in 9ff7d42 after duplicate deliveries in #418 — keep the 300 s timeout from that commit
 
-<sub>Recorded run, Claude Code. Task `visibility-timeout`.</sub>
+<sub>Recorded run, Antigravity CLI. Task `visibility-timeout`.</sub>
 
 </td></tr>
 </table>
@@ -86,20 +120,28 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 <!-- bench:author:start -->
 ## The number that matters: what ships
 
-**On this corpus a careful prompt reaches the same floor as Tenured.** On IBM Bob Shell (`bob-default`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 4 of 40 runs (10%), 0 of 40 with a generic "be careful" prompt (0%), and 0 of 40 with Tenured installed, where he refuses the write until the findings are fixed (0%). The prompt got there too, so no improvement over it is claimed here; what Tenured adds on this corpus is in the review tier above. A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 5 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
+**When the agent is the author, Tenured changes what ships.** On Antigravity CLI (`gemini-3.6-flash-medium`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 13 of 40 runs (33%), 8 of 40 with a generic "be careful" prompt (20%), and 0 of 40 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 5 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
 
 | Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |
 |---|---|---|---|---|---|---|
+| Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | no skill | 33 of 40 | 13 of 40 (33%) | n/a | 44 s |
+| Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | generic care prompt | 34 of 40 | 8 of 40 (20%) | n/a | 71 s |
+| Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | tenured | 21 of 40 | 0 of 40 (0%) | 39 of 40 | 44 s |
+| Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | **tenured + gate** | **24 of 40** | **0 of 40 (0%)** | **40 of 40** | 45 s |
 | IBM Bob Shell | `bob-default` (n=5) | no skill | 13 of 40 | 4 of 40 (10%) | n/a | 3 s |
 | IBM Bob Shell | `bob-default` (n=5) | generic care prompt | 9 of 40 | 0 of 40 (0%) | n/a | 2 s |
 | IBM Bob Shell | `bob-default` (n=5) | tenured | 9 of 40 | 0 of 40 (0%) | 16 of 40 | 2 s |
 | IBM Bob Shell | `bob-default` (n=5) | **tenured + gate** | **10 of 40** | **0 of 40 (0%)** | **16 of 40** | 3 s |
+| Claude Code | `claude-sonnet-5` (n=5) | no skill | 30 of 40 | 0 of 40 (0%) | n/a | 62 s |
+| Claude Code | `claude-sonnet-5` (n=5) | generic care prompt | 32 of 40 | 0 of 40 (0%) | n/a | 75 s |
+| Claude Code | `claude-sonnet-5` (n=5) | tenured | 30 of 40 | 0 of 40 (0%) | 36 of 40 | 86 s |
+| Claude Code | `claude-sonnet-5` (n=5) | **tenured + gate** | **29 of 40** | **0 of 40 (0%)** | **36 of 40** | 79 s |
 
-Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Antigravity CLI, Claude Code, Codex CLI. Completed the change on fewer than half the tickets, so read every row there against that denominator rather than against the run count: IBM Bob Shell (13 of 40). Its unaided arm did ship these defects, which is why it is shown at all.
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI. Completed the change on fewer than half the tickets, so read every row there against that denominator rather than against the run count: IBM Bob Shell (13 of 40). Its unaided arm did ship these defects, which is why it is shown at all. No arm shipped one of these defects on Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them.
 <!-- bench:author:end -->
 
 <!-- bench:hero:start -->
-**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-06; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
+**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-12; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
 <!-- bench:hero:end -->
 
 <!-- recordings:start -->

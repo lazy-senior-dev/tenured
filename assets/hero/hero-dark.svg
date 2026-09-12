@@ -111,8 +111,8 @@
       <text x="628" y="195" class="mono b" fill="#fb923c">DO_NOT_REPEAT</text>
     </g>
   <text x="596" y="242" class="mono xs" fill="#93a4c8">DEFECTS REACHING THE BRANCH</text>
-       <text x="596" y="264" class="mono num" fill="#fb923c">10%</text>
+       <text x="596" y="264" class="mono num" fill="#fb923c">33%</text>
        <text x="648" y="264" class="mono num" fill="#93a4c8">→</text>
        <text x="674" y="264" class="mono num" fill="#22c55e">0%</text>
-       <text x="715" y="264" class="mono xs" fill="#93a4c8">measured, IBM Bob Shell</text>
+       <text x="715" y="264" class="mono xs" fill="#93a4c8">measured, Antigravity CLI</text>
 </svg>

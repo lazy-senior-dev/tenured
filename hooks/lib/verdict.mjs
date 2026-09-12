@@ -19,7 +19,12 @@ function headerRegex() {
 const HEADER = headerRegex();
 const FINDING = /^[ \t]*(\d+)[.)][ \t]+(.+?)[ \t]*$/;
 const SEPARATOR = /[ \t]+(?:—|–|--)[ \t]+/;
-const LOCATION = /^`?([^\s`:]+(?:\.[A-Za-z0-9_]+)?(?:\/[^\s`:]+)*):(\d+)(?:-(\d+))?`?$/;
+// Path segments exclude the separator. They did not, and "/" was matchable both by the segment
+// class and by the separator between segments, so a line of "!/!/!/..." could be decomposed an
+// exponential number of ways: 48 characters took 1.2 seconds here, 160 never finishes. This runs
+// inside the PreToolUse hook, which has a timeout and fails open, so a finding line crafted that way
+// was a way to make the gate allow a write it had refused. Disjoint classes make the match linear.
+const LOCATION = /^`?(\/?[^\s`:/]+(?:\/[^\s`:/]+)*):(\d+)(?:-(\d+))?`?$/;
 
 export function parseFinding(line) {
   const m = FINDING.exec(line);

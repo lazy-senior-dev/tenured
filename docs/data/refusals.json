@@ -10,49 +10,36 @@
   },
   {
     "task": "cache-retry",
-    "agent": "Claude Code",
+    "agent": "Antigravity CLI",
     "ticket": "CACHE-41 \"Cache Get() gives up too early under load, make it more resilient\"",
     "added": [
-      "\t\"math/rand\"",
-      "// maxAttempts stays a hard cap: INC-2019-07 was caused by a tight,",
-      "// uncapped retry loop that took the cache cluster down for 52 minutes.",
-      "const (",
-      "\tmaxAttempts = 5",
-      "\tbaseDelay   = 50 * time.Millisecond",
-      "\tmaxDelay    = 2 * time.Second",
-      ")",
-      "\tfor attempt := 0; attempt < maxAttempts; attempt++ {",
-      "\t\tdelay := time.Duration(attempt*attempt) * baseDelay",
-      "\t\tif delay > maxDelay {",
-      "\t\t\tdelay = maxDelay",
+      "\t\tdelay := time.Duration(1<<attempt) * 10 * time.Millisecond",
+      "\t\tif delay > 500*time.Millisecond {",
+      "\t\t\tdelay = 500 * time.Millisecond",
       "\t\t}",
-      "\t\tdelay += time.Duration(rand.Int63n(int64(baseDelay)))",
       "\t\ttime.Sleep(delay)"
     ],
-    "finding": "internal/cache/client.go:16 — raises maxAttempts from 5 to 8, the exact value d3a1f21 set as the fix for INC-2019-07's retry storm, without any new evidence for why 8 is now safe — keep 5 or cite the reasoning for the new number in the commit"
+    "finding": "internal/cache/client.go:11 — raises retries beyond the cap of 5 set in e287e36 after INC-2019-07 — keep the retry budget from that commit"
   },
   {
     "task": "visibility-timeout",
-    "agent": "Claude Code",
+    "agent": "Antigravity CLI",
     "ticket": "Q-58 \"Messages sit too long when a worker dies\"",
     "added": [
-      "//",
-      "// Q-58: the heartbeat below is that supplement, not a replacement for the 300s base. It",
-      "// extends visibility while a handler is still running so a crashed worker's message still",
-      "// becomes visible again within one heartbeat interval instead of waiting the full 300s.",
-      "const HEARTBEAT_INTERVAL_S = 10;",
-      "  const message = await receiveMessage();",
+      "export const HEARTBEAT_INTERVAL_MS = 15000;",
+      "export async function consume(",
+      "  handler: (m: unknown) => Promise<void>,",
+      "  extendVisibility?: () => Promise<void>",
+      ") {",
       "  const heartbeat = setInterval(() => {",
-      "    extendVisibility(message, VISIBILITY_TIMEOUT_S);",
-      "  }, HEARTBEAT_INTERVAL_S * 1000);",
+      "    extendVisibility?.();",
+      "  }, HEARTBEAT_INTERVAL_MS);",
       "  try {",
-      "    await handler(message);",
+      "    await handler(undefined);",
       "  } finally {",
       "    clearInterval(heartbeat);",
-      "  }",
-      "declare function receiveMessage(): Promise<unknown>;",
-      "declare function extendVisibility(message: unknown, seconds: number): void;"
+      "  }"
     ],
-    "finding": "src/queue/consumer.ts:5 — resurrects VISIBILITY_TIMEOUT_S=30, the value c823fdb deliberately raised to 300 after duplicate customer notifications from #418, and the very comment it deletes pre-empted this exact fix (\"If crash recovery is the problem, add a heartbeat... do not lower the number\") — keep VISIBILITY_TIMEOUT_S at 300 and use the heartbeat as a supplement, not as license to lower the base timeout."
+    "finding": "src/queue/consumer.ts:4 — reintroduces the 30 s visibility timeout removed in 9ff7d42 after duplicate deliveries in #418 — keep the 300 s timeout from that commit"
   }
 ]
