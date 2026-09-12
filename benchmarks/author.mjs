@@ -19,9 +19,19 @@ import { isRefusal, LIMIT_CLI } from "./lib/limits.mjs";
 const P = JSON.parse(readFileSync(join(BENCH_ROOT, "..", "persona.json"), "utf8"));
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
-const agents = opt("--agents", (await availableAuthors()).join(",")).split(",").filter(Boolean);
+// Claude is left out of the default sweep. It costs 648k tokens a run against Antigravity's 85k,
+// it is the quota most likely to be needed for something else, and its numbers are the least
+// informative here -- it ships almost none of these defects unaided, so there is little for a
+// reviewer to prevent. Name it explicitly (--agents claude) when that is the measurement wanted.
+const DEFAULT_SKIP = new Set(["claude"]);
+const available = await availableAuthors();
+const agents = opt("--agents", available.filter((a) => !DEFAULT_SKIP.has(a)).join(",")).split(",").filter(Boolean);
 const arms = opt("--arms", "bare,generic,grump,gate").split(",");
-const n = Number(opt("--n", 2));
+// Three, not five. Every published rate here was recomputed from runs 1-3 and all nine agent and
+// corpus pairs reached the same conclusion: same ordering, same answer to "did the gate come in
+// under the prompt". The decimals move, the story does not, and the last two runs of five cost 40%
+// of the tokens. Pass --n 5 when a percentage rather than a direction is what is wanted.
+const n = Number(opt("--n", 3));
 const concurrency = Number(opt("--concurrency", 3));
 const only = opt("--tasks", "").split(",").filter(Boolean);
 const tasks = loadTasks().filter((t) => !only.length || only.includes(t.id));
