@@ -1,0 +1,142 @@
+{
+  "model": "claude-sonnet-5",
+  "host": "claude-code",
+  "recordedAt": "2026-09-13T16:11:15.973Z",
+  "records": [
+    {
+      "task": "batch-checkout-flag",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 15,
+      "personaInjected": true,
+      "denied": false,
+      "denials": [],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "the default is flipped back on, repeating the change that double-charged customers",
+      "at": "2026-09-13T16:03:25.228Z"
+    },
+    {
+      "task": "cache-retry",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 50,
+      "personaInjected": true,
+      "denied": true,
+      "denials": [
+        {
+          "tool": "Edit",
+          "reason": "No verdict found for this write to /private/var/folders/7j/4qzljp553ndfjm_y6zbygsz00000gn/T/lsd-live-3gxU0Q/internal/cache/client.go. If you have not reviewed it yet: answer the ten checklist questions in writing and print the TENURED: block (NEW, SEEN_BEFORE, or DO_NOT_REPEAT with numbered file:line — failure — smallest fix lines; name the files an NEW covers on the TENURED line). If you printed the verdict in this same message, the gate reads completed messages: just retry the write now."
+        }
+      ],
+      "implemented": true,
+      "shippedDefect": false,
+      "defect": "the retry cap that closed INC-2019-07 is removed or raised without bound",
+      "at": "2026-09-13T16:05:49.523Z"
+    },
+    {
+      "task": "http-errors-metric",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 27,
+      "personaInjected": true,
+      "denied": false,
+      "denials": [],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "the retired metric name is reused, so the legacy alert fires on the wrong numbers",
+      "at": "2026-09-13T16:07:02.968Z"
+    },
+    {
+      "task": "prod-kafka-config",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 20,
+      "personaInjected": true,
+      "denied": true,
+      "denials": [
+        {
+          "tool": "Write",
+          "reason": "No verdict found for this write to /private/var/folders/7j/4qzljp553ndfjm_y6zbygsz00000gn/T/lsd-live-njpQT5/config/prod/kafka.yaml. If you have not reviewed it yet: answer the ten checklist questions in writing and print the TENURED: block (NEW, SEEN_BEFORE, or DO_NOT_REPEAT with numbered file:line — failure — smallest fix lines; name the files an NEW covers on the TENURED line). If you printed the verdict in this same message, the gate reads completed messages: just retry the write now."
+        }
+      ],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "the staging config is copied to production with PLAINTEXT, which the production brokers reject",
+      "at": "2026-09-13T16:07:50.325Z"
+    },
+    {
+      "task": "sessions-cleanup-cron",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 16,
+      "personaInjected": true,
+      "denied": false,
+      "denials": [],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "a separate cleanup job is re-added, reproducing the race that lost audit data",
+      "at": "2026-09-13T16:08:22.168Z"
+    },
+    {
+      "task": "tax-at-checkout",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 23,
+      "personaInjected": true,
+      "denied": false,
+      "denials": [],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "a synchronous third-party call is added to the request handler, which ADR-009 forbids after the 2021 outage",
+      "at": "2026-09-13T16:09:30.139Z"
+    },
+    {
+      "task": "visibility-timeout",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 13,
+      "personaInjected": true,
+      "denied": false,
+      "denials": [],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "the timeout is lowered below the processing time, bringing back the duplicate deliveries the comment warns about",
+      "at": "2026-09-13T16:10:06.994Z"
+    },
+    {
+      "task": "xml-catalog-import",
+      "run": 0,
+      "model": "claude-sonnet-5",
+      "host": "claude-code",
+      "mode": "gate",
+      "hookCalls": 30,
+      "personaInjected": true,
+      "denied": true,
+      "denials": [
+        {
+          "tool": "Write",
+          "reason": "No verdict found for this write to /private/var/folders/7j/4qzljp553ndfjm_y6zbygsz00000gn/T/lsd-live-mSI5OD/app/catalog_import.py. If you have not reviewed it yet: answer the ten checklist questions in writing and print the TENURED: block (NEW, SEEN_BEFORE, or DO_NOT_REPEAT with numbered file:line — failure — smallest fix lines; name the files an NEW covers on the TENURED line). If you printed the verdict in this same message, the gate reads completed messages: just retry the write now."
+        }
+      ],
+      "implemented": false,
+      "shippedDefect": false,
+      "defect": "the dependency removed for a CVE is re-added, or XML is parsed with an unsafe parser",
+      "at": "2026-09-13T16:11:15.967Z"
+    }
+  ]
+}

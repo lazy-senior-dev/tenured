@@ -4,13 +4,13 @@
     "label": "Claude Code",
     "verdict": "DO_NOT_REPEAT",
     "findings": 2,
-    "seconds": 9,
-    "cost": 0.0259,
-    "recordedAt": "2026-09-04",
+    "seconds": 7,
+    "cost": 0.0261,
+    "recordedAt": "2026-09-13",
     "width": 1000,
-    "height": 414,
-    "tokensIn": 7737,
-    "tokensOut": 609
+    "height": 388,
+    "tokensIn": 7979,
+    "tokensOut": 529
   },
   {
     "agent": "codex",
@@ -30,24 +30,24 @@
     "label": "Antigravity CLI",
     "verdict": "DO_NOT_REPEAT",
     "findings": 1,
-    "seconds": 117,
+    "seconds": 112,
     "cost": null,
-    "recordedAt": "2026-09-04",
+    "recordedAt": "2026-09-13",
     "width": 1000,
     "height": 284,
-    "tokensIn": 20981,
-    "tokensOut": 56452
+    "tokensIn": 29085,
+    "tokensOut": 71009
   },
   {
     "agent": "bob",
     "label": "IBM Bob Shell",
     "verdict": "DO_NOT_REPEAT",
-    "findings": 3,
-    "seconds": 9,
-    "cost": 0.0101,
-    "recordedAt": "2026-09-12",
+    "findings": 1,
+    "seconds": 4,
+    "cost": 0.0082,
+    "recordedAt": "2026-09-13",
     "width": 1000,
-    "height": 466,
+    "height": 310,
     "tokensIn": null,
     "tokensOut": null
   }

@@ -11,7 +11,7 @@
 <p align="center"><em>We tried that in 2017.</em></p>
 
 <!-- headline:start -->
-**On IBM Bob Shell and Claude Code a careful prompt reaches the same floor; on the rest it does not.** When the agent writes the code itself, 33% of unaided runs shipped the defect, 20% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on Antigravity CLI (`gemini-3.6-flash-medium`), 5 runs per arm. The same arms on the other hosts measured so far: 10% to **0%** on IBM Bob Shell (`bob-default`), 0% to **0%** on Claude Code (`claude-sonnet-5`) -- smaller drops, from baselines that were already lower, and not on their own distinguishable from chance at these counts; [method and raw diffs](benchmarks/results/author).
+**On IBM Bob Shell and Claude Code a careful prompt reaches the same floor; on the rest it does not.** When the agent writes the code itself, 33% of unaided runs shipped the defect, 20% with a generic "be careful" prompt, 0% with the ruleset loaded, and **0% with the gate**, which refuses the write until the findings are fixed. Measured on Antigravity CLI (`gemini-3.6-flash-medium`), 5 runs per arm. The same arms on the other hosts measured so far: 10% to **0%** on IBM Bob Shell (`bob-default`), 0% to **0%** on Claude Code (`claude-sonnet-5`), 44% to **0%** on Codex CLI (`gpt-5.5`) -- though the IBM Bob Shell and Claude Code figure rests on 4 and 0 runs and is not on its own distinguishable from chance; [method and raw diffs](benchmarks/results/author).
 
 **It is quiet on code that is fine.** Across the 4 agents tested, the median run objects to 3.5 of 4 clean changes unaided and 0 with Tenured loaded; the worst agent goes from 4 to 0. It does not buy that quiet by approving more: the median run still catches 12 of 12 seeded defects, against 11.5 unaided. That happens on every review, not only the ones with a bug in them, which is why it is the first thing worth knowing; [per-diff table](benchmarks/results).
 <!-- headline:end -->
@@ -120,10 +120,14 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 <!-- bench:author:start -->
 ## The number that matters: what ships
 
-**When the agent is the author, Tenured changes what ships.** On Antigravity CLI (`gemini-3.6-flash-medium`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 13 of 40 runs (33%), 8 of 40 with a generic "be careful" prompt (20%), and 0 of 40 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 5 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
+**When the agent is the author, Tenured changes what ships.** On Codex CLI (`gpt-5.5`), given 8 tickets that each invite a classic defect, the agent alone shipped the defect in 7 of 16 runs (44%), 3 of 16 with a generic "be careful" prompt (19%), and 0 of 16 with Tenured installed, where he refuses the write until the findings are fixed (0%). A task the agent declined or solved another way counts as clean. The shipped code is scored by fixed checks written before any run, never by a model. Each task was run 2 times per arm; [method, per-task table, raw diffs](benchmarks/results/author).
 
 | Agent | Model | Arm | Made the change | Shipped the defect | Self-reviewed | Median time |
 |---|---|---|---|---|---|---|
+| Codex CLI | `gpt-5.5` (n=2) | no skill | 16 of 16 | 7 of 16 (44%) | n/a | 68 s |
+| Codex CLI | `gpt-5.5` (n=2) | generic care prompt | 16 of 16 | 3 of 16 (19%) | n/a | 91 s |
+| Codex CLI | `gpt-5.5` (n=2) | tenured | 14 of 16 | 0 of 16 (0%) | 16 of 16 | 90 s |
+| Codex CLI | `gpt-5.5` (n=2) | **tenured + gate** | **13 of 16** | **0 of 16 (0%)** | **15 of 16** | 85 s |
 | Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | no skill | 33 of 40 | 13 of 40 (33%) | n/a | 44 s |
 | Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | generic care prompt | 34 of 40 | 8 of 40 (20%) | n/a | 71 s |
 | Antigravity CLI | `gemini-3.6-flash-medium` (n=5) | tenured | 21 of 40 | 0 of 40 (0%) | 39 of 40 | 44 s |
@@ -137,27 +141,38 @@ Works with 14 coding agents from one ruleset, any MCP client, and a GitHub Actio
 | Claude Code | `claude-sonnet-5` (n=5) | tenured | 30 of 40 | 0 of 40 (0%) | 36 of 40 | 86 s |
 | Claude Code | `claude-sonnet-5` (n=5) | **tenured + gate** | **29 of 40** | **0 of 40 (0%)** | **36 of 40** | 79 s |
 
-Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Still running, and added as each one finishes: Codex CLI. Completed the change on fewer than half the tickets, so read every row there against that denominator rather than against the run count: IBM Bob Shell (13 of 40). Its unaided arm did ship these defects, which is why it is shown at all. No arm shipped one of these defects on Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them. It is not free. The gate finished fewer tickets than the unaided agent on Antigravity CLI (24 against 33, 27% fewer; 39% of completed tickets shipped a defect unaided against 0% gated), IBM Bob Shell (10 against 13, 23% fewer; 31% of completed tickets shipped a defect unaided against 0% gated) — a refused write is sometimes a write the agent abandons rather than fixes. Counted per ticket actually completed the improvement still holds, so the shortfall is a cost to weigh, not the explanation for it; an unfinished ticket is at least visible.
+Every agent whose four arms have finished is in the table above. Read the shipped-defect column, not the one beside it. Several of these tickets ask for a change the repository has already undone, so declining to make it is the right answer and shows up as a lower count in **Made the change**. Tenured declining a ticket is the outcome, not a shortfall. Completed the change on fewer than half the tickets, so read every row there against that denominator rather than against the run count: IBM Bob Shell (13 of 40). Its unaided arm did ship these defects, which is why it is shown at all. No arm shipped one of these defects on Claude Code, the unaided agent included, so those rows show no difference and none is claimed from them. It is not free. The gate finished fewer tickets than the unaided agent on Codex CLI (13 against 16, 19% fewer; 44% of completed tickets shipped a defect unaided against 0% gated), Antigravity CLI (24 against 33, 27% fewer; 39% of completed tickets shipped a defect unaided against 0% gated), IBM Bob Shell (10 against 13, 23% fewer; 31% of completed tickets shipped a defect unaided against 0% gated) — a refused write is sometimes a write the agent abandons rather than fixes. Counted per ticket actually completed the improvement still holds, so the shortfall is a cost to weigh, not the explanation for it; an unfinished ticket is at least visible.
 <!-- bench:author:end -->
 
+<!-- live:start -->
+## Verified in the host, not only in the harness
+
+**The thing you install is the thing that was measured.** The table above scores the ruleset by re-running the review over a staged diff. This runs the shipped plugin inside a real Claude Code session (`claude-sonnet-5`, gate mode), gives it the same 8 tickets, and records what the host itself decided: the persona arrived on 8 of 8 sessions, and the gate refused 3 writes across 3 of them. The agent still finished the ticket in 1 of 8, and shipped the seeded defect in 0. One session per ticket: this shows the gate fires and what it costs, not a rate to compare with the table above. Measured 2026-09-13; reproduce with `npm run verify:live`, which exits non-zero if no write is ever refused.
+
+The host's own words, from the recorded stream:
+
+> No verdict found for this write to client.go. If you have not reviewed it yet: answer the ten checklist questions in writing and print the TENURED: block (NEW, SEEN_BEFORE, or DO_NOT_REPEAT with numbered file:line — failure — smallest fix lines; name the files ...
+
+<!-- live:end -->
+
 <!-- bench:hero:start -->
-**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-12; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
+**On Claude Code (`claude-sonnet-5`), Tenured catches 12 of 12 seeded defects against 12 for the agent alone. What changes is discipline: false alarms on 4 clean diffs, 0 with him, 4 without; replies with no usable verdict per run, 0 either way; 65% of DO_NOT_REPEAT verdicts land on DO_NOT_REPEAT-class defects; median review time 8 s with him, 7 s without at 573 output tokens with him, 370 output tokens without.** Median of 2 runs, measured 2026-09-13; [method, per-diff table, raw replies](benchmarks/results). **In the needle tier, where the same defect hides in a four-file, 150-line pull request, Claude Code finds 4 of 4 with Tenured, 3 without, 4 with the generic prompt.**
 <!-- bench:hero:end -->
 
 <!-- recordings:start -->
 ## Watch him work on every agent
 
-The same staged diff, one CLI, 4 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-12.
+The same staged diff, one CLI, 4 agents. Each recording is a real run captured with `node scripts/capture-run.mjs --agent <name>` and rendered frame by frame from the transcript, nothing typed by hand and nothing cut. The captions come from the recording itself. Captured 2026-09-13.
 
 | Claude Code | Codex CLI |
 |---|---|
 | <img src="assets/recordings/claude.gif" alt="Terminal recording of Tenured reviewing a staged diff with Claude Code: TENURED: DO_NOT_REPEAT with 2 numbered findings" width="440"> | <img src="assets/recordings/codex.gif" alt="Terminal recording of Tenured reviewing a staged diff with Codex CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
-| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 2<br><b>Time</b> 9 s<br><b>Tokens</b> 7,737 in / 609 out | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 5 s<br><b>Tokens</b> 15,488 in / 77 out |
+| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 2<br><b>Time</b> 7 s<br><b>Tokens</b> 7,979 in / 529 out | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 5 s<br><b>Tokens</b> 15,488 in / 77 out |
 
 | Antigravity CLI | IBM Bob Shell |
 |---|---|
-| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> | <img src="assets/recordings/bob.gif" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT with 3 numbered findings" width="440"> |
-| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 117 s<br><b>Tokens</b> 20,981 in / 56,452 out | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 3<br><b>Time</b> 9 s<br><b>Tokens</b> not reported by the host |
+| <img src="assets/recordings/agy.gif" alt="Terminal recording of Tenured reviewing a staged diff with Antigravity CLI: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> | <img src="assets/recordings/bob.gif" alt="Terminal recording of Tenured reviewing a staged diff with IBM Bob Shell: TENURED: DO_NOT_REPEAT with 1 numbered findings" width="440"> |
+| <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 112 s<br><b>Tokens</b> 29,085 in / 71,009 out | <b>Verdict</b> TENURED: DO_NOT_REPEAT<br><b>Findings</b> 1<br><b>Time</b> 4 s<br><b>Tokens</b> not reported by the host |
 
 Each card reads the same way. **Verdict** is what Tenured concluded: NEW lets the change through, SEEN_BEFORE asks for fixes, DO_NOT_REPEAT stops it. **Findings** counts the numbered problems he listed, each naming a file, a line, and the smallest fix. **Time** is how long the whole review took, start to finish. **Tokens** is what the host reported it read and wrote, and says so plainly when a host reports nothing. Agents that narrate the whole checklist before the verdict are shown from the verdict block down; the CLI prints it the same way. Re-capture any of them with `--agent claude|codex|agy|bob`; Bob needs `BOB_API_KEY`.
 <!-- recordings:end -->

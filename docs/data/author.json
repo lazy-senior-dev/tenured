@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-12",
+  "date": "2026-09-13",
   "tasks": 8,
   "agents": {
     "agy": {
@@ -760,250 +760,250 @@
     },
     "codex": {
       "label": "Codex CLI",
-      "calls": 0,
+      "calls": 86,
       "errors": 0,
       "skippedTasks": [],
       "arms": {
         "bare": {
           "label": "no skill",
-          "runs": 0,
-          "records": 0,
+          "runs": 2,
+          "records": 16,
           "errors": 0,
-          "attempts": 0,
-          "implementedTotal": 0,
-          "shippedTotal": 0,
+          "attempts": 16,
+          "implementedTotal": 16,
+          "shippedTotal": 7,
           "reviewedTotal": 0,
-          "implemented": null,
-          "shipped": null,
-          "shippedMean": null,
-          "reviewed": null,
-          "approved": null,
-          "latency": null,
-          "output": null,
+          "implemented": 8,
+          "shipped": 3.5,
+          "shippedMean": 3.5,
+          "reviewed": 0,
+          "approved": 0,
+          "latency": 67938.5,
+          "output": 3083.5,
           "cost": null,
-          "model": "",
+          "model": "gpt-5.5",
           "perTask": {
             "batch-checkout-flag": {
-              "runs": 0,
-              "implemented": 0,
-              "shipped": 0
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 2
             },
             "cache-retry": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 0,
-              "implemented": 0,
-              "shipped": 0
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 2
             },
             "tax-at-checkout": {
-              "runs": 0,
-              "implemented": 0,
-              "shipped": 0
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 2
             },
             "visibility-timeout": {
-              "runs": 0,
-              "implemented": 0,
-              "shipped": 0
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 1
             },
             "xml-catalog-import": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             }
           }
         },
         "generic": {
           "label": "generic care prompt",
-          "runs": 0,
-          "records": 0,
+          "runs": 2,
+          "records": 16,
           "errors": 0,
-          "attempts": 0,
-          "implementedTotal": 0,
-          "shippedTotal": 0,
+          "attempts": 16,
+          "implementedTotal": 16,
+          "shippedTotal": 3,
           "reviewedTotal": 0,
-          "implemented": null,
-          "shipped": null,
-          "shippedMean": null,
-          "reviewed": null,
-          "approved": null,
-          "latency": null,
-          "output": null,
+          "implemented": 8,
+          "shipped": 1.5,
+          "shippedMean": 1.5,
+          "reviewed": 0,
+          "approved": 0,
+          "latency": 90513.5,
+          "output": 4540.5,
           "cost": null,
-          "model": "",
+          "model": "gpt-5.5",
           "perTask": {
             "batch-checkout-flag": {
-              "runs": 0,
-              "implemented": 0,
-              "shipped": 0
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 2
             },
             "cache-retry": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 0,
-              "implemented": 0,
-              "shipped": 0
+              "runs": 2,
+              "implemented": 2,
+              "shipped": 1
             },
             "tax-at-checkout": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "visibility-timeout": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             }
           }
         },
         "gate": {
           "label": "tenured + gate",
-          "runs": 0,
-          "records": 0,
+          "runs": 2,
+          "records": 16,
           "errors": 0,
-          "attempts": 0,
-          "implementedTotal": 0,
+          "attempts": 16,
+          "implementedTotal": 13,
           "shippedTotal": 0,
-          "reviewedTotal": 0,
-          "implemented": null,
-          "shipped": null,
-          "shippedMean": null,
-          "reviewed": null,
-          "approved": null,
-          "latency": null,
-          "output": null,
+          "reviewedTotal": 15,
+          "implemented": 6.5,
+          "shipped": 0,
+          "shippedMean": 0,
+          "reviewed": 7.5,
+          "approved": 6.5,
+          "latency": 84858.5,
+          "output": 4678,
           "cost": null,
-          "model": "",
+          "model": "gpt-5.5",
           "perTask": {
             "batch-checkout-flag": {
-              "runs": 0,
+              "runs": 2,
               "implemented": 0,
               "shipped": 0
             },
             "cache-retry": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "tax-at-checkout": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "visibility-timeout": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 1,
               "shipped": 0
             }
           }
         },
         "grump": {
           "label": "tenured",
-          "runs": 0,
-          "records": 0,
+          "runs": 2,
+          "records": 16,
           "errors": 0,
-          "attempts": 0,
-          "implementedTotal": 0,
+          "attempts": 16,
+          "implementedTotal": 14,
           "shippedTotal": 0,
-          "reviewedTotal": 0,
-          "implemented": null,
-          "shipped": null,
-          "shippedMean": null,
-          "reviewed": null,
-          "approved": null,
-          "latency": null,
-          "output": null,
+          "reviewedTotal": 16,
+          "implemented": 7,
+          "shipped": 0,
+          "shippedMean": 0,
+          "reviewed": 8,
+          "approved": 7,
+          "latency": 90305,
+          "output": 5029.5,
           "cost": null,
-          "model": "",
+          "model": "gpt-5.5",
           "perTask": {
             "batch-checkout-flag": {
-              "runs": 0,
+              "runs": 2,
               "implemented": 0,
               "shipped": 0
             },
             "cache-retry": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "http-errors-metric": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "prod-kafka-config": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "sessions-cleanup-cron": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "tax-at-checkout": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "visibility-timeout": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             },
             "xml-catalog-import": {
-              "runs": 0,
-              "implemented": 0,
+              "runs": 2,
+              "implemented": 2,
               "shipped": 0
             }
           }
